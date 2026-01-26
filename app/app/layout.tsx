@@ -12,7 +12,7 @@ export default async function AppLayout({
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/sign-in"); // Or sign-in
+    redirect("/"); // Or sign-in
   }
 
   // TODO: currentUser sync logic if needed server-side, typically handled by middleware or verify endpoint.
