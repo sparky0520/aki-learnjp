@@ -1,1 +1,1 @@
-export const APP_FRONTEND_URL = "https://aki-atym.onrender.com";
+export const APP_FRONTEND_URL = "/app";
