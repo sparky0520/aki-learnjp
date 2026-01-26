@@ -1,8 +1,9 @@
 import Providers from "../../components/Providers";
 import AppLayoutContent from "../../components/AppLayoutContent";
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import AIGeneratedPageModal from "../../components/AIGeneratedPageModal"; // Verify if this component exists/copied
+import { ClerkProvider } from "@clerk/nextjs";
+import AIGeneratedPageModal from "../../components/AIGeneratedPageModal";
+import "../globals.css";
 
 export default async function AppLayout({
   children,
@@ -11,18 +12,18 @@ export default async function AppLayout({
 }>) {
   const { userId } = await auth();
 
-  if (!userId) {
-    redirect("/"); // Or sign-in
-  }
-
-  // TODO: currentUser sync logic if needed server-side, typically handled by middleware or verify endpoint.
-
   return (
-    <Providers>
-      <AppLayoutContent userId={userId}>
-        {children}
-      </AppLayoutContent>
-      <AIGeneratedPageModal />
-    </Providers>
+    <ClerkProvider>
+      <html lang="en">
+        <body className="antialiased">
+          <Providers>
+            <AppLayoutContent userId={userId || ""}>
+              {children}
+            </AppLayoutContent>
+            <AIGeneratedPageModal />
+          </Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

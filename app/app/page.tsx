@@ -6,7 +6,7 @@ import BottomBar from "../../components/BottomBar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useLastAccessed } from "../../contexts/LastAccessedContext";
-import { useAuthSync } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import Image from "next/image";
 
 // Constants
@@ -17,7 +17,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [completedLessons, setCompletedLessons] = useState(0);
   const { lastAccessed } = useLastAccessed();
-  const { currentUser } = useAuthSync();
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +40,7 @@ export default function DashboardPage() {
       if (!currentUser?.id) return;
       try {
         const response = await axios.get(
-          `${apiUrl}/progress/${currentUser.id}/completed-lessons`
+          `${apiUrl}/progress/${currentUser.id}/completed-lessons`,
         );
         setCompletedLessons(response.data.completed_lessons);
       } catch (err: any) {
@@ -90,14 +90,12 @@ export default function DashboardPage() {
                   style={{
                     width:
                       Math.ceil(
-                        (completedLessons * 100) / content.totalLessons
+                        (completedLessons * 100) / content.totalLessons,
                       ) + "%",
                   }}
                 >
                   <div className="text-right mr-3 text-xs text-white leading-5">
-                    {Math.ceil(
-                      (completedLessons * 100) / content.totalLessons
-                    )}
+                    {Math.ceil((completedLessons * 100) / content.totalLessons)}
                     %
                   </div>
                 </div>
@@ -137,12 +135,12 @@ export default function DashboardPage() {
                         description={e.description}
                         sourceCode={
                           <div className="relative w-full max-w-md h-48">
-                              <Image
-                                src={e.media.link}
-                                className="object-contain" // Or cover
-                                alt=""
-                                fill
-                              />
+                            <Image
+                              src={e.media.link}
+                              className="object-contain" // Or cover
+                              alt=""
+                              fill
+                            />
                           </div>
                         }
                       />
@@ -153,10 +151,10 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="p-2 flex flex-col gap-4 items-end text-lg text-blue-400">
-             {/* Practice Links */}
-             <PracticeLink text="Practice Hiragana" href="/hatsuon" />
-             <PracticeLink text="Practice Katakana" href="/hatsuon" />
-             <PracticeLink text="Practice Kanji" href="/hatsuon" />
+            {/* Practice Links */}
+            <PracticeLink text="Practice Hiragana" href="/hatsuon" />
+            <PracticeLink text="Practice Katakana" href="/hatsuon" />
+            <PracticeLink text="Practice Kanji" href="/hatsuon" />
           </div>
         </div>
       </div>
@@ -166,19 +164,17 @@ export default function DashboardPage() {
   );
 }
 
-function PracticeLink({ text, href }: { text: string, href: string }) {
-    return (
-        <Link
-              className="flex items-center gap-2 hover:underline group"
-              href={href}
-            >
-              <Image
-                src="/assets/open_in_new.svg"
-                alt="Open in new window"
-                width={16} height={16}
-                className="opacity-0 group-hover:opacity-90 transition-opacity duration-200"
-              />
-              <span>{text}</span>
-            </Link>
-    );
+function PracticeLink({ text, href }: { text: string; href: string }) {
+  return (
+    <Link className="flex items-center gap-2 hover:underline group" href={href}>
+      <Image
+        src="/assets/open_in_new.svg"
+        alt="Open in new window"
+        width={16}
+        height={16}
+        className="opacity-0 group-hover:opacity-90 transition-opacity duration-200"
+      />
+      <span>{text}</span>
+    </Link>
+  );
 }

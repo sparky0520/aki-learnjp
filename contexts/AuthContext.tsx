@@ -1,13 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useClerk, useUser } from "@clerk/nextjs"; 
-// import { apiUrl } from "../constants"; // Using env var directly
+import { createContext, useContext, useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
 
 const apiUrl = "/api";
 
-export function useAuthSync() {
-  const { signOut } = useClerk();
+interface AuthContextType {
+  currentUser: any;
+  isLoading: boolean;
+  error: string | null;
+  isAuthenticated: boolean;
+}
+
+const AuthContext = createContext<AuthContextType>({
+  currentUser: null,
+  isLoading: true,
+  error: null,
+  isAuthenticated: false,
+});
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, isSignedIn, isLoaded } = useUser();
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,10 +79,16 @@ export function useAuthSync() {
     syncUser();
   }, [isSignedIn, isLoaded, user]);
 
-  return {
+  const value = {
     currentUser,
     isLoading,
     error,
-    isAuthenticated: isSignedIn && !!currentUser,
+    isAuthenticated: (isSignedIn ?? false) && !!currentUser,
   };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
 }
