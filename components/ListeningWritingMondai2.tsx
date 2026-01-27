@@ -44,11 +44,11 @@ function ListeningWritingMondai2({ data }: { data: Mondai2Data }) {
               <div
                 className={`p-px rounded-full ${i === 1 ? "border-2 border-black" : ""}`}
               >
-                <div className="rounded-full border border-gray-400 p-4 cursor-pointer select-none w-min relative opacity-90 w-12 h-12 flex items-center justify-center">
+                <div className="rounded-full border border-gray-400 p-4 cursor-pointer select-none relative opacity-90 w-12 h-12 flex items-center justify-center">
                   <div className="text-xl font-bold">{i + 1}</div>
                 </div>
               </div>
-              <Image src={e} className="max-w-[200px]" alt={`rei ${i + 1}`} />
+              <Image src={e} className="max-w-50" alt={`rei ${i + 1}`} />
             </div>
           ))}
       </div>
