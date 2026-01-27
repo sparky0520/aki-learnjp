@@ -14,7 +14,7 @@ export default function RenshuuCPage() {
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
   const router = useRouter();
-  const [parts, setParts] = useState<any[]>([]);
+  const [parts, setParts] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [index, setIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
