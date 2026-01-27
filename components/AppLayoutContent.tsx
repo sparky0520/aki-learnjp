@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Sidebar from "./Sidebar"; // Ensure component exists or update import
 import { usePathname } from "next/navigation";
 import AskAkiContext from "../contexts/AkiContext";
-import arrowMenuOpen from "@/public/assets/arrow_menu_open.svg"; // Update asset path
 import AIGeneratedPageModal from "./AIGeneratedPageModal";
 import Image from "next/image";
 
@@ -24,6 +23,14 @@ export default function AppLayoutContent({
   // Here we have userId from server, but Sidebar might need full user object.
   // Sidebar likely fetches user or takes it as prop.
   // For now, I'll pass userId.
+
+  useEffect(() => {
+    if (!userId) {
+      window.location.href = "/sign-in";
+    }
+  }, [userId]);
+
+  if (!userId) return null;
 
   const showSidebar = !pathname.includes("/course");
 

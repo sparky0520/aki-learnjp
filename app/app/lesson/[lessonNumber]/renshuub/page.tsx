@@ -1,18 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ReadingWriting from "../../../../../components/ReadingWriting";
-import BottomBar from "../../../../../components/BottomBar";
-import ExerciseEndResult from "../../../../../components/ExerciseEndResult";
+import ReadingWriting from "@/components/ReadingWriting";
+import BottomBar from "@/components/BottomBar";
+import ExerciseEndResult from "@/components/ExerciseEndResult";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import { useAnswers } from "../../../../../contexts/AnswersContext";
-import { useProgressUpdater } from "../../../../../contexts/ProgressContext";
+import { useAnswers } from "@/contexts/AnswersContext";
+import { useProgressUpdater } from "@/contexts/ProgressContext";
 
 const apiUrl = "/api";
 
-export default function RenshuuBPage() {
-  const { answers, setAnswers } = useAnswers();
+function RenshuuBPage() {
+  const { answers, setAnswers, setAnswer } = useAnswers();
   const { updateLessonProgress } = useProgressUpdater();
 
   const params = useParams();
@@ -20,13 +20,15 @@ export default function RenshuuBPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [finalQuestion, setFinalQuestion] = useState(0);
   const [finalOption, setFinalOption] = useState(0);
-  const router = useRouter(); // Helper for navigation
+  const router = useRouter();
   const [parts, setParts] = useState<any[]>([]);
   const [index, setIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   // Helper to reset answers
-  const resetAnswers = () => setAnswers({});
+  const resetAnswers = () => {
+    setAnswers({});
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,8 +36,12 @@ export default function RenshuuBPage() {
         const response = await axios.get(
           `${apiUrl}/lesson/${lessonNumber}/renshuu_b`,
         );
-        // console.log(response.data);
+        console.log(response.data);
         if (response.data && response.data.length > 0) {
+          console.log(
+            "response.data[0].questions.length: " +
+              response.data[0].questions.length,
+          );
           setFinalQuestion(response.data.length);
           setFinalOption(response.data[0].questions.length);
           setParts(response.data);
@@ -50,6 +56,12 @@ export default function RenshuuBPage() {
   }, [lessonNumber]);
 
   const handleNext = async () => {
+    // Empty answer check
+    // if (index + 1 <= 4 && !getAnswer(index + 1)) {
+    //   window.alert(`Answer ${index + 1} can't be empty!`);
+    //   return;
+    // }
+
     // Exercise end screen visible
     if (index === finalOption) {
       if (currentQuestion === finalQuestion - 1) {
@@ -79,38 +91,39 @@ export default function RenshuuBPage() {
   };
 
   if (isLoading) return <div>Loading...</div>;
-  if (parts.length === 0) return <div>No data</div>;
 
   return (
-    <div className="flex flex-col justify-between min-h-full">
+    <div className="flex flex-col justify-between min-h-full h-full">
       <div>
         {/* <Shuuryou lessonNo={1} /> */}
         {currentQuestion < finalQuestion && (
-          <div className="mb-4 bold-text font-bold">
+          <div className="mb-4 bold-text">
             Q. {currentQuestion + 1}/{finalQuestion}
           </div>
         )}
       </div>
 
-      {currentQuestion < finalQuestion ? (
-        index < finalOption ? (
-          <ReadingWriting
-            data={{
-              img: parts[currentQuestion].image_url,
-              rei: parts[currentQuestion].rei,
-              question: parts[currentQuestion].questions[index],
-              part: index + 1,
-            }}
-          />
-        ) : (
-          <ExerciseEndResult
-            // exerciseName={"Renshuu B"}
-            questions={parts[currentQuestion].questions}
-            correctAnswers={parts[currentQuestion].correct_answers}
-            answers={answers}
-          />
-        )
-      ) : null}
+      <div className="flex-1 flex justify-center items-center">
+        {currentQuestion < finalQuestion ? (
+          index < finalOption ? (
+            <ReadingWriting
+              data={{
+                img: parts[currentQuestion].image_url,
+                rei: parts[currentQuestion].rei,
+                question: parts[currentQuestion].questions[index],
+                part: index + 1,
+              }}
+            />
+          ) : (
+            <ExerciseEndResult
+              // exerciseName={"Renshuu B"}
+              questions={parts[currentQuestion].questions}
+              correctAnswers={parts[currentQuestion].correct_answers}
+              answers={answers}
+            />
+          )
+        ) : null}
+      </div>
 
       <BottomBar
         handleNext={handleNext}
@@ -121,3 +134,5 @@ export default function RenshuuBPage() {
     </div>
   );
 }
+
+export default RenshuuBPage;

@@ -11,13 +11,9 @@ import { useAuth } from "../contexts/AuthContext";
 // Constants
 const apiUrl = "/api";
 
-function Sidebar({
-  setSidebarVisible,
-}: {
-  setSidebarVisible: (v: any) => void;
-}) {
+function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
   const pathname = usePathname();
-  const [progress, setProgress] = useState<any>(null);
+  const [progress, setProgress] = useState(null);
   const { lastAccessed } = useLastAccessed();
   const { currentUser } = useAuth();
 
@@ -155,7 +151,13 @@ function Sidebar({
       </div>
       <div className="mt-4 border-t pt-4">
         <div className="flex items-center gap-3">
-          <UserButton afterSignOutUrl="/" />
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: "w-10 h-10",
+              },
+            }}
+          />
           <span className="text-sm text-gray-600 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
             {currentUser?.name || "User"}
           </span>

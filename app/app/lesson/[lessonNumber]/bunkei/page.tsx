@@ -1,18 +1,18 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import Shuuryou from "../../../../../components/Shuuryou";
-import BottomBar from "../../../../../components/BottomBar";
+import Shuuryou from "@/components/Shuuryou";
+import BottomBar from "@/components/BottomBar";
 import axios from "axios";
-import AskAkiContext from "../../../../../contexts/AkiContext";
+import AskAkiContext from "@/contexts/AkiContext";
 import { useParams } from "next/navigation";
 
 const apiUrl = "/api";
 
-export default function BunkeiPage() {
+function BunkeiPage() {
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
-  const [content, setContent] = useState<any[] | null>(null);
+  const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
 
@@ -44,14 +44,14 @@ export default function BunkeiPage() {
     return <div>Loading...</div>;
   }
   return (
-    <div className="flex flex-col justify-between h-full">
-      <div>
+    <div className="flex flex-col justify-between h-full min-h-full">
+      <div className="flex-1 overflow-hidden flex flex-col">
         {/* shuuryou */}
         <div className="mb-4">
           <Shuuryou lessonNo={parseInt(lessonNumber)} />
         </div>
         {/* Content */}
-        <div className="flex flex-col gap-4 text-lg">
+        <div className="flex flex-col gap-4 text-lg overflow-y-auto custom-scroll flex-1 pb-4">
           {content.map((ele, index) => {
             const id = `bunkei-${index}`;
             return (
@@ -67,7 +67,6 @@ export default function BunkeiPage() {
                 <div className="mr-2 text-lg font-extrabold opacity-90">
                   {index + 1}.
                 </div>
-                {/* Security risk with HTML but required for ruby tags support as per original */}
                 <div dangerouslySetInnerHTML={{ __html: ele }} />
               </div>
             );
@@ -79,3 +78,5 @@ export default function BunkeiPage() {
     </div>
   );
 }
+
+export default BunkeiPage;

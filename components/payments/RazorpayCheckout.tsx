@@ -9,7 +9,7 @@ interface RazorpayCheckoutProps {
 // Declare Razorpay on window
 declare global {
   interface Window {
-    Razorpay: any;
+    Razorpay;
   }
 }
 
@@ -70,7 +70,7 @@ export default function RazorpayCheckout({
         description: `Subscription to ${planName} Plan`,
         // image: "/logo.png", // Add logo if available
         order_id: orderData.id,
-        handler: function (response: any) {
+        handler: function (response) {
           alert(
             `Payment Successful! Payment ID: ${response.razorpay_payment_id}`,
           );

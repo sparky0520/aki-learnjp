@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       },
       pricing_type: "fixed_price",
       // Redirects after payment (requires managed pages or custom success page)
-      // redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing/success`, 
+      // redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing/success`,
       // cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
     };
 
@@ -37,11 +37,11 @@ export async function POST(request: NextRequest) {
       hosted_url: charge.hosted_url,
       code: charge.code,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating Coinbase charge:", error);
     return NextResponse.json(
       { error: error.message || "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

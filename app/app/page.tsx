@@ -106,7 +106,7 @@ export default function DashboardPage() {
               <div className="text-lg mb-2">News and Insights</div>
               {/* Content */}
               <div className="flex flex-col gap-6">
-                {content.newsInsights.map((e: any, index: number) => {
+                {content.newsInsights.map((e, index: number) => {
                   if (e.media.type === "youtube") {
                     return (
                       <NewsInsight

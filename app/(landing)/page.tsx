@@ -1,8 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import Image from "next/image";
 
-export default function Home() {
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  const { userId } = await auth();
+  if (userId) {
+    redirect("/app");
+  }
   return (
     <div className="flex flex-col min-h-screen overflow-hidden relative">
       <div className="grow flex flex-col items-center justify-center p-8 sm:p-20 w-full">

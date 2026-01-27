@@ -72,7 +72,7 @@ export default function AIGeneratedPageModal() {
 
               <div className="generated-page-content">
                 {Array.isArray(page.sections) &&
-                  page.sections.map((section: any, idx: number) => (
+                  page.sections.map((section, idx: number) => (
                     <section key={idx} className="generated-page-section">
                       {section.heading && (
                         <h2

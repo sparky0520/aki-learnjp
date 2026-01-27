@@ -1,18 +1,18 @@
 "use client";
 
+import Shuuryou from "@/components/Shuuryou";
+import BottomBar from "@/components/BottomBar";
 import { useContext, useEffect, useState } from "react";
-import Shuuryou from "../../../../../components/Shuuryou";
-import BottomBar from "../../../../../components/BottomBar";
 import axios from "axios";
-import AskAkiContext from "../../../../../contexts/AkiContext";
+import AskAkiContext from "@/contexts/AkiContext";
 import { useParams } from "next/navigation";
 
 const apiUrl = "/api";
 
-export default function ReibunPage() {
+function ReibunPage() {
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
-  const [content, setContent] = useState<string[] | null>(null);
+  const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
 
@@ -43,18 +43,20 @@ export default function ReibunPage() {
   if (!content) {
     return <div>Loading...</div>;
   }
-
   return (
-    <div className="flex flex-col justify-between min-h-full">
-      <div>
+    <div className="flex flex-col justify-between min-h-full h-full">
+      <div className="flex-1 overflow-hidden flex flex-col">
         <div className="mb-4">
           {/* shuuryou */}
           <Shuuryou lessonNo={parseInt(lessonNumber)} />
         </div>
         {/* Content */}
-        <div className="flex flex-col gap-4 pb-2 overflow-y-auto custom-scroll text-lg">
+        <div className="flex flex-col gap-4 pb-2 overflow-y-auto custom-scroll text-lg flex-1">
           {content.map((ele, index) => {
             const id = `reibun-${index}`;
+            // ele is string here, split logic?
+            // "Japanese — English"
+            // Original code: ele = ele.split(" — ");
             const parts = ele.split(" — ");
             return (
               <div
@@ -70,7 +72,7 @@ export default function ReibunPage() {
                   {index + 1}.
                 </div>
                 <div>
-                  {parts.map((e, i) => (
+                  {parts.map((e: string, i: number) => (
                     <div
                       key={id + i}
                       className={i > 0 ? `ml-${i * 8} mt-2` : ""}
@@ -88,3 +90,5 @@ export default function ReibunPage() {
     </div>
   );
 }
+
+export default ReibunPage;

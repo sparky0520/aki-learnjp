@@ -8,7 +8,7 @@ function QuestionPart({
   correct,
 }: {
   questionNumber: number;
-  questionContent: any;
+  questionContent;
   answered: string;
   correct: string;
 }) {

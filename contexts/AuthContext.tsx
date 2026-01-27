@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 const apiUrl = "/api";
 
 interface AuthContextType {
-  currentUser: any;
+  currentUser;
   isLoading: boolean;
   error: string | null;
   isAuthenticated: boolean;
@@ -21,7 +21,7 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, isSignedIn, isLoaded } = useUser();
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -84,6 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     error,
     isAuthenticated: (isSignedIn ?? false) && !!currentUser,
+    isSynced: !!currentUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

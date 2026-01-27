@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Shuuryou from "../../../../../components/Shuuryou";
-import BottomBar from "../../../../../components/BottomBar";
+import Shuuryou from "@/components/Shuuryou";
+import BottomBar from "@/components/BottomBar";
 import axios from "axios";
 import { useParams } from "next/navigation";
 
+// Use environment variable or constant for API URL
 const apiUrl = "/api";
 
-export default function RenshuuAPage() {
+function RenshuuAPage() {
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
-  const [content, setContent] = useState<any[] | null>(null);
+  const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -43,14 +44,13 @@ export default function RenshuuAPage() {
   }
 
   return (
-    <div className="flex flex-col justify-between min-h-full">
-      <div>
+    <div className="flex flex-col justify-between min-h-full h-full">
+      <div className="flex-1 overflow-hidden flex flex-col">
         <div className="mb-4">
-          {/* shuuryou */}
           <Shuuryou lessonNo={parseInt(lessonNumber)} />
         </div>
         {/* Content */}
-        <div className="flex flex-col gap-8 pb-2 overflow-y-scroll custom-scroll">
+        <div className="flex flex-col gap-8 pb-2 overflow-y-auto custom-scroll flex-1">
           {content.map((ele, index) => (
             <div className="flex gap-2" key={"renshuu_a" + index}>
               <div className="p-2 pl-0 text-lg font-extrabold opacity-90">
@@ -63,7 +63,7 @@ export default function RenshuuAPage() {
                 }}
                 key={index}
               >
-                {ele[1].map((e: string | string[], i: number) => (
+                {ele[1].map((e, i: number) => (
                   <div
                     key={i}
                     className={
@@ -71,9 +71,7 @@ export default function RenshuuAPage() {
                         ? "border border-dashed rounded-lg p-2 bg-[#fff9db]"
                         : "p-2"
                     }
-                    dangerouslySetInnerHTML={{
-                      __html: Array.isArray(e) ? e.join("<br/>") : e,
-                    }}
+                    dangerouslySetInnerHTML={{ __html: e }}
                   />
                 ))}
               </div>
@@ -86,3 +84,5 @@ export default function RenshuuAPage() {
     </div>
   );
 }
+
+export default RenshuuAPage;

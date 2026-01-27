@@ -9,11 +9,14 @@ export function useProgressUpdater() {
   const { currentUser } = useAuthSync();
 
   //   Mark exercise as completed
-  const updateLessonProgress = async (lessonNumber: string | number, exercise: string) => {
+  const updateLessonProgress = async (
+    lessonNumber: string | number,
+    exercise: string,
+  ) => {
     if (!currentUser) return;
 
     try {
-      const updates: any = {};
+      const updates = {};
       switch (exercise) {
         case "renshuu_b":
           updates.renshuu_b_completed = true;
@@ -41,7 +44,10 @@ export function useProgressUpdater() {
     }
   };
 
-  const updateCourseProgress = async (courseNumber: string | number, lessonNumber: string | number) => {
+  const updateCourseProgress = async (
+    courseNumber: string | number,
+    lessonNumber: string | number,
+  ) => {
     if (!currentUser) return;
 
     try {

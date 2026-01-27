@@ -8,8 +8,8 @@ import Image from "next/image";
 interface BottomBarProps {
   handleNext?: () => void;
   handlePrev?: () => void;
-  currentQuestion?: any;
-  finalQuestion?: any;
+  currentQuestion?;
+  finalQuestion?;
   nextFlag?: boolean;
   reading?: boolean;
 }
@@ -25,7 +25,7 @@ function BottomBar({
   const { askAki, toggleAskAki } = useContext(AskAkiContext);
 
   return (
-    <div className="flex justify-between items-center sticky bottom-0 bg-[#fffce8] py-4 border-t border-gray-200">
+    <div className="flex justify-between items-center sticky bottom-0 bg-paper-bg py-4 border-t border-gray-200">
       {reading ? (
         <div></div>
       ) : (
@@ -43,12 +43,12 @@ function BottomBar({
       >
         <div className="mr-2">
           {askAki && (
-            <Image 
-                src="/assets/close.svg" 
-                alt="cancel" 
-                width={16} 
-                height={16} 
-                className="opacity-90" 
+            <Image
+              src="/assets/close.svg"
+              alt="cancel"
+              width={16}
+              height={16}
+              className="opacity-90"
             />
           )}
         </div>
@@ -64,8 +64,8 @@ function BottomBar({
           {nextFlag
             ? "次 >"
             : currentQuestion === finalQuestion
-            ? "提出 >"
-            : "次 >"}
+              ? "提出 >"
+              : "次 >"}
         </button>
       )}
     </div>

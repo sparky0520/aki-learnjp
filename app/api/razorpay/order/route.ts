@@ -34,11 +34,11 @@ export async function POST(request: NextRequest) {
     const order = await instance.orders.create(options);
 
     return NextResponse.json(order);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating Razorpay order:", error);
     return NextResponse.json(
       { error: error.message || "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

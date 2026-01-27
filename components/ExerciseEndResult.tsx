@@ -5,9 +5,9 @@ function ExerciseEndResult({
   correctAnswers,
   answers,
 }: {
-  questions: any[];
-  correctAnswers: any[];
-  answers: any[];
+  questions;
+  correctAnswers;
+  answers;
 }) {
   return (
     <div className="flex-1 w-full max-w-4xl mx-auto">
@@ -35,7 +35,7 @@ function ExerciseEndResult({
           // Let's support both or normalize.
           let userAns;
           if (Array.isArray(answers)) {
-            const found = answers.find((a: any) => a.partNo === index + 1);
+            const found = answers.find((a) => a.partNo === index + 1);
             userAns = found ? found.answer : null;
           } else {
             userAns = answers[index + 1];
