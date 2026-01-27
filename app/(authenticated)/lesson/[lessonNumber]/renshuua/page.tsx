@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Shuuryou from "@/components/Shuuryou";
-import BottomBar from "@/components/BottomBar";
 import { useLayout } from "@/contexts/LayoutContext";
 import axios from "axios";
 import { useParams } from "next/navigation";
@@ -17,14 +16,14 @@ function RenshuuAPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Move hooks to the top level of the component
-  const { showBottomBar, hideBottomBar } = useLayout();
+  const { setBottomBarState } = useLayout();
 
   useEffect(() => {
-    showBottomBar({
+    setBottomBarState({
       reading: true, // isVisible is handled internally by showBottomBar
     });
-    return () => hideBottomBar();
-  }, [showBottomBar, hideBottomBar]);
+    return () => setBottomBarState({ reading: false });
+  }, [setBottomBarState]);
 
   useEffect(() => {
     const fetchData = async () => {

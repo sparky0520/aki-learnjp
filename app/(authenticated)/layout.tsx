@@ -1,8 +1,8 @@
-import Providers from "../../components/Providers";
-import AppLayoutContent from "../../components/AppLayoutContent";
+import Providers from "@/components/Providers";
+import AppLayoutContent from "@/components/AppLayoutContent";
 import { auth } from "@clerk/nextjs/server";
 import { ClerkProvider } from "@clerk/nextjs";
-import AIGeneratedPageModal from "../../components/AIGeneratedPageModal";
+import AIGeneratedPageModal from "@/components/AIGeneratedPageModal";
 import "../globals.css";
 
 export default async function AppLayout({

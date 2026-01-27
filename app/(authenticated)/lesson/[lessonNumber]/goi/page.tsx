@@ -1,37 +1,36 @@
 "use client";
 
-import Shuuryou from "@/components/Shuuryou";
-import BottomBar from "@/components/BottomBar";
-import { useLayout } from "@/contexts/LayoutContext";
 import { useContext, useEffect, useState } from "react";
+import { useLayout } from "@/contexts/LayoutContext";
+import Shuuryou from "@/components/Shuuryou";
 import axios from "axios";
 import AskAkiContext from "@/contexts/AkiContext";
 import { useParams } from "next/navigation";
 
 const apiUrl = "/api";
 
-function ReibunPage() {
+function GoiPage() {
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
 
-  const { showBottomBar, hideBottomBar } = useLayout();
+  const { setBottomBarState } = useLayout();
 
   useEffect(() => {
-    showBottomBar({
+    setBottomBarState({
       reading: true,
     });
-    return () => hideBottomBar();
-  }, [showBottomBar, hideBottomBar]);
+    return () => setBottomBarState({ reading: false });
+  }, [setBottomBarState]);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `${apiUrl}/lesson/${lessonNumber}/reibun`,
+          `${apiUrl}/lesson/${lessonNumber}/goi`,
         );
         setContent(response.data);
       } catch (err) {
@@ -53,43 +52,30 @@ function ReibunPage() {
   if (!content) {
     return <div>Loading...</div>;
   }
+
   return (
     <div className="flex flex-col justify-between min-h-full h-full">
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="mb-4">
-          {/* shuuryou */}
           <Shuuryou lessonNo={parseInt(lessonNumber)} />
         </div>
         {/* Content */}
-        <div className="flex flex-col gap-4 pb-2 overflow-y-auto custom-scroll text-lg flex-1">
-          {content.map((ele, index) => {
-            const id = `reibun-${index}`;
-            // ele is string here, split logic?
-            // "Japanese — English"
-            // Original code: ele = ele.split(" — ");
-            const parts = ele.split(" — ");
+        <div className="flex flex-col gap-8 pb-2 overflow-y-auto custom-scroll text-lg flex-1">
+          {content.map((value, index) => {
+            const id = `goi-${index};`;
             return (
               <div
                 className={getClassName(
                   id,
-                  "flex gap-4 highlightable p-2 border-0 text-start",
+                  "flex justify-between highlightable border-0 border-b-gray-300 border-b p-2",
                 )}
                 key={id}
                 id={id}
                 onClick={() => toggleHighlight(id)}
               >
-                <div className="mr-2 text-lg font-extrabold opacity-90">
-                  {index + 1}.
-                </div>
-                <div>
-                  {parts.map((e: string, i: number) => (
-                    <div
-                      key={id + i}
-                      className={i > 0 ? `ml-${i * 8} mt-2` : ""}
-                      dangerouslySetInnerHTML={{ __html: e }}
-                    />
-                  ))}
-                </div>
+                <div className="w-1/3">{value.jp}</div>
+                <div className="w-1/3">{value.kanji}</div>
+                <div className="w-1/3">{value.english}</div>
               </div>
             );
           })}
@@ -100,4 +86,4 @@ function ReibunPage() {
   );
 }
 
-export default ReibunPage;
+export default GoiPage;

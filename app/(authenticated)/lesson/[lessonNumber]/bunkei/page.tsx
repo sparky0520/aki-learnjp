@@ -1,37 +1,37 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
-import BottomBar from "@/components/BottomBar";
-import { useLayout } from "@/contexts/LayoutContext";
+import { useContext, useEffect, useState } from "react";
 import Shuuryou from "@/components/Shuuryou";
+import { useLayout } from "@/contexts/LayoutContext";
 import axios from "axios";
 import AskAkiContext from "@/contexts/AkiContext";
 import { useParams } from "next/navigation";
 
 const apiUrl = "/api";
 
-function GoiPage() {
+function BunkeiPage() {
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
 
-  const { showBottomBar, hideBottomBar } = useLayout();
+  const { bottomBarState, setBottomBarState } = useLayout();
 
   useEffect(() => {
-    showBottomBar({
+    setBottomBarState({
       reading: true,
     });
-    return () => hideBottomBar();
-  }, [showBottomBar, hideBottomBar]);
+    return () => setBottomBarState({ reading: false });
+  }, [setBottomBarState]);
 
   useEffect(() => {
+    console.log("LessonNumber: ", lessonNumber);
     const fetchData = async () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `${apiUrl}/lesson/${lessonNumber}/goi`,
+          `${apiUrl}/lesson/${lessonNumber}/bunkei`,
         );
         setContent(response.data);
       } catch (err) {
@@ -53,38 +53,38 @@ function GoiPage() {
   if (!content) {
     return <div>Loading...</div>;
   }
-
   return (
-    <div className="flex flex-col justify-between min-h-full h-full">
+    <div className="flex flex-col justify-between h-full min-h-full">
       <div className="flex-1 overflow-hidden flex flex-col">
+        {/* shuuryou */}
         <div className="mb-4">
           <Shuuryou lessonNo={parseInt(lessonNumber)} />
         </div>
         {/* Content */}
-        <div className="flex flex-col gap-8 pb-2 overflow-y-auto custom-scroll text-lg flex-1">
-          {content.map((value, index) => {
-            const id = `goi-${index};`;
+        <div className="flex flex-col gap-4 text-lg overflow-y-auto custom-scroll flex-1 pb-4">
+          {content.map((ele, index) => {
+            const id = `bunkei-${index}`;
             return (
               <div
                 className={getClassName(
                   id,
-                  "flex justify-between highlightable border-0 border-b-gray-300 border-b p-2",
+                  "flex gap-2 items-center highlightable border-0",
                 )}
                 key={id}
                 id={id}
                 onClick={() => toggleHighlight(id)}
               >
-                <div className="w-1/3">{value.jp}</div>
-                <div className="w-1/3">{value.kanji}</div>
-                <div className="w-1/3">{value.english}</div>
+                <div className="mr-2 text-lg font-extrabold opacity-90">
+                  {index + 1}.
+                </div>
+                <div dangerouslySetInnerHTML={{ __html: ele }} />
               </div>
             );
           })}
         </div>
       </div>
-      {/* Bottom bar - mae tsugi */}
     </div>
   );
 }
 
-export default GoiPage;
+export default BunkeiPage;

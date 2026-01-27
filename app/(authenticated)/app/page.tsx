@@ -1,12 +1,12 @@
 "use client";
 
-import NewsInsight from "../../components/NewsInsight";
+import NewsInsight from "@/components/NewsInsight";
 import Link from "next/link";
-import BottomBar from "../../components/BottomBar";
+import BottomBar from "@/components/BottomBar";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useLastAccessed } from "../../contexts/LastAccessedContext";
-import { useAuth } from "../../contexts/AuthContext";
+import { useLastAccessed } from "@/contexts/LastAccessedContext";
+import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 
 // Constants

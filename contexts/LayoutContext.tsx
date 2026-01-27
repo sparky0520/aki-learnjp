@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 
 interface BottomBarState {
   handleNext?: () => void;
@@ -9,43 +9,32 @@ interface BottomBarState {
   finalQuestion?: number;
   nextFlag?: boolean;
   reading?: boolean;
-  isVisible: boolean;
 }
 
 interface LayoutContextType {
   bottomBarState: BottomBarState;
   setBottomBarState: (state: Partial<BottomBarState>) => void;
-  showBottomBar: (options: Omit<BottomBarState, "isVisible">) => void;
-  hideBottomBar: () => void;
 }
 
 const LayoutContext = createContext<LayoutContextType | undefined>(undefined);
 
 export function LayoutProvider({ children }: { children: React.ReactNode }) {
   const [bottomBarState, setBottomBar] = useState<BottomBarState>({
-    isVisible: false,
     reading: false,
   });
 
-  const setBottomBarState = (state: Partial<BottomBarState>) => {
-    setBottomBar((prev) => ({ ...prev, ...state }));
-  };
-
-  const showBottomBar = (options: Omit<BottomBarState, "isVisible">) => {
-    setBottomBar({ ...options, isVisible: true });
-  };
-
-  const hideBottomBar = () => {
-    setBottomBar((prev) => ({ ...prev, isVisible: false }));
-  };
+  const setBottomBarState = useCallback(
+    (state: Partial<BottomBarState>) => {
+      setBottomBar((prev) => ({ ...prev, ...state }));
+    },
+    [setBottomBar],
+  );
 
   return (
     <LayoutContext.Provider
       value={{
         bottomBarState,
         setBottomBarState,
-        showBottomBar,
-        hideBottomBar,
       }}
     >
       {children}

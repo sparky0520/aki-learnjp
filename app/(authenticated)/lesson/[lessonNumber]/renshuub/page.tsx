@@ -12,9 +12,9 @@ import { useLayout } from "@/contexts/LayoutContext";
 const apiUrl = "/api";
 
 function RenshuuBPage() {
-  const { answers, setAnswers, setAnswer } = useAnswers();
+  const { answers, setAnswers } = useAnswers();
   const { updateLessonProgress } = useProgressUpdater();
-  const { showBottomBar, hideBottomBar } = useLayout();
+  const { setBottomBarState } = useLayout();
 
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
@@ -93,7 +93,7 @@ function RenshuuBPage() {
 
   useEffect(() => {
     if (!isLoading) {
-      showBottomBar({
+      setBottomBarState({
         handleNext,
         handlePrev,
         finalQuestion: finalOption,
@@ -101,8 +101,21 @@ function RenshuuBPage() {
         nextFlag: false,
       });
     }
-    return () => hideBottomBar();
-  }, [index, finalOption, isLoading, currentQuestion, finalQuestion]);
+    return () =>
+      setBottomBarState({
+        handleNext: undefined,
+        handlePrev: undefined,
+        finalQuestion: undefined,
+        currentQuestion: undefined,
+      });
+  }, [
+    index,
+    finalOption,
+    isLoading,
+    currentQuestion,
+    finalQuestion,
+    setBottomBarState,
+  ]);
 
   if (isLoading) return <div>Loading...</div>;
 

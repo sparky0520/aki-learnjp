@@ -17,7 +17,7 @@ const apiUrl = "/api";
 export default function MondaiPage() {
   const { answers, setAnswers } = useAnswers();
   const { updateLessonProgress } = useProgressUpdater();
-  const { showBottomBar, hideBottomBar } = useLayout();
+  const { setBottomBarState } = useLayout();
 
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
@@ -86,7 +86,7 @@ export default function MondaiPage() {
 
   useEffect(() => {
     if (!isLoading) {
-      showBottomBar({
+      setBottomBarState({
         handleNext,
         handlePrev,
         finalQuestion,
@@ -94,14 +94,19 @@ export default function MondaiPage() {
         nextFlag: false, // Calculate if needed
       });
     }
-    return () => hideBottomBar();
+    return () =>
+      setBottomBarState({
+        handleNext: undefined,
+        handlePrev: undefined,
+        finalQuestion: undefined,
+        currentQuestion: undefined,
+      });
   }, [
     currentQuestion,
     index,
     isLoading,
     finalQuestion,
-    showBottomBar,
-    hideBottomBar,
+    setBottomBarState,
     handleNext,
     handlePrev,
   ]);

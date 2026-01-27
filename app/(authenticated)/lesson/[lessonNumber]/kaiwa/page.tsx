@@ -13,7 +13,7 @@ const apiUrl = "/api";
 
 export default function KaiwaPage() {
   const { updateLessonProgress, updateCourseProgress } = useProgressUpdater();
-  const { showBottomBar, hideBottomBar } = useLayout();
+  const { setBottomBarState } = useLayout();
 
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
@@ -62,14 +62,19 @@ export default function KaiwaPage() {
 
   useEffect(() => {
     if (!isLoading) {
-      showBottomBar({
+      setBottomBarState({
         handleNext,
         handlePrev,
         nextFlag: true,
       });
     }
-    return () => hideBottomBar();
-  }, [lessonCompleted, isLoading]);
+    return () =>
+      setBottomBarState({
+        nextFlag: false,
+        handleNext: undefined,
+        handlePrev: undefined,
+      });
+  }, [lessonCompleted, isLoading, handleNext, handlePrev, setBottomBarState]);
 
   if (isLoading) return <div>Loading...</div>;
 
