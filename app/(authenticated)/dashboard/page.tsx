@@ -115,8 +115,8 @@ export default function DashboardPage() {
                         description={e.description}
                         sourceCode={
                           <iframe
-                            width="560"
-                            height="315"
+                            width="500"
+                            height="281"
                             src={e.media.link}
                             title="YouTube video player"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -134,10 +134,10 @@ export default function DashboardPage() {
                         link={e.link}
                         description={e.description}
                         sourceCode={
-                          <div className="relative w-full max-w-md h-48">
+                          <div className="relative w-full max-w-md h-64">
                             <Image
                               src={e.media.link}
-                              className="object-contain" // Or cover
+                              className="object-contain rounded-lg"
                               alt=""
                               fill
                             />

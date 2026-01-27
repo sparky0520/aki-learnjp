@@ -69,7 +69,6 @@ function LessonPage() {
           </Link>
         </div>
       </div>
-      <BottomBar />
     </div>
   );
 }

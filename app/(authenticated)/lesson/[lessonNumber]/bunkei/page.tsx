@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import Shuuryou from "@/components/Shuuryou";
 import BottomBar from "@/components/BottomBar";
 import axios from "axios";
-import AskAkiContext from "@/contexts/AkiContext";
+import AskAkiContext from "@/contexts/lesson/AkiContext";
 import { useParams } from "next/navigation";
 
 const apiUrl = "/api";
