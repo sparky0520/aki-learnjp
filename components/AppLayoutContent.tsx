@@ -30,10 +30,12 @@ export default function AppLayoutContent({
 
   return (
     <div className="flex bg-paper-bg text-[#343a40] h-screen">
+      {/* Blue halo ring */}
       {askAki && (
         <div className="absolute border-15 border-[#00c3ff] inset-0 rounded-lg blur-xl pointer-events-none animate-subtle-pulse"></div>
       )}
 
+      {/* Sidebar toggle */}
       {showSidebar &&
         (sidebarVisible ? (
           <div className="p-8 border-r border-gray-400 w-1/5 max-w-64 overflow-y-auto no-scrollbar">
@@ -54,8 +56,8 @@ export default function AppLayoutContent({
           </div>
         ))}
 
-      <div className="relative p-8 mb-4 w-full flex flex-col h-full overflow-hidden">
-        <div className="flex-1 overflow-y-auto custom-scroll">{children}</div>
+      <div className="relative p-8 w-full flex flex-col h-full overflow-y-auto custom-scroll">
+        {children}
       </div>
       <AIGeneratedPageModal />
     </div>

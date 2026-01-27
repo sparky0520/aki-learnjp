@@ -13,15 +13,15 @@ export default async function AppLayout({
   const { userId } = await auth();
 
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className="antialiased">
+    <html lang="en">
+      <body className="antialiased">
+        <ClerkProvider>
           <Providers>
             <AppLayoutContent userId={userId}>{children}</AppLayoutContent>
             <AIGeneratedPageModal />
           </Providers>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

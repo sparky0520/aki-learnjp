@@ -13,7 +13,7 @@ import Image from "next/image";
 const apiUrl = "/api";
 
 export default function DashboardPage() {
-  const [content, setContent] = useState<any>(null);
+  const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [completedLessons, setCompletedLessons] = useState(0);
   const { lastAccessed } = useLastAccessed();
@@ -44,11 +44,11 @@ export default function DashboardPage() {
         );
         setCompletedLessons(response.data.completed_lessons);
       } catch (err) {
-        // console.error("Error fetching completed lessons:", err.message);
+        console.error("Error fetching completed lessons:", err.message);
       }
     };
 
-    // fetchCompletedLessons(); // Disabled as stats endpoint not ported yet
+    fetchCompletedLessons(); // Disabled as stats endpoint not ported yet
   }, [currentUser]);
 
   if (isLoading) {

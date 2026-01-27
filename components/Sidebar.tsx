@@ -9,7 +9,6 @@ import { useLastAccessed } from "../contexts/LastAccessedContext";
 import { useAuth } from "../contexts/AuthContext";
 
 // Constants
-const apiUrl = "/api";
 
 function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
   const pathname = usePathname();
@@ -25,14 +24,15 @@ function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
       if (!currentUser?.id) return;
 
       try {
-        // Placeholder for future progress checking
-        // const res = await fetch(`/api/progress/${currentUser.id}/lesson/${lessonNumber}`);
-        // if (res.ok) {
-        //   const data = await res.json();
-        //   setProgress(data);
-        // }
-      } catch {
-        // console.error("Error fetching progress:", error);
+        const res = await fetch(
+          `/api/progress/${currentUser.id}/lesson/${lessonNumber}`,
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setProgress(data);
+        }
+      } catch (error: any) {
+        console.error("Error fetching progress:", error);
       }
     };
 

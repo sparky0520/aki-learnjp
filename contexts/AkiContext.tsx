@@ -15,13 +15,13 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
   // Simplified context without WebRTC logic for initial port to avoid complexity without backend support ready
   // (Original context had extensive WebRTC logic - keeping it minimal for now or pasting full if requested)
   // User asked to "copy directly wherever you can". I'll try to keep the structure.
-  // But WebRTC requires the backend endpoints /session. 
+  // But WebRTC requires the backend endpoints /session.
   // I haven't ported /session endpoint (it wasn't in main.py??)
-  // Let me check main.py again in my mind. Step 17 showed lines 1-800. I didn't see /session. 
+  // Let me check main.py again in my mind. Step 17 showed lines 1-800. I didn't see /session.
   // Maybe it's in another file or I missed it.
 
   const toggleAskAki = () => {
-      setAskAki(!askAki);
+    setAskAki(!askAki);
   };
 
   const explainCurrentPage = () => {};
