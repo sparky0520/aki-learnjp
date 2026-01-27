@@ -126,7 +126,7 @@ html {
 }
 
 .highlightable {
-  @apply border border-yellow-400 rounded-lg px-2 py-1 text-center bg-paper-bg transition-shadow duration-700 ease-in-out hover:drop-shadow h-min;
+  @apply hover:bg-yellow-200 rounded-lg px-2 py-1 text-center bg-paper-bg transition-shadow duration-700 ease-in-out hover:drop-shadow h-min;
 }
 
 .bold-text {
