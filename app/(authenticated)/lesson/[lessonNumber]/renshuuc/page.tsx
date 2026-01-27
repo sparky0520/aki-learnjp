@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import ReadingSpeakingRenshuuC from "@/components/ReadingSpeakingRenshuuC";
+import ReadingSpeakingRenshuuC from "@/components/lesson/sections/ReadingSpeakingRenshuuC";
 
 import BottomBar from "@/components/layout/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import { useProgressUpdater } from "@/contexts/ProgressContext";
+import { useProgressUpdater } from "@/contexts/lesson/ProgressContext";
 const apiUrl = "/api";
 
 export default function RenshuuCPage() {

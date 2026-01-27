@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import ReadingListeningSpeakingKaiwa from "@/components/ReadingListeningSpeakingKaiwa";
+import ReadingListeningSpeakingKaiwa from "@/components/lesson/sections/ReadingListeningSpeakingKaiwa";
 import Shuuryou from "@/components/lesson/shared/Shuuryou";
 import BottomBar from "@/components/layout/BottomBar";
-import LessonEnd from "@/components/LessonEnd";
+import LessonEnd from "@/components/lesson/shared/LessonEnd";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import { useProgressUpdater } from "@/contexts/ProgressContext";
+import { useProgressUpdater } from "@/contexts/lesson/ProgressContext";
 
 const apiUrl = "/api";
 

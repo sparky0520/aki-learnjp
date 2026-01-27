@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ReadingWriting from "@/components/ReadingWriting";
-import ExerciseEndResult from "@/components/ExerciseEndResult";
+import ReadingWriting from "@/components/lesson/sections/ReadingWriting";
+import ExerciseEndResult from "@/components/lesson/shared/ExerciseEndResult";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import { useAnswers } from "@/contexts/AnswersContext";
-import { useProgressUpdater } from "@/contexts/ProgressContext";
+import { useAnswers } from "@/contexts/lesson/AnswersContext";
+import { useProgressUpdater } from "@/contexts/lesson/ProgressContext";
 import BottomBar from "@/components/layout/BottomBar";
 
 const apiUrl = "/api";
@@ -21,7 +21,7 @@ function RenshuuBPage() {
   const [finalQuestion, setFinalQuestion] = useState(0);
   const [finalOption, setFinalOption] = useState(0);
   const router = useRouter();
-  const [parts, setParts] = useState<any[]>([]);
+  const [parts, setParts] = useState([]);
   const [index, setIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
