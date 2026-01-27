@@ -1,10 +1,11 @@
-/* eslint-disable no-irregular-whitespace */
-function LessonEnd() {
+import React from "react";
+
+function LessonEnd({ lessonNumber = 1 }: { lessonNumber?: number }) {
   return (
-    <div className="text-center font-extrabold opacity-90 flex flex-col gap-4">
+    <div className="text-center font-extrabold opacity-90 flex flex-col gap-4 py-12">
       <div>
-        <div>You completed Lesson 1</div>
-        <div className="mt-2 text-2xl">第１課　できました！</div>
+        <div>You completed Lesson {lessonNumber}</div>
+        <div className="mt-2 text-2xl">第 {lessonNumber} 課　できました！</div>
       </div>
       <div>
         <div>Congratulations!</div>

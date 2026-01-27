@@ -31,14 +31,16 @@ export default function RenshuuBPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/lesson/${lessonNumber}/renshuu_b`);
+        const response = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}/renshuu_b`,
+        );
         // console.log(response.data);
         if (response.data && response.data.length > 0) {
-            setFinalQuestion(response.data.length);
-            setFinalOption(response.data[0].questions.length);
-            setParts(response.data);
+          setFinalQuestion(response.data.length);
+          setFinalOption(response.data[0].questions.length);
+          setParts(response.data);
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);

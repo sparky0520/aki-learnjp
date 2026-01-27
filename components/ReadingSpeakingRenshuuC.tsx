@@ -1,9 +1,16 @@
-"use client";
+import React from "react";
+import Image from "./Image";
 
-import AudioBar from "./AudioBar";
-import ImageComponent from "./Image";
+// Assuming data structure based on usage in original code
+interface RenshuuCData {
+  img?: string;
+  rei?: string[];
+  questionImg?: string;
+  part?: number;
+  correctAnswers?: string | string[];
+}
 
-function ReadingSpeakingRenshuuC({ data }: { data: any }) {
+function ReadingSpeakingRenshuuC({ data }: { data: RenshuuCData }) {
   if (!data) return <div>Loading...</div>;
 
   return (
@@ -18,10 +25,10 @@ function ReadingSpeakingRenshuuC({ data }: { data: any }) {
             </ruby>
             {" → "}
           </div>
-          <div className="h-50 overflow-y-auto custom-scroll">
+          <div className="h-50 overflow-y-auto custom-scroll pr-2">
             {/* Map over content array properly */}
             {data.rei &&
-              data.rei.map((item: string, index: number) => (
+              data.rei.map((item, index) => (
                 <div
                   key={index}
                   dangerouslySetInnerHTML={{ __html: item }}
@@ -31,18 +38,23 @@ function ReadingSpeakingRenshuuC({ data }: { data: any }) {
           </div>
         </div>
         {/* Rei Image */}
-        {data.img && <ImageComponent src={data.img} />}
+        {data.img && <Image src={data.img} className="max-w-[300px]" />}
       </div>
       <div className="flex flex-col items-center text-lg">
-        <span className="font-extrabold opacity-90">{data.part}.</span>
+        <span
+          className="font-extrabold opacity-90 mb-2"
+          dangerouslySetInnerHTML={{
+            __html: `${data.part}. ${Array.isArray(data.correctAnswers) ? data.correctAnswers.join("・") : data.correctAnswers || ""}`,
+          }}
+        ></span>
         {/* Question Image */}
-        {data.questionImg && <ImageComponent src={data.questionImg} />}
+        {data.questionImg && (
+          <Image src={data.questionImg} className="max-w-[300px]" />
+        )}
       </div>
 
       {/* Input */}
-      <div className="my-4">
-         <AudioBar />
-      </div>
+      <div className="my-4">{/* <AudioBar /> */}</div>
     </div>
   );
 }

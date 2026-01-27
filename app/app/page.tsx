@@ -25,7 +25,7 @@ export default function DashboardPage() {
       try {
         const response = await axios.get(`${apiUrl}/home`);
         setContent(response.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);
@@ -43,7 +43,7 @@ export default function DashboardPage() {
           `${apiUrl}/progress/${currentUser.id}/completed-lessons`,
         );
         setCompletedLessons(response.data.completed_lessons);
-      } catch (err: any) {
+      } catch (err) {
         // console.error("Error fetching completed lessons:", err.message);
       }
     };

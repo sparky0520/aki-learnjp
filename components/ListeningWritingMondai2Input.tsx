@@ -1,82 +1,79 @@
-"use client";
-
 import { useState } from "react";
 import { useAnswers } from "../contexts/AnswersContext";
-import ImageComponent from "./Image";
-
-interface ListeningWritingMondai2InputProps {
-  part: number;
-  option1Image: string;
-  option2Image: string;
-  option3Image: string;
-}
+import Image from "./Image";
 
 function ListeningWritingMondai2Input({
   part,
   option1Image,
   option2Image,
   option3Image,
-}: ListeningWritingMondai2InputProps) {
-  const { setAnswers } = useAnswers();
+}: {
+  part: number;
+  option1Image: string;
+  option2Image: string;
+  option3Image: string;
+}) {
+  const { setAnswer } = useAnswers();
   const [chosen, setChosen] = useState<string | null>(null);
-
-  const handleSelect = (choice: string, image: string) => {
-      setChosen(choice);
-      setAnswers((prev: any) => ({
-          ...prev,
-          [part]: image
-      }));
-  }
 
   return (
     <div className="flex gap-5">
       {/* Option 1 */}
       <div
         className="flex flex-col items-center gap-2 cursor-pointer"
-        onClick={() => handleSelect("1", option1Image)}
+        onClick={() => {
+          setChosen("1");
+          setAnswer(part, option1Image);
+        }}
       >
         <div
-          className={`p-px rounded-full ${chosen === "1" ? "border-2" : ""}`}
+          className={`p-px rounded-full ${chosen === "1" ? "border-2 border-black" : ""}`}
         >
           <div
-            className={`rounded-full border p-4 cursor-pointer select-none w-min relative opacity-90`}
+            className={`rounded-full border border-gray-400 p-4 cursor-pointer select-none w-min relative opacity-90 w-12 h-12 flex items-center justify-center`}
           >
-            <div className="absolute left-3 top-1.5">1</div>
+            <div className="text-xl font-bold">1</div>
           </div>
         </div>
-        <ImageComponent src={option1Image} className="max-w-2/3" alt="option 1" />
+        <Image src={option1Image} className="max-w-[200px]" alt="option 1" />
       </div>
       {/* Option 2 */}
       <div
         className="flex flex-col items-center gap-2 cursor-pointer"
-        onClick={() => handleSelect("2", option2Image)}
+        onClick={() => {
+          setChosen("2");
+          setAnswer(part, option2Image);
+        }}
       >
         <div
-          className={`p-px rounded-full ${chosen === "2" ? "border-2" : ""}`}
+          className={`p-px rounded-full ${chosen === "2" ? "border-2 border-black" : ""}`}
         >
           <div
-            className={`rounded-full border p-4 cursor-pointer select-none w-min relative opacity-90`}
+            className={`rounded-full border border-gray-400 p-4 cursor-pointer select-none w-min relative opacity-90 w-12 h-12 flex items-center justify-center`}
           >
-            <div className="absolute left-3 top-1.5">2</div>
+            <div className="text-xl font-bold">2</div>
           </div>
         </div>
-        <ImageComponent src={option2Image} className="max-w-2/3" alt="option 2" />
+        <Image src={option2Image} className="max-w-[200px]" alt="option 2" />
       </div>
       {/* Option 3 */}
       <div
         className="flex flex-col items-center gap-2 cursor-pointer"
-        onClick={() => handleSelect("3", option3Image)}
+        onClick={() => {
+          setChosen("3");
+          setAnswer(part, option3Image);
+        }}
       >
         <div
-          className={`p-px rounded-full ${chosen === "3" ? "border-2" : ""}`}
+          className={`p-px rounded-full ${chosen === "3" ? "border-2 border-black" : ""}`}
         >
           <div
-            className={`rounded-full border p-4 cursor-pointer select-none w-min relative opacity-90`}
+            className={`rounded-full border border-gray-400 p-4 cursor-pointer select-none w-min relative opacity-90 w-12 h-12 flex items-center justify-center`}
           >
-            <div className="absolute left-3 top-1.5">3</div>
+            <div className="text-xl font-bold">3</div>
           </div>
         </div>
-        <ImageComponent src={option3Image} className="max-w-2/3" alt="option 3" />
+        <Image src={option3Image} className="max-w-[200px]" alt="option 3" />
       </div>
     </div>
   );

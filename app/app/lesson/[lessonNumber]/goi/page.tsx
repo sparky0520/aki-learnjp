@@ -21,9 +21,11 @@ export default function GoiPage() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}/lesson/${lessonNumber}/goi`);
+        const response = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}/goi`,
+        );
         setContent(response.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);
@@ -57,14 +59,14 @@ export default function GoiPage() {
             <div
               className={getClassName(
                 id,
-                "flex justify-between highlightable border-0 border-b-gray-300 border-b p-2"
+                "flex justify-between highlightable border-0 border-b-gray-300 border-b p-2",
               )}
               key={id}
               id={id}
               onClick={() => toggleHighlight(id)}
             >
               <div className="w-1/3">{value.jp}</div>
-              <div className="w-1/3 text-pencil-gray">{value.kanji}</div> 
+              <div className="w-1/3 text-pencil-gray">{value.kanji}</div>
               <div className="w-1/3">{value.english}</div>
             </div>
           );

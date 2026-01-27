@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         const signupData = await signupResponse.json();
         setCurrentUser(signupData.user);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error syncing user:", err);
         setError(err.message);
       } finally {

@@ -17,9 +17,7 @@ export default async function AppLayout({
       <html lang="en">
         <body className="antialiased">
           <Providers>
-            <AppLayoutContent userId={userId || ""}>
-              {children}
-            </AppLayoutContent>
+            <AppLayoutContent userId={userId}>{children}</AppLayoutContent>
             <AIGeneratedPageModal />
           </Providers>
         </body>

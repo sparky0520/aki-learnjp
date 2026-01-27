@@ -20,9 +20,11 @@ export default function ReibunPage() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}/lesson/${lessonNumber}/reibun`);
+        const response = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}/reibun`,
+        );
         setContent(response.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);
@@ -58,7 +60,7 @@ export default function ReibunPage() {
               <div
                 className={getClassName(
                   id,
-                  "flex gap-4 highlightable p-2 border-0 text-start"
+                  "flex gap-4 highlightable p-2 border-0 text-start",
                 )}
                 key={id}
                 id={id}

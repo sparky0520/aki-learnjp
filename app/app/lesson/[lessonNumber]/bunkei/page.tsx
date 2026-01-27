@@ -21,10 +21,10 @@ export default function BunkeiPage() {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `${apiUrl}/lesson/${lessonNumber}/bunkei`
+          `${apiUrl}/lesson/${lessonNumber}/bunkei`,
         );
         setContent(response.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);
@@ -58,7 +58,7 @@ export default function BunkeiPage() {
               <div
                 className={getClassName(
                   id,
-                  "flex gap-2 items-center highlightable border-0"
+                  "flex gap-2 items-center highlightable border-0",
                 )}
                 key={id}
                 id={id}

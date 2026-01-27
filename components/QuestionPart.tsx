@@ -1,9 +1,21 @@
 import React from "react";
-import ImageComponent from "./Image";
+import Image from "./Image";
 
-function QuestionPart({ questionNumber, questionContent, answered, correct }: any) {
+function QuestionPart({
+  questionNumber,
+  questionContent,
+  answered,
+  correct,
+}: {
+  questionNumber: number;
+  questionContent: any;
+  answered: string;
+  correct: string;
+}) {
   const isValidUrl = (string: string) => {
     try {
+      // Check if it's a URL or a path that starts with /
+      if (string.startsWith("/")) return true;
       new URL(string);
       return true;
     } catch (err) {
@@ -17,7 +29,7 @@ function QuestionPart({ questionNumber, questionContent, answered, correct }: an
         <div>{questionNumber}.</div>
         {Array.isArray(questionContent) ? (
           questionContent.map((e, i) => (
-            <ImageComponent src={e} key={i} className="w-1/4" />
+            <Image src={e} key={i} className="w-1/4" />
           ))
         ) : (
           <div
@@ -29,7 +41,7 @@ function QuestionPart({ questionNumber, questionContent, answered, correct }: an
       <div className="flex gap-2 text-red-400 items-center">
         <div>×</div>
         {isValidUrl(answered) ? (
-          <ImageComponent src={answered} className="w-1/4" />
+          <Image src={answered} className="w-1/4" />
         ) : (
           <div>{answered}</div>
         )}
@@ -37,7 +49,7 @@ function QuestionPart({ questionNumber, questionContent, answered, correct }: an
       <div className="flex gap-2 text-green-400 items-center">
         <div>✓</div>
         {isValidUrl(correct) ? (
-          <ImageComponent src={correct} className="w-1/4" />
+          <Image src={correct} className="w-1/4" />
         ) : (
           <div dangerouslySetInnerHTML={{ __html: correct }} />
         )}

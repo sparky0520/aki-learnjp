@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ListeningWritingMondai1 from "../../../../../components/ListeningWritingMondai1";
-import ListeningWritingMondai2 from "../../../../../components/ListeningWritingMondai2";
-import ListeningWritingMondai3 from "../../../../../components/ListeningWritingMondai3";
-import ListeningWritingMondai456 from "../../../../../components/ListeningWritingMondai456";
-import ExerciseEndResult from "../../../../../components/ExerciseEndResult";
-import BottomBar from "../../../../../components/BottomBar";
+import ListeningWritingMondai1 from "@/components/ListeningWritingMondai1";
+import ListeningWritingMondai2 from "@/components/ListeningWritingMondai2";
+import ListeningWritingMondai3 from "@/components/ListeningWritingMondai3";
+import ListeningWritingMondai456 from "@/components/ListeningWritingMondai456";
+import ExerciseEndResult from "@/components/ExerciseEndResult";
+import BottomBar from "@/components/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import { useAnswers } from "../../../../../contexts/AnswersContext";
-import { useProgressUpdater } from "../../../../../contexts/ProgressContext";
+import { useAnswers } from "@/contexts/AnswersContext";
+import { useProgressUpdater } from "@/contexts/ProgressContext";
 
 const apiUrl = "/api";
 
@@ -21,7 +21,7 @@ export default function MondaiPage() {
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
   const router = useRouter();
-  const [parts, setParts] = useState<any[]>([]);
+  const [parts, setParts] = useState([]);
   const [index, setIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,9 +32,11 @@ export default function MondaiPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/lesson/${lessonNumber}/mondai`);
+        const response = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}/mondai`,
+        );
         setParts(response.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);

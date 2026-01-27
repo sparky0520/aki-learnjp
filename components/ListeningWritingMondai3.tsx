@@ -1,11 +1,14 @@
-"use client";
-
 import { useState } from "react";
 import PlaybackBar from "./PlaybackBar";
 import { useAnswers } from "../contexts/AnswersContext";
 
-function ListeningWritingMondai3({ data }: { data: any }) {
-  const { setAnswers } = useAnswers();
+interface Mondai3Data {
+  audio_url: string;
+  text_content: string;
+}
+
+function ListeningWritingMondai3({ data }: { data: Mondai3Data }) {
+  const { setAnswer } = useAnswers();
   const [one, setOne] = useState("　");
   const [two, setTwo] = useState("　");
   const [three, setThree] = useState("　");
@@ -16,33 +19,39 @@ function ListeningWritingMondai3({ data }: { data: any }) {
 
   const audio = data.audio_url || "";
 
-  const updateAnswer = (part: number, val: string) => {
-      setAnswers((prev: any) => ({
-          ...prev,
-          [part]: val
-      }));
-  }
-
-  const handleClick = (e: any) => {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const id = (e.currentTarget as HTMLDivElement).id;
     let ans = "○";
-    // Logic: if blank or X -> O, else X
-    
-    // Helper
-    const toggle = (current: string) => current === "　" || current === "×" ? "○" : "×";
-
-    const id = e.target.id;
-    if (id === "1") {
-        const newVal = toggle(one);
-        setOne(newVal);
-        updateAnswer(1, newVal);
-    } else if (id === "2") {
-        const newVal = toggle(two);
-        setTwo(newVal);
-        updateAnswer(2, newVal);
-    } else if (id === "3") {
-        const newVal = toggle(three);
-        setThree(newVal);
-        updateAnswer(3, newVal);
+    switch (id) {
+      case "1":
+        if (one === "　" || one === "×") {
+          ans = "○";
+        } else {
+          ans = "×";
+        }
+        setOne(ans);
+        setAnswer(1, ans);
+        break;
+      case "2":
+        if (two === "　" || two === "×") {
+          ans = "○";
+        } else {
+          ans = "×";
+        }
+        setTwo(ans);
+        setAnswer(2, ans);
+        break;
+      case "3":
+        if (three === "　" || three === "×") {
+          ans = "○";
+        } else {
+          ans = "×";
+        }
+        setThree(ans);
+        setAnswer(3, ans);
+        break;
+      default:
+        break;
     }
   };
 
@@ -66,21 +75,21 @@ function ListeningWritingMondai3({ data }: { data: any }) {
       <div className="flex gap-5 mt-4">
         <div
           id="1"
-          className="select-none text-2xl font-extrabold opacity-90 p-2 cursor-pointer"
+          className="select-none text-2xl font-extrabold opacity-90 p-4 border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
           onClick={handleClick}
         >
           １）（{one}）
         </div>
         <div
           id="2"
-          className="select-none text-2xl font-extrabold opacity-90 p-2 cursor-pointer"
+          className="select-none text-2xl font-extrabold opacity-90 p-4 border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
           onClick={handleClick}
         >
           ２）（{two}）
         </div>
         <div
           id="3"
-          className="select-none text-2xl font-extrabold opacity-90 p-2 cursor-pointer"
+          className="select-none text-2xl font-extrabold opacity-90 p-4 border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
           onClick={handleClick}
         >
           ３）（{three}）

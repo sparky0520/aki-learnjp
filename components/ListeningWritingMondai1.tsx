@@ -1,26 +1,27 @@
-"use client";
-
+import React from "react";
 import PlaybackBar from "./PlaybackBar";
 import TextInput from "./TextInput";
 import { useAnswers } from "../contexts/AnswersContext";
 
-function ListeningWritingMondai1({ data }: { data: any }) {
-  const { setAnswers } = useAnswers();
+interface Mondai1Data {
+  audio_url: string;
+  text_content: string;
+  rei: string;
+}
+
+function ListeningWritingMondai1({ data }: { data: Mondai1Data }) {
+  const { setAnswer } = useAnswers();
 
   // Currying the function
-  const handleTextChange = (partNo: any) => (e: any) => {
-    const val = e.target.value;
-    setAnswers((prev: any) => ({
-        ...prev,
-        [partNo]: val
-    }));
-  };
+  const handleTextChange =
+    (partNo: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setAnswer(partNo, e.target.value);
+    };
 
   if (!data) {
     return <div>Loading...</div>;
   }
 
-  // Map data keys if needed
   const content = {
     ...data,
   };
@@ -45,7 +46,7 @@ function ListeningWritingMondai1({ data }: { data: any }) {
           <span className="font-extrabold opacity-90">{i + 1}.</span>
           <TextInput
             partNo={i + 1}
-            handleTextChange={handleTextChange(i + 1)} 
+            handleTextChange={handleTextChange(i + 1)} // only partNo passed here - event passed from TextInput
           />
         </div>
       ))}

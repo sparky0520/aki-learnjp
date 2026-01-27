@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ReadingSpeakingRenshuuC from "../../../../../components/ReadingSpeakingRenshuuC";
-import BottomBar from "../../../../../components/BottomBar";
+import ReadingSpeakingRenshuuC from "@/components/ReadingSpeakingRenshuuC";
+import BottomBar from "@/components/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import { useProgressUpdater } from "../../../../../contexts/ProgressContext";
+import { useProgressUpdater } from "@/contexts/ProgressContext";
 
 const apiUrl = "/api";
 
@@ -22,9 +22,11 @@ export default function RenshuuCPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/lesson/${lessonNumber}/renshuu_c`);
+        const response = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}/renshuu_c`,
+        );
         setParts(response.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);

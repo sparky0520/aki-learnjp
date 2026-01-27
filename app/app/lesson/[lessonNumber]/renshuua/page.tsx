@@ -18,9 +18,11 @@ export default function RenshuuAPage() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}/lesson/${lessonNumber}/renshuu_a`);
+        const response = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}/renshuu_a`,
+        );
         setContent(response.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);
@@ -69,7 +71,9 @@ export default function RenshuuAPage() {
                         ? "border border-dashed rounded-lg p-2 bg-[#fff9db]"
                         : "p-2"
                     }
-                    dangerouslySetInnerHTML={{ __html: Array.isArray(e) ? e.join("<br/>") : e }}
+                    dangerouslySetInnerHTML={{
+                      __html: Array.isArray(e) ? e.join("<br/>") : e,
+                    }}
                   />
                 ))}
               </div>

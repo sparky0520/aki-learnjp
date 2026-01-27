@@ -23,7 +23,10 @@ export default function CourseChartPage() {
 
   // Helper to update last accessed
   const handleUpdateLastAccessed = (cNum: string, lNum: string) => {
-      setLastAccessed({ courseNumber: parseInt(cNum), lessonNumber: parseInt(lNum) });
+    setLastAccessed({
+      courseNumber: parseInt(cNum),
+      lessonNumber: parseInt(lNum),
+    });
   };
 
   useEffect(() => {
@@ -31,7 +34,7 @@ export default function CourseChartPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `${apiUrl}/courses/${courseNumber}/lesson/${userId}`
+          `${apiUrl}/courses/${courseNumber}/lesson/${userId}`,
         );
 
         if (!response.ok) {
@@ -40,7 +43,7 @@ export default function CourseChartPage() {
 
         const data = await response.json();
         setLessons(data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error fetching lessons:", err);
         setError(err.message);
       } finally {
@@ -77,10 +80,14 @@ export default function CourseChartPage() {
   return (
     <div className="text-lg h-screen flex flex-col">
       {/* Heading */}
-       <div className="mb-4">
-          <Shuuryou lessonNo={1} />
-       </div>
-      <div className="bold-text text-center"><ruby>目次<rt>もくじ</rt></ruby></div>
+      <div className="mb-4">
+        <Shuuryou lessonNo={1} />
+      </div>
+      <div className="bold-text text-center">
+        <ruby>
+          目次<rt>もくじ</rt>
+        </ruby>
+      </div>
 
       {/* Body element map */}
       <div className="flex flex-col gap-10 items-center mt-10">
@@ -104,21 +111,32 @@ export default function CourseChartPage() {
                 <div>
                   {lesson.status === "Continue" ? (
                     <button className="btn text-base">
-                      <Link 
-                        href={`/lesson/${lesson.lessonNo}`} 
-                        onClick={() => handleUpdateLastAccessed(courseNumber, lesson.lessonNo)}
+                      <Link
+                        href={`/lesson/${lesson.lessonNo}`}
+                        onClick={() =>
+                          handleUpdateLastAccessed(
+                            courseNumber,
+                            lesson.lessonNo,
+                          )
+                        }
                       >
                         {lesson.status}
                       </Link>
                     </button>
                   ) : (
                     <div
-                      className={`hover:underline text-base ${lesson.status === "Completed" ? "text-blue-400" : ""
-                        }`}
+                      className={`hover:underline text-base ${
+                        lesson.status === "Completed" ? "text-blue-400" : ""
+                      }`}
                     >
-                      <Link 
-                        href={`/lesson/${lesson.lessonNo}`} 
-                        onClick={() => handleUpdateLastAccessed(courseNumber, lesson.lessonNo)}
+                      <Link
+                        href={`/lesson/${lesson.lessonNo}`}
+                        onClick={() =>
+                          handleUpdateLastAccessed(
+                            courseNumber,
+                            lesson.lessonNo,
+                          )
+                        }
                       >
                         {lesson.status}
                       </Link>

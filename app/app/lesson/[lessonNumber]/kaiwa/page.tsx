@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ReadingListeningSpeakingKaiwa from "../../../../../components/ReadingListeningSpeakingKaiwa";
-import Shuuryou from "../../../../../components/Shuuryou";
-import BottomBar from "../../../../../components/BottomBar";
-import LessonEnd from "../../../../../components/LessonEnd"; // Need to port LessonEnd
+import ReadingListeningSpeakingKaiwa from "@/components/ReadingListeningSpeakingKaiwa";
+import Shuuryou from "@/components/Shuuryou";
+import BottomBar from "@/components/BottomBar";
+import LessonEnd from "@/components/LessonEnd";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import { useProgressUpdater } from "../../../../../contexts/ProgressContext";
+import { useProgressUpdater } from "@/contexts/ProgressContext";
 
 const apiUrl = "/api";
 
@@ -24,9 +24,11 @@ export default function KaiwaPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/lesson/${lessonNumber}/kaiwa`);
+        const response = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}/kaiwa`,
+        );
         setData(response.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);
@@ -57,7 +59,7 @@ export default function KaiwaPage() {
     <div className="flex flex-col justify-between h-full">
       {/* shuuryou */}
       <div className="mb-4">
-          <Shuuryou lessonNo={parseInt(lessonNumber)} />
+        <Shuuryou lessonNo={parseInt(lessonNumber)} />
       </div>
       {lessonCompleted === 1 ? (
         <LessonEnd />
@@ -67,7 +69,11 @@ export default function KaiwaPage() {
         </>
       )}
       {/* Bottom bar - mae tsugi */}
-      <BottomBar handleNext={handleNext} handlePrev={handlePrev} nextFlag={true} />
+      <BottomBar
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+        nextFlag={true}
+      />
     </div>
   );
 }

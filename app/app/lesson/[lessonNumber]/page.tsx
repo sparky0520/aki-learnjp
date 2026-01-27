@@ -10,13 +10,17 @@ import { useParams } from "next/navigation";
 // Constants
 const apiUrl = "/api";
 
-export default function LessonPage({ params }: { params: { lessonNumber: string } }) {
-  // In Next.js App Router, params are passed as prop to page. 
-  // But we need to unwrap it or use useParams (client component). 
+export default function LessonPage({
+  params,
+}: {
+  params: { lessonNumber: string };
+}) {
+  // In Next.js App Router, params are passed as prop to page.
+  // But we need to unwrap it or use useParams (client component).
   // Since "use client", useParams works. Or props.
   // Using unwrapped params from props usually requires async component in latest generic canary, but standard is fine.
   // Using useParams hook for consistency.
-  const paramsHook = useParams(); 
+  const paramsHook = useParams();
   const lessonNumber = paramsHook?.lessonNumber as string;
 
   const [content, setContent] = useState<any>(null);
@@ -27,7 +31,7 @@ export default function LessonPage({ params }: { params: { lessonNumber: string 
       try {
         const response = await axios.get(`${apiUrl}/lesson/${lessonNumber}`);
         setContent(response.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error:", err.message);
       } finally {
         setIsLoading(false);

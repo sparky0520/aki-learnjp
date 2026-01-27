@@ -1,9 +1,14 @@
-"use client";
-
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 
-function PlaybackBar({ audio }: { audio?: string }) {
+// Ensure these assets exist in public/assets/ or similar
+// Creating a helper to handle asset paths might be good if they differ
+const playIcon = "/assets/play.svg";
+const pauseIcon = "/assets/pause.svg";
+const replayIcon = "/assets/replay_5.svg";
+const forwardIcon = "/assets/forward_5.svg";
+
+function PlaybackBar({ audio }: { audio: string }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(31);
@@ -11,8 +16,7 @@ function PlaybackBar({ audio }: { audio?: string }) {
 
   useEffect(() => {
     // Create audio element
-    const audioUrl = audio || "/audio1.mp3"; // Adjust fallback if needed
-    const audioElement = new Audio(audioUrl);
+    const audioElement = new Audio(audio || "/audio1.mp3");
     audioRef.current = audioElement;
 
     // Set up event listeners
@@ -63,7 +67,7 @@ function PlaybackBar({ audio }: { audio?: string }) {
     if (audioRef.current) {
       audioRef.current.currentTime = Math.max(
         0,
-        audioRef.current.currentTime - 5
+        audioRef.current.currentTime - 5,
       );
     }
   };
@@ -72,7 +76,7 @@ function PlaybackBar({ audio }: { audio?: string }) {
     if (audioRef.current) {
       audioRef.current.currentTime = Math.min(
         audioRef.current.duration,
-        audioRef.current.currentTime + 5
+        audioRef.current.currentTime + 5,
       );
     }
   };
@@ -82,32 +86,30 @@ function PlaybackBar({ audio }: { audio?: string }) {
       {/* Controls */}
       <div className="flex items-center gap-5">
         <div onClick={handleRewind} className="cursor-pointer">
-          <Image src="/assets/replay_5.svg" alt="Rewind" width={25} height={25} />
+          <Image src={replayIcon} alt="Rewind" width={25} height={25} />
         </div>
         <div onClick={handlePlayToggle} className="cursor-pointer">
-          <Image 
-            src={isPlaying ? "/assets/pause.svg" : "/assets/play.svg"} 
-            alt="Play" 
-            width={50} height={50} 
+          <Image
+            src={isPlaying ? pauseIcon : playIcon}
+            alt="Play"
+            width={50}
+            height={50}
           />
         </div>
         <div onClick={handleForward} className="cursor-pointer">
-          <Image src="/assets/forward_5.svg" alt="Skip" width={25} height={25} />
+          <Image src={forwardIcon} alt="Skip" width={25} height={25} />
         </div>
       </div>
       {/* Progress bar */}
       <div className="flex items-center gap-2">
-        <div className="w-9 text-xs">0:{time < 10 ? "0" + time : time}</div>
-        <div className="w-75 border h-2 bg-white rounded-full relative">
-           {/* Static width 75 units approx 300px? Tailwind w-75 not standard, using custom style or width */}
-          <div className="w-[300px] bg-gray-200 h-full rounded-full overflow-hidden relative">
-              <div
-                style={{ width: `${(time / (duration || 1)) * 100}%` }}
-                className="bg-black h-full opacity-50"
-              ></div>
-          </div>
+        <div className="w-9">0:{time < 10 ? "0" + time : time}</div>
+        <div className="w-75 border">
+          <div
+            style={{ width: duration > 0 ? (time / duration) * 75 * 4 : 0 }}
+            className="border"
+          ></div>
         </div>
-        <div className="text-xs">0:{duration}</div>
+        <div>0:{duration}</div>
       </div>
     </div>
   );

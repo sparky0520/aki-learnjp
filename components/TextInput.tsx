@@ -1,8 +1,12 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 
-function TextInput({ partNo, handleTextChange }: { partNo: any, handleTextChange: (e: any) => void }) {
+function TextInput({
+  partNo,
+  handleTextChange,
+}: {
+  partNo: number;
+  handleTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
   const [input, setInput] = useState("");
 
   useEffect(() => {
