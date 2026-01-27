@@ -42,7 +42,7 @@ export default function KaiwaPage() {
     if (lessonCompleted === 1) {
       await updateLessonProgress(lessonNumber, "kaiwa");
       await updateCourseProgress(1, 1);
-      router.push("/app"); // Redirect to Dashboard instead of "/" which is landing
+      router.push("/dashboard"); // Redirect to Dashboard instead of "/" which is landing
       return;
     }
     setLessonCompleted((prev) => ++prev);

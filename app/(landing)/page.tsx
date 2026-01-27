@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export default async function Home() {
   const { userId } = await auth();
   if (userId) {
-    redirect("/app");
+    redirect("/dashboard");
   }
   return (
     <div className="flex flex-col min-h-screen overflow-hidden relative">
@@ -49,7 +49,7 @@ export default async function Home() {
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-8">
               <Link
-                href="/app" /* Changed to dashboard for App entry */
+                href="/dashboard" /* Changed to dashboard for App entry */
                 className="group relative inline-block focus:outline-none focus:ring"
               >
                 <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-black transition-transform group-hover:translate-y-0 group-hover:translate-x-0"></span>
@@ -114,7 +114,7 @@ export default async function Home() {
                   <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
                     <img
                       alt="App screenshot"
-                      src="/app_screenshot.png"
+                      src="/dashboard_screenshot.png"
                       className="w-full h-full aspect-video"
                     />
                   </span>

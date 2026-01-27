@@ -17,7 +17,7 @@ export default function HatsuonPage() {
   const handleNext = () => {
     // console.log("currentPage: " + currentPage);
     if (currentPage === 2) {
-      router.push("/app");
+      router.push("/dashboard");
     } else {
       setcurrentPage((prev) => ++prev);
     }

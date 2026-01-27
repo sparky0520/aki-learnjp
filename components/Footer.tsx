@@ -64,7 +64,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/app"
+                  href="/dashboard"
                   className="hover:underline decoration-1 underline-offset-4"
                 >
                   Sign In

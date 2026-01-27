@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useContext, useEffect } from "react";
-import Sidebar from "./Sidebar"; // Ensure component exists or update import
+import Sidebar from "./Sidebar";
 import { usePathname } from "next/navigation";
 import AskAkiContext from "../contexts/AkiContext";
 import AIGeneratedPageModal from "./AIGeneratedPageModal";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function AppLayoutContent({
   children,
@@ -18,12 +17,6 @@ export default function AppLayoutContent({
   const pathname = usePathname();
   const { askAki } = useContext(AskAkiContext);
   const [sidebarVisible, setSidebarVisible] = useState(true);
-
-  // currentUser prop for Sidebar?
-  // In App.jsx, currentUser was fetched via useAuth.
-  // Here we have userId from server, but Sidebar might need full user object.
-  // Sidebar likely fetches user or takes it as prop.
-  // For now, I'll pass userId.
 
   useEffect(() => {
     if (!userId) {
@@ -48,7 +41,6 @@ export default function AppLayoutContent({
           </div>
         ) : (
           <div className="mt-12 flex flex-col items-start">
-            {/* arrowMenuOpen was imported as string in Vite, need check in Next */}
             <Image
               src="/assets/arrow_menu_open.svg"
               alt="Open sidebar"
