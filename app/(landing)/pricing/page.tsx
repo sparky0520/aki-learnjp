@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import PaymentModal from "../../../components/PaymentModal";
+import PaymentModal from "@/components/ui/PaymentModal";
 
 type PlanDetails = {
   name: string;

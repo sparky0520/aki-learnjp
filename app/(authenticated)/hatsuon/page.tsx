@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Shuuryou from "../../../components/Shuuryou";
-import BottomBar from "../../../components/BottomBar";
-import Hiragana from "../../../components/Hiragana";
-import Katakana from "../../../components/Katakana";
-import Kanji from "../../../components/Kanji";
+import Shuuryou from "../../../components/lesson/shared/Shuuryou";
+import BottomBar from "../../../components/layout/BottomBar";
+import Hiragana from "../../../components/ui/Hiragana";
+import Katakana from "../../../components/ui/Katakana";
+import Kanji from "../../../components/ui/Kanji";
 
 const finalPage = 1;
 

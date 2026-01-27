@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import BottomBar from "../../../../components/BottomBar";
-import Shuuryou from "../../../../components/Shuuryou";
-import { useAuth } from "../../../../contexts/AuthContext";
-import { useLastAccessed } from "../../../../contexts/LastAccessedContext";
+import BottomBar from "../../../../components/layout/BottomBar";
+import Shuuryou from "../../../../components/lesson/shared/Shuuryou";
+import { useAuth } from "../../../../contexts/auth/AuthContext";
+import { useLastAccessed } from "../../../../contexts/lesson/LastAccessedContext";
 
 const apiUrl = "/api";
 

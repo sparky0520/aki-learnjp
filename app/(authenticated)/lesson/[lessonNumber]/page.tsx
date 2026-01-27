@@ -2,72 +2,74 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import Shuuryou from "@/components/Shuuryou";
+
+import { useState, useEffect } from "react";
+import axios from "axios";
+import BottomBar from "../../../../components/layout/BottomBar";
 
 function LessonPage() {
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
+  const [content, setContent] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/lesson/${lessonNumber}`);
+        setContent(response.data);
+      } catch (err) {
+        console.error("Error fetching lesson info:", err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (lessonNumber) {
+      fetchData();
+    }
+  }, [lessonNumber]);
+
+  if (isLoading) {
+    return <div className="p-8">Loading...</div>;
+  }
+
+  if (!content) {
+    return <div className="p-8">No lesson data available</div>;
+  }
 
   return (
-    <div className="flex flex-col gap-8 h-full">
-      <Shuuryou lessonNo={parseInt(lessonNumber)} />
-      <div className="grid grid-cols-2 gap-4 h-full">
-        {/* Reading */}
-        <div className="bg-[#fff9db] rounded-lg p-6 flex flex-col gap-4 overflow-y-auto custom-scroll">
-          <div className="text-xl font-bold border-b border-gray-400 pb-2">
-            読む (Reading)
-          </div>
-          <Link href={`/lesson/${lessonNumber}/goi`} className="btn bg-white">
-            語彙 (Vocabulary)
-          </Link>
-          <Link
-            href={`/lesson/${lessonNumber}/bunkei`}
-            className="btn bg-white"
-          >
-            文型 (Sentence Patterns)
-          </Link>
-          <Link
-            href={`/lesson/${lessonNumber}/reibun`}
-            className="btn bg-white"
-          >
-            例文 (Example Sentences)
-          </Link>
-          <Link
-            href={`/lesson/${lessonNumber}/renshuua`}
-            className="btn bg-white"
-          >
-            練習 A (Practice A)
-          </Link>
-          <Link
-            href={`/lesson/${lessonNumber}/renshuub`}
-            className="btn bg-white"
-          >
-            練習 B (Practice B)
-          </Link>
-          <Link
-            href={`/lesson/${lessonNumber}/renshuuc`}
-            className="btn bg-white"
-          >
-            練習 C (Practice C)
-          </Link>
-        </div>
+    <div className="flex flex-col justify-between h-full bg-paper-bg p-8">
+      <div className="flex flex-col gap-8 max-w-4xl">
+        {/* Heading
+        <div className="text-2xl font-bold text-gray-800">
+          Lesson {content.lessonNo}
+        </div> */}
 
-        {/* Listening / Others */}
-        <div className="bg-[#e6fcf5] rounded-lg p-6 flex flex-col gap-4 overflow-y-auto custom-scroll">
-          <div className="text-xl font-bold border-b border-gray-400 pb-2">
-            聞く・話す (Listening / Speaking)
-          </div>
+        {/* Lesson Topic */}
+        <div
+          className="text-3xl font-extrabold text-[#2c3e50] opacity-90"
+          dangerouslySetInnerHTML={{ __html: content.lessonTopic }}
+        ></div>
+
+        {/* Lesson description */}
+        <div
+          className="text-lg leading-relaxed text-gray-700"
+          dangerouslySetInnerHTML={{ __html: content.lessonDescription }}
+        ></div>
+
+        {/* Start link (matching original repo) */}
+        <div className="mt-4 text-lg">
+          Start with{" "}
           <Link
-            href={`/lesson/${lessonNumber}/mondai`}
-            className="btn bg-white"
+            className="text-blue-500 hover:underline font-semibold"
+            href={`/lesson/${lessonNumber}/goi`}
           >
-            問題 (Exercises)
-          </Link>
-          <Link href={`/lesson/${lessonNumber}/kaiwa`} className="btn bg-white">
-            会話 (Conversation)
+            Goi
           </Link>
         </div>
       </div>
+      <BottomBar />
     </div>
   );
 }

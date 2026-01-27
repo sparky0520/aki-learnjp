@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '../../../../lib/supabase';
+import { NextResponse } from "next/server";
+import { supabase } from "../../../../lib/supabase";
 
 export async function GET(
   request: Request,
-  { params }: { params: { lesson_number: string } }
+  { params }: { params: { lesson_number: string } },
 ) {
   try {
     // Await params to avoid Next.js warnings/errors in newer versions
@@ -11,30 +11,39 @@ export async function GET(
     const lessonNumber = parseInt(lessonNumberStr);
 
     if (isNaN(lessonNumber)) {
-        return NextResponse.json({ error: 'Invalid lesson number' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid lesson number" },
+        { status: 400 },
+      );
     }
 
     const { data: lesson, error } = await supabase
-      .from('lessons')
-      .select('*')
-      .eq('lesson_number', lessonNumber)
-      .single();
+      .from("lessons")
+      .select("id, lesson_number, title")
+      .eq("lesson_number", lessonNumber)
+      .maybeSingle();
 
-    if (error) {
-       // If no data found, it might return error code 'PGRST116' (JSON object requested, multiple (or no) rows returned)
-       if (error.code === 'PGRST116') {
-           return NextResponse.json({ error: 'Lesson not found' }, { status: 404 });
-       }
-       throw error;
+    if (error || !lesson) {
+      return NextResponse.json({ error: "Lesson not found" }, { status: 404 });
     }
+
+    const { data: aboutData } = await supabase
+      .from("about_lessons")
+      .select("content")
+      .eq("lesson_id", lesson.id)
+      .maybeSingle();
 
     return NextResponse.json({
       lessonNo: lesson.lesson_number,
       lessonTopic: lesson.title,
-      lessonDescription: "This lesson explores Japanese grammar and vocabulary.",
+      lessonDescription:
+        aboutData?.content ||
+        "This lesson explores Japanese grammar and vocabulary.",
     });
-
   } catch (error) {
-    return NextResponse.json({ error: `Error fetching lesson: ${error}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Error fetching lesson: ${error}` },
+      { status: 500 },
+    );
   }
 }
