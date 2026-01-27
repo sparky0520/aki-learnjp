@@ -54,7 +54,7 @@ export default function AppLayoutContent({
           </div>
         ))}
 
-      <div className="relative p-8 pr-0 pb-2 mb-4 w-full flex flex-col h-full overflow-hidden">
+      <div className="relative p-8 mb-4 w-full flex flex-col h-full overflow-hidden">
         <div className="flex-1 overflow-y-auto custom-scroll">{children}</div>
       </div>
       <AIGeneratedPageModal />
