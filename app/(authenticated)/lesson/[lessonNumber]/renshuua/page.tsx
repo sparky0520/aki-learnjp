@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Shuuryou from "@/components/Shuuryou";
-import { useLayout } from "@/contexts/LayoutContext";
+import BottomBar from "@/components/BottomBar";
 import axios from "axios";
 import { useParams } from "next/navigation";
 
@@ -14,16 +14,6 @@ function RenshuuAPage() {
   const lessonNumber = params?.lessonNumber as string;
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  // Move hooks to the top level of the component
-  const { setBottomBarState } = useLayout();
-
-  useEffect(() => {
-    setBottomBarState({
-      reading: true, // isVisible is handled internally by showBottomBar
-    });
-    return () => setBottomBarState({ reading: false });
-  }, [setBottomBarState]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,6 +80,7 @@ function RenshuuAPage() {
         </div>
       </div>
       {/* Bottom bar - mae tsugi */}
+      <BottomBar reading={true} />
     </div>
   );
 }

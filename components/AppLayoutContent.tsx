@@ -7,8 +7,6 @@ import AskAkiContext from "../contexts/AkiContext";
 import AIGeneratedPageModal from "./AIGeneratedPageModal";
 import Image from "next/image";
 import Link from "next/link";
-import BottomBar from "./BottomBar";
-import { useLayout } from "../contexts/LayoutContext";
 
 export default function AppLayoutContent({
   children,
@@ -66,26 +64,8 @@ export default function AppLayoutContent({
 
       <div className="relative p-8 pr-0 pb-2 mb-4 w-full flex flex-col h-full overflow-hidden">
         <div className="flex-1 overflow-y-auto custom-scroll">{children}</div>
-        <LayoutBottomBar />
       </div>
       <AIGeneratedPageModal />
     </div>
-  );
-}
-
-function LayoutBottomBar() {
-  const { bottomBarState } = useLayout();
-
-  if (!bottomBarState.isVisible) return null;
-
-  return (
-    <BottomBar
-      reading={bottomBarState.reading}
-      handleNext={bottomBarState.handleNext}
-      handlePrev={bottomBarState.handlePrev}
-      currentQuestion={bottomBarState.currentQuestion}
-      finalQuestion={bottomBarState.finalQuestion}
-      nextFlag={bottomBarState.nextFlag}
-    />
   );
 }

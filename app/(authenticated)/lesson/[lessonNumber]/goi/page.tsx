@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { useLayout } from "@/contexts/LayoutContext";
+import BottomBar from "@/components/BottomBar";
 import Shuuryou from "@/components/Shuuryou";
 import axios from "axios";
 import AskAkiContext from "@/contexts/AkiContext";
@@ -15,15 +15,6 @@ function GoiPage() {
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
-
-  const { setBottomBarState } = useLayout();
-
-  useEffect(() => {
-    setBottomBarState({
-      reading: true,
-    });
-    return () => setBottomBarState({ reading: false });
-  }, [setBottomBarState]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,6 +73,7 @@ function GoiPage() {
         </div>
       </div>
       {/* Bottom bar - mae tsugi */}
+      <BottomBar reading={true} />
     </div>
   );
 }

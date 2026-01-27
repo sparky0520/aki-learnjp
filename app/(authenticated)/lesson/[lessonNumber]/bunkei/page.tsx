@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react";
 import Shuuryou from "@/components/Shuuryou";
-import { useLayout } from "@/contexts/LayoutContext";
+import BottomBar from "@/components/BottomBar";
 import axios from "axios";
 import AskAkiContext from "@/contexts/AkiContext";
 import { useParams } from "next/navigation";
@@ -15,15 +15,6 @@ function BunkeiPage() {
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
-
-  const { bottomBarState, setBottomBarState } = useLayout();
-
-  useEffect(() => {
-    setBottomBarState({
-      reading: true,
-    });
-    return () => setBottomBarState({ reading: false });
-  }, [setBottomBarState]);
 
   useEffect(() => {
     console.log("LessonNumber: ", lessonNumber);
@@ -83,6 +74,7 @@ function BunkeiPage() {
           })}
         </div>
       </div>
+      <BottomBar reading={true} />
     </div>
   );
 }

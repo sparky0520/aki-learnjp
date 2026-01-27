@@ -6,18 +6,17 @@ import ListeningWritingMondai2 from "@/components/ListeningWritingMondai2";
 import ListeningWritingMondai3 from "@/components/ListeningWritingMondai3";
 import ListeningWritingMondai456 from "@/components/ListeningWritingMondai456";
 import ExerciseEndResult from "@/components/ExerciseEndResult";
-import { useLayout } from "@/contexts/LayoutContext";
+import { useProgressUpdater } from "@/contexts/ProgressContext";
+import BottomBar from "@/components/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useAnswers } from "@/contexts/AnswersContext";
-import { useProgressUpdater } from "@/contexts/ProgressContext";
 
 const apiUrl = "/api";
 
 export default function MondaiPage() {
   const { answers, setAnswers } = useAnswers();
   const { updateLessonProgress } = useProgressUpdater();
-  const { setBottomBarState } = useLayout();
 
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
@@ -84,33 +83,6 @@ export default function MondaiPage() {
     }
   }, [currentQuestion, index, finalOption]);
 
-  useEffect(() => {
-    if (!isLoading) {
-      setBottomBarState({
-        handleNext,
-        handlePrev,
-        finalQuestion,
-        currentQuestion,
-        nextFlag: false, // Calculate if needed
-      });
-    }
-    return () =>
-      setBottomBarState({
-        handleNext: undefined,
-        handlePrev: undefined,
-        finalQuestion: undefined,
-        currentQuestion: undefined,
-      });
-  }, [
-    currentQuestion,
-    index,
-    isLoading,
-    finalQuestion,
-    setBottomBarState,
-    handleNext,
-    handlePrev,
-  ]);
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -143,6 +115,14 @@ export default function MondaiPage() {
           answers={answers}
         />
       )}
+
+      <BottomBar
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+        finalQuestion={finalQuestion}
+        currentQuestion={currentQuestion}
+        nextFlag={false}
+      />
     </div>
   );
 }

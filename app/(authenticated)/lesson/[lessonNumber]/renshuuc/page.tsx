@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import ReadingSpeakingRenshuuC from "@/components/ReadingSpeakingRenshuuC";
 
-import { useLayout } from "@/contexts/LayoutContext";
+import BottomBar from "@/components/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useProgressUpdater } from "@/contexts/ProgressContext";
@@ -18,7 +18,6 @@ export default function RenshuuCPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [index, setIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const { setBottomBarState } = useLayout();
 
   const finalQuestion = parts.length;
   const finalOption = 1; // Assuming based on previous code
@@ -52,33 +51,6 @@ export default function RenshuuCPage() {
       setIndex((prev) => --prev);
     }
   }, [currentQuestion, index, finalOption]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      setBottomBarState({
-        handleNext,
-        handlePrev,
-        finalQuestion,
-        currentQuestion,
-        nextFlag: false,
-      });
-    }
-    return () =>
-      setBottomBarState({
-        handleNext: undefined,
-        handlePrev: undefined,
-        finalQuestion: undefined,
-        currentQuestion: undefined,
-      });
-  }, [
-    currentQuestion,
-    index,
-    isLoading,
-    finalQuestion,
-    setBottomBarState,
-    handleNext,
-    handlePrev,
-  ]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,6 +93,13 @@ export default function RenshuuCPage() {
           questionImg: parts[currentQuestion]?.question_image_urls?.[index],
           part: index + 1,
         }}
+      />
+      <BottomBar
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+        finalQuestion={finalQuestion}
+        currentQuestion={currentQuestion}
+        nextFlag={false}
       />
     </div>
   );

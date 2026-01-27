@@ -5,7 +5,6 @@ import { AnswersProvider } from "../contexts/AnswersContext";
 import { LastAccessedProvider } from "../contexts/LastAccessedContext";
 import { AuthProvider } from "../contexts/AuthContext";
 
-import { LayoutProvider } from "../contexts/LayoutContext";
 import { ProgressProvider } from "../contexts/ProgressContext";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
@@ -14,9 +13,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <AskAkiProvider>
         <AnswersProvider>
           <LastAccessedProvider>
-            <ProgressProvider>
-              <LayoutProvider>{children}</LayoutProvider>
-            </ProgressProvider>
+            <ProgressProvider>{children}</ProgressProvider>
           </LastAccessedProvider>
         </AnswersProvider>
       </AskAkiProvider>

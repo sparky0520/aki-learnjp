@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import ReadingListeningSpeakingKaiwa from "@/components/ReadingListeningSpeakingKaiwa";
 import Shuuryou from "@/components/Shuuryou";
-import { useLayout } from "@/contexts/LayoutContext";
+import BottomBar from "@/components/BottomBar";
 import LessonEnd from "@/components/LessonEnd";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
@@ -13,7 +13,6 @@ const apiUrl = "/api";
 
 export default function KaiwaPage() {
   const { updateLessonProgress, updateCourseProgress } = useProgressUpdater();
-  const { setBottomBarState } = useLayout();
 
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
@@ -60,22 +59,6 @@ export default function KaiwaPage() {
     setLessonCompleted((prev) => --prev);
   }, [lessonCompleted]);
 
-  useEffect(() => {
-    if (!isLoading) {
-      setBottomBarState({
-        handleNext,
-        handlePrev,
-        nextFlag: true,
-      });
-    }
-    return () =>
-      setBottomBarState({
-        nextFlag: false,
-        handleNext: undefined,
-        handlePrev: undefined,
-      });
-  }, [lessonCompleted, isLoading, handleNext, handlePrev, setBottomBarState]);
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -91,6 +74,11 @@ export default function KaiwaPage() {
           <ReadingListeningSpeakingKaiwa data={data} />
         </>
       )}
+      <BottomBar
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+        nextFlag={true}
+      />
     </div>
   );
 }

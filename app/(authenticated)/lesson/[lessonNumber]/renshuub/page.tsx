@@ -7,14 +7,13 @@ import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useAnswers } from "@/contexts/AnswersContext";
 import { useProgressUpdater } from "@/contexts/ProgressContext";
-import { useLayout } from "@/contexts/LayoutContext";
+import BottomBar from "@/components/BottomBar";
 
 const apiUrl = "/api";
 
 function RenshuuBPage() {
   const { answers, setAnswers } = useAnswers();
   const { updateLessonProgress } = useProgressUpdater();
-  const { setBottomBarState } = useLayout();
 
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
@@ -91,32 +90,6 @@ function RenshuuBPage() {
     }
   };
 
-  useEffect(() => {
-    if (!isLoading) {
-      setBottomBarState({
-        handleNext,
-        handlePrev,
-        finalQuestion: finalOption,
-        currentQuestion: index,
-        nextFlag: false,
-      });
-    }
-    return () =>
-      setBottomBarState({
-        handleNext: undefined,
-        handlePrev: undefined,
-        finalQuestion: undefined,
-        currentQuestion: undefined,
-      });
-  }, [
-    index,
-    finalOption,
-    isLoading,
-    currentQuestion,
-    finalQuestion,
-    setBottomBarState,
-  ]);
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -151,6 +124,13 @@ function RenshuuBPage() {
           )
         ) : null}
       </div>
+      <BottomBar
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+        finalQuestion={finalOption}
+        currentQuestion={index}
+        nextFlag={false}
+      />
     </div>
   );
 }
