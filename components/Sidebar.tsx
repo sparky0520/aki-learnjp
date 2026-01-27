@@ -4,46 +4,43 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-// import UserProfileIcon from "./UserProfileIcon"; // Need to port this too
-import { useLastAccessed } from "../contexts/LastAccessedContext"; 
+import { UserButton } from "@clerk/nextjs";
+import { useLastAccessed } from "../contexts/LastAccessedContext";
+import { useAuth } from "../contexts/AuthContext";
 
 // Constants
-const apiUrl = "/api"; // Or relative /api
+const apiUrl = "/api";
 
-function Sidebar({ setSidebarVisible, currentUser }: { setSidebarVisible: (v: any) => void, currentUser: any }) {
+function Sidebar({
+  setSidebarVisible,
+}: {
+  setSidebarVisible: (v: any) => void;
+}) {
   const pathname = usePathname();
   const [progress, setProgress] = useState<any>(null);
-  
-  // Mock contexts if they are not yet ported
-  // const { lastAccessed } = useLastAccessed();
-  // Fallback for now to avoid crash
-  const lastAccessed = { lessonNumber: 1, courseNumber: 1 }; 
+  const { lastAccessed } = useLastAccessed();
+  const { currentUser } = useAuth();
 
-  const lessonNumber = lastAccessed.lessonNumber;
+  // Default to lesson 1 if not loaded yet
+  const lessonNumber = lastAccessed?.lessonNumber || 1;
 
   useEffect(() => {
     const fetchProgress = async () => {
       if (!currentUser?.id) return;
 
       try {
-        const res = await fetch(
-          `/api/progress/lesson`, // POST to check?? Logic in original was GET endpoint... 
-          // Note: My porting created POST endpoint for updates. I didn't create a GET endpoint for progress!
-          // Original: GET /progress/{userId}/lesson/{lessonNumber}
-          // I need to add GET endpoint or update logic.
-          // For now, let's just log or skip.
-         { 
-             method: 'POST', // Using POST to query if I adapted it? No, generic GET usually.
-             // I missed creating GET progress endpoint. I'll stick to skip for now.
-         }
-        );
-        // ...
-      } catch (error) {
-        console.error("Error fetching progress:", error);
+        // Placeholder for future progress checking
+        // const res = await fetch(`/api/progress/${currentUser.id}/lesson/${lessonNumber}`);
+        // if (res.ok) {
+        //   const data = await res.json();
+        //   setProgress(data);
+        // }
+      } catch {
+        // console.error("Error fetching progress:", error);
       }
     };
 
-    // fetchProgress();
+    fetchProgress();
   }, [currentUser, lessonNumber]);
 
   return (
@@ -51,22 +48,23 @@ function Sidebar({ setSidebarVisible, currentUser }: { setSidebarVisible: (v: an
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
           {/* Aki logo */}
-          <Link href="/" className="p-4 select-none">
+          <Link href="/" className="p-4 pl-0 select-none">
             <Image src="/aki_logo.png" alt="Logo" width={100} height={50} />
           </Link>
           {/* Close sidebar icon */}
           <Image
             src="/assets/arrow_menu_close.svg"
             alt="Close sidebar"
-            width={24} height={24}
-            className="opacity-90 cursor-pointer"
+            width={24}
+            height={24}
+            className="opacity-90 cursor-pointer hover:opacity-100 transition-opacity"
             onClick={() => {
               setSidebarVisible((prev: boolean) => !prev);
             }}
           />
         </div>
         <Link
-          href={`/course/${lastAccessed.courseNumber}`}
+          href={`/course/${lastAccessed?.courseNumber || 1}`}
           className={`${
             pathname.includes("/course")
               ? "underline decoration-gray-400 decoration-1 underline-offset-8"
@@ -88,75 +86,81 @@ function Sidebar({ setSidebarVisible, currentUser }: { setSidebarVisible: (v: an
         <div className="flex flex-col gap-2">
           <div className="font-extrabold text-xl">Reading</div>
           <div className="flex flex-col gap-2">
-            <Link
-              href={`/lesson/${lessonNumber}/goi`}
-              className={`${
-                pathname.includes("/goi")
-                  ? "underline decoration-gray-400 decoration-1 underline-offset-8"
-                  : "no-underline"
-              }`}
-            >
-              Vocabulary
-            </Link>
-            <Link
-              href={`/lesson/${lessonNumber}/bunkei`}
-              className={`${
-                pathname.includes("/bunkei")
-                  ? "underline decoration-gray-400 decoration-1 underline-offset-8"
-                  : "no-underline"
-              }`}
-            >
-              Bunkei
-            </Link>
-            <Link
-              href={`/lesson/${lessonNumber}/renshuua`}
-              className={`${
-                pathname.includes("/renshuua")
-                  ? "underline decoration-gray-400 decoration-1 underline-offset-8"
-                  : "no-underline"
-              }`}
-            >
-              Renshuu A
-            </Link>
-            <Link
-              href={`/lesson/${lessonNumber}/reibun`}
-              className={`${
-                pathname.includes("/reibun")
-                  ? "underline decoration-gray-400 decoration-1 underline-offset-8"
-                  : "no-underline"
-              }`}
-            >
-              Reibun
-            </Link>
+            {[
+              { path: "goi", label: "Vocabulary" },
+              { path: "bunkei", label: "Bunkei" },
+              { path: "renshuua", label: "Renshuu A" },
+              { path: "reibun", label: "Reibun" },
+            ].map((link) => (
+              <Link
+                key={link.path}
+                href={`/lesson/${lessonNumber}/${link.path}`}
+                className={`${
+                  pathname.includes(`/${link.path}`)
+                    ? "underline decoration-gray-400 decoration-1 underline-offset-8"
+                    : "no-underline"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
         <div className="flex flex-col gap-2">
           <div className="font-extrabold text-xl">Exercise</div>
           <div className="flex flex-col gap-2">
-            <Link
-              href={`/lesson/${lessonNumber}/renshuub`}
-              className="flex gap-1"
-            >
-              <Image
-                src={progress?.renshuu_b_completed ? "/assets/check.svg" : "/assets/check_box.svg"}
-                alt="Check"
-                width={20} height={20}
-              />
-              <div
-                className={`${
-                  pathname.includes("/renshuub")
-                    ? "underline decoration-gray-400 decoration-1 underline-offset-8"
-                    : "no-underline"
-                }`}
+            {[
+              {
+                id: "renshuub",
+                label: "Renshuu B",
+                key: "renshuu_b_completed",
+              },
+              {
+                id: "renshuuc",
+                label: "Renshuu C",
+                key: "renshuu_c_completed",
+              },
+              { id: "mondai", label: "Mondai", key: "mondai_completed" },
+              { id: "kaiwa", label: "Kaiwa", key: "kaiwa_completed" },
+            ].map((item) => (
+              <Link
+                key={item.id}
+                href={`/lesson/${lessonNumber}/${item.id}`}
+                className="flex gap-2 items-center group"
               >
-                Renshuu B
-              </div>
-            </Link>
-            {/* Same for C and Mondai/Kaiwa */}
+                <Image
+                  src={
+                    progress?.[item.key]
+                      ? "/assets/check.svg"
+                      : "/assets/check_box.svg"
+                  }
+                  alt="Check"
+                  width={20}
+                  height={20}
+                  className="opacity-50 group-hover:opacity-100 transition-opacity"
+                />
+                <div
+                  className={`${
+                    pathname.includes(`/${item.id}`)
+                      ? "underline decoration-gray-400 decoration-1 underline-offset-8"
+                      : "no-underline"
+                  }`}
+                >
+                  {item.label}
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
-      {/* <UserProfileIcon currentUser={currentUser} /> */}
+      <div className="mt-4 border-t pt-4">
+        <div className="flex items-center gap-3">
+          <UserButton afterSignOutUrl="/" />
+          <span className="text-sm text-gray-600 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+            {currentUser?.name || "User"}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
