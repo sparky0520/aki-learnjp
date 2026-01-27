@@ -101,7 +101,7 @@ export default function RazorpayCheckout({
 
   return (
     <div className="flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-[#fffce8] p-6 rounded-xl border-2 border-black w-full mb-6 relative">
+      <div className="bg-paper-bg p-6 rounded-xl border-2 border-black w-full mb-6 relative">
         <div className="absolute top-2 right-2 text-xs font-bold px-2 py-1 bg-blue-100 text-blue-800 rounded">
           UPI / Cards
         </div>

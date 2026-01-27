@@ -18,7 +18,7 @@ export default function PaymentMethodSelector({
         onClick={() => onSelect("card")}
         className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-300 w-28 ${
           selected === "card"
-            ? "border-black bg-[#fffce8] shadow-[2px_2px_0px_rgba(0,0,0,1)] -translate-y-1"
+            ? "border-black bg-paper-bg shadow-[2px_2px_0px_rgba(0,0,0,1)] -translate-y-1"
             : "border-transparent text-pencil-gray hover:bg-black/5"
         }`}
       >
@@ -30,7 +30,7 @@ export default function PaymentMethodSelector({
         onClick={() => onSelect("upi")}
         className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-300 w-28 ${
           selected === "upi"
-            ? "border-black bg-[#fffce8] shadow-[2px_2px_0px_rgba(0,0,0,1)] -translate-y-1"
+            ? "border-black bg-paper-bg shadow-[2px_2px_0px_rgba(0,0,0,1)] -translate-y-1"
             : "border-transparent text-pencil-gray hover:bg-black/5"
         }`}
       >
@@ -42,7 +42,7 @@ export default function PaymentMethodSelector({
         onClick={() => onSelect("crypto")}
         className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-300 w-28 ${
           selected === "crypto"
-            ? "border-black bg-[#fffce8] shadow-[2px_2px_0px_rgba(0,0,0,1)] -translate-y-1"
+            ? "border-black bg-paper-bg shadow-[2px_2px_0px_rgba(0,0,0,1)] -translate-y-1"
             : "border-transparent text-pencil-gray hover:bg-black/5"
         }`}
       >

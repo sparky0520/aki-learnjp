@@ -35,7 +35,7 @@ export default function AppLayoutContent({
   const showSidebar = !pathname.includes("/course");
 
   return (
-    <div className="flex bg-[#fffce8] text-[#343a40] h-screen">
+    <div className="flex bg-paper-bg text-[#343a40] h-screen">
       {askAki && (
         <div className="absolute border-15 border-[#00c3ff] inset-0 rounded-lg blur-xl pointer-events-none animate-subtle-pulse"></div>
       )}
