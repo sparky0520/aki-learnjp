@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Shuuryou from "@/components/Shuuryou";
-import BottomBar from "@/components/BottomBar";
+import Shuuryou from "@/components/lesson/shared/Shuuryou";
+import BottomBar from "@/components/layout/BottomBar";
 import axios from "axios";
 import { useParams } from "next/navigation";
 

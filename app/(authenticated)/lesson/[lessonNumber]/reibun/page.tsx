@@ -1,7 +1,7 @@
 "use client";
 
-import Shuuryou from "@/components/Shuuryou";
-import BottomBar from "@/components/BottomBar";
+import Shuuryou from "@/components/lesson/shared/Shuuryou";
+import BottomBar from "@/components/layout/BottomBar";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import AskAkiContext from "@/contexts/lesson/AkiContext";

@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import ReadingListeningSpeakingKaiwa from "@/components/ReadingListeningSpeakingKaiwa";
-import Shuuryou from "@/components/Shuuryou";
-import BottomBar from "@/components/BottomBar";
+import Shuuryou from "@/components/lesson/shared/Shuuryou";
+import BottomBar from "@/components/layout/BottomBar";
 import LessonEnd from "@/components/LessonEnd";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";

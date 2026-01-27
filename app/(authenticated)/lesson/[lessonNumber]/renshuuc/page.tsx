@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import ReadingSpeakingRenshuuC from "@/components/ReadingSpeakingRenshuuC";
 
-import BottomBar from "@/components/BottomBar";
+import BottomBar from "@/components/layout/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useProgressUpdater } from "@/contexts/ProgressContext";

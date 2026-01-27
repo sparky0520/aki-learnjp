@@ -7,7 +7,7 @@ import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useAnswers } from "@/contexts/AnswersContext";
 import { useProgressUpdater } from "@/contexts/ProgressContext";
-import BottomBar from "@/components/BottomBar";
+import BottomBar from "@/components/layout/BottomBar";
 
 const apiUrl = "/api";
 

@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import ListeningWritingMondai1 from "@/components/ListeningWritingMondai1";
-import ListeningWritingMondai2 from "@/components/ListeningWritingMondai2";
-import ListeningWritingMondai3 from "@/components/ListeningWritingMondai3";
-import ListeningWritingMondai456 from "@/components/ListeningWritingMondai456";
-import ExerciseEndResult from "@/components/ExerciseEndResult";
-import { useProgressUpdater } from "@/contexts/ProgressContext";
-import BottomBar from "@/components/BottomBar";
+import ListeningWritingMondai1 from "@/components/lesson/mondai/ListeningWritingMondai1";
+import ListeningWritingMondai2 from "@/components/lesson/mondai/ListeningWritingMondai2";
+import ListeningWritingMondai3 from "@/components/lesson/mondai/ListeningWritingMondai3";
+import ListeningWritingMondai456 from "@/components/lesson/mondai/ListeningWritingMondai456";
+import ExerciseEndResult from "@/components/lesson/shared/ExerciseEndResult";
+import { useProgressUpdater } from "@/contexts/lesson/ProgressContext";
+import BottomBar from "@/components/layout/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import { useAnswers } from "@/contexts/AnswersContext";
+import { useAnswers } from "@/contexts/lesson/AnswersContext";
 
 const apiUrl = "/api";
 
