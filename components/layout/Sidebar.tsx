@@ -31,7 +31,7 @@ function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
           const data = await res.json();
           setProgress(data);
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error("Error fetching progress:", error);
       }
     };
@@ -124,17 +124,15 @@ function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
                 href={`/lesson/${lessonNumber}/${item.id}`}
                 className="flex gap-2 items-center group"
               >
-                <Image
-                  src={
-                    progress?.[item.key]
-                      ? "/assets/check.svg"
-                      : "/assets/check_box.svg"
-                  }
-                  alt="Check"
-                  width={20}
-                  height={20}
-                  className="opacity-50 group-hover:opacity-100 transition-opacity"
-                />
+                {progress?.[item.key] ? (
+                  <Image
+                    src={"/assets/check.svg"}
+                    alt="Check"
+                    width={20}
+                    height={20}
+                    className="opacity-50 group-hover:opacity-100 transition-opacity"
+                  />
+                ) : null}
                 <div
                   className={`${
                     pathname.includes(`/${item.id}`)

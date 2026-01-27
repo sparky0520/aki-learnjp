@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import Image from "next/image";
 
 function AudioBar() {
-  const timerRef = useRef<any>(null);
+  const timerRef = useRef(null);
   const [recording, setRecording] = useState(false);
   const [arr, setArr] = useState(
     Array.from({ length: 17 }, () => Math.random() * 2 - 1),

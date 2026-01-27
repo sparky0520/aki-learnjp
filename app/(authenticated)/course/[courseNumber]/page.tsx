@@ -13,7 +13,7 @@ const apiUrl = "/api";
 export default function CourseChartPage() {
   const params = useParams();
   const courseNumber = params?.courseNumber as string;
-  const [lessons, setLessons] = useState<any[]>([]);
+  const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { setLastAccessed } = useLastAccessed(); // updateLastAccessed wasn't in port, I provided setLastAccessed

@@ -40,18 +40,16 @@ function BottomBar({
         style={{ zIndex: askAki ? 999 : "auto" }}
         onClick={toggleAskAki}
       >
-        <div className="">
-          {askAki && (
-            <Image
-              src="/assets/close.svg"
-              alt="cancel"
-              width={16}
-              height={16}
-              className="opacity-90"
-            />
-          )}
-        </div>
-        <div>Ask Aki</div>
+        {askAki && (
+          <Image
+            src="/assets/close.svg"
+            alt="cancel"
+            width={16}
+            height={16}
+            className="opacity-90 mr-2"
+          />
+        )}
+        Ask Aki
       </div>
       {reading ? (
         <div></div>

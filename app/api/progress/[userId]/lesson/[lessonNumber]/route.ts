@@ -49,7 +49,7 @@ export async function GET(
     }
 
     return NextResponse.json(progress);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json(
       { error: `Internal Server Error: ${error.message}` },
