@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import BottomBar from "../../../../components/BottomBar";
 import Shuuryou from "../../../../components/Shuuryou";
-import { useAuthSync } from "../../../../contexts/AuthContext";
+import { useAuth } from "../../../../contexts/AuthContext";
 import { useLastAccessed } from "../../../../contexts/LastAccessedContext";
 
 const apiUrl = "/api";
@@ -18,7 +18,7 @@ export default function CourseChartPage() {
   const [error, setError] = useState<string | null>(null);
   const { setLastAccessed } = useLastAccessed(); // updateLastAccessed wasn't in port, I provided setLastAccessed
 
-  const { currentUser } = useAuthSync();
+  const { currentUser } = useAuth();
   const userId = currentUser?.id;
 
   // Helper to update last accessed

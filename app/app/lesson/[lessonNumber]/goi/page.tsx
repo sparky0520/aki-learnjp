@@ -2,6 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import BottomBar from "@/components/BottomBar";
+import { useLayout } from "@/contexts/LayoutContext";
 import Shuuryou from "@/components/Shuuryou";
 import axios from "axios";
 import AskAkiContext from "@/contexts/AkiContext";
@@ -15,6 +16,15 @@ function GoiPage() {
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
+
+  const { showBottomBar, hideBottomBar } = useLayout();
+
+  useEffect(() => {
+    showBottomBar({
+      reading: true,
+    });
+    return () => hideBottomBar();
+  }, [showBottomBar, hideBottomBar]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,7 +83,6 @@ function GoiPage() {
         </div>
       </div>
       {/* Bottom bar - mae tsugi */}
-      <BottomBar reading={true} />
     </div>
   );
 }

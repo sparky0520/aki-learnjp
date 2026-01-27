@@ -2,6 +2,7 @@
 
 import Shuuryou from "@/components/Shuuryou";
 import BottomBar from "@/components/BottomBar";
+import { useLayout } from "@/contexts/LayoutContext";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import AskAkiContext from "@/contexts/AkiContext";
@@ -15,6 +16,15 @@ function ReibunPage() {
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
+
+  const { showBottomBar, hideBottomBar } = useLayout();
+
+  useEffect(() => {
+    showBottomBar({
+      reading: true,
+    });
+    return () => hideBottomBar();
+  }, [showBottomBar, hideBottomBar]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,7 +96,6 @@ function ReibunPage() {
         </div>
       </div>
       {/* Bottom bar - mae tsugi */}
-      <BottomBar reading={true} />
     </div>
   );
 }

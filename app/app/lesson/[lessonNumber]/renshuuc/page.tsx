@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ReadingSpeakingRenshuuC from "@/components/ReadingSpeakingRenshuuC";
-import BottomBar from "@/components/BottomBar";
+
+import { useLayout } from "@/contexts/LayoutContext";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useProgressUpdater } from "@/contexts/ProgressContext";
+import { API_URL } from "@/constants";
 
-const apiUrl = "/api";
+const apiUrl = API_URL;
 
 export default function RenshuuCPage() {
   const { updateLessonProgress } = useProgressUpdater();
@@ -18,6 +20,29 @@ export default function RenshuuCPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [index, setIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const { showBottomBar, hideBottomBar } = useLayout();
+
+  useEffect(() => {
+    if (!isLoading) {
+      showBottomBar({
+        handleNext,
+        handlePrev,
+        finalQuestion,
+        currentQuestion,
+        nextFlag: false,
+      });
+    }
+    return () => hideBottomBar();
+  }, [
+    currentQuestion,
+    index,
+    isLoading,
+    finalQuestion,
+    showBottomBar,
+    hideBottomBar,
+    handleNext,
+    handlePrev,
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,7 +63,7 @@ export default function RenshuuCPage() {
   const finalQuestion = parts.length;
   const finalOption = 1;
 
-  const handleNext = async () => {
+  const handleNext = useCallback(async () => {
     if (currentQuestion === finalQuestion - 1 && index === finalOption) {
       await updateLessonProgress(lessonNumber, "renshuu_c");
       router.push(`/lesson/${lessonNumber}/mondai`);
@@ -48,9 +73,17 @@ export default function RenshuuCPage() {
     } else {
       setIndex((prev) => ++prev);
     }
-  };
+  }, [
+    currentQuestion,
+    finalQuestion,
+    index,
+    finalOption,
+    lessonNumber,
+    router,
+    updateLessonProgress,
+  ]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (currentQuestion === 0 && index === 0) return;
     else if (index === 0) {
       setCurrentQuestion((prev) => --prev);
@@ -58,7 +91,12 @@ export default function RenshuuCPage() {
     } else {
       setIndex((prev) => --prev);
     }
-  };
+  }, [currentQuestion, index, finalOption]);
+
+  // ... inside component ... (this comment will be removed by replacement)
+
+  // NOTE: Moving this to the top with other hooks is cleaner, but for now I will just clean up the comment and ensure it works.
+  // Actually, I will move it to the top.
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -80,13 +118,6 @@ export default function RenshuuCPage() {
           questionImg: parts[currentQuestion]?.question_image_urls?.[index],
           part: index + 1,
         }}
-      />
-
-      <BottomBar
-        handleNext={handleNext}
-        handlePrev={handlePrev}
-        finalQuestion={finalQuestion}
-        currentQuestion={currentQuestion}
       />
     </div>
   );

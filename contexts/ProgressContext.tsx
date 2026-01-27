@@ -1,12 +1,12 @@
 "use client";
 
 import axios from "axios";
-import { useAuthSync } from "./AuthContext";
+import { useAuth } from "./AuthContext";
 
 const apiUrl = "/api";
 
 export function useProgressUpdater() {
-  const { currentUser } = useAuthSync();
+  const { currentUser } = useAuth();
 
   //   Mark exercise as completed
   const updateLessonProgress = async (
@@ -72,4 +72,8 @@ export function useProgressUpdater() {
     updateLessonProgress,
     updateCourseProgress,
   };
+}
+
+export function ProgressProvider({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }

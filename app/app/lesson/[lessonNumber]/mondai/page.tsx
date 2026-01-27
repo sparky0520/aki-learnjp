@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ListeningWritingMondai1 from "@/components/ListeningWritingMondai1";
 import ListeningWritingMondai2 from "@/components/ListeningWritingMondai2";
 import ListeningWritingMondai3 from "@/components/ListeningWritingMondai3";
 import ListeningWritingMondai456 from "@/components/ListeningWritingMondai456";
 import ExerciseEndResult from "@/components/ExerciseEndResult";
-import BottomBar from "@/components/BottomBar";
+import { useLayout } from "@/contexts/LayoutContext";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useAnswers } from "@/contexts/AnswersContext";
@@ -17,6 +17,7 @@ const apiUrl = "/api";
 export default function MondaiPage() {
   const { answers, setAnswers } = useAnswers();
   const { updateLessonProgress } = useProgressUpdater();
+  const { showBottomBar, hideBottomBar } = useLayout();
 
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
@@ -25,9 +26,6 @@ export default function MondaiPage() {
   const [index, setIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Helper to reset
-  const resetAnswers = () => setAnswers({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,16 +46,16 @@ export default function MondaiPage() {
   const finalOption = 0;
   const finalQuestion = parts.length;
 
-  const handleNext = async () => {
+  const handleNext = useCallback(async () => {
     if (currentQuestion === finalQuestion - 1 && index === finalOption) {
       await updateLessonProgress(lessonNumber, "mondai");
-      resetAnswers();
+      setAnswers({});
       router.push(`/lesson/${lessonNumber}/kaiwa`);
     }
 
     // Exercise end screen visible
     else if (index === finalOption + 1) {
-      resetAnswers();
+      setAnswers({});
       setIndex(0);
       setCurrentQuestion((prev) => ++prev);
     }
@@ -65,9 +63,18 @@ export default function MondaiPage() {
     else {
       setIndex((prev) => ++prev);
     }
-  };
+  }, [
+    currentQuestion,
+    finalQuestion,
+    index,
+    finalOption,
+    lessonNumber,
+    router,
+    updateLessonProgress,
+    setAnswers,
+  ]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (currentQuestion === 0 && index === 0) return;
     else if (index === 0) {
       setCurrentQuestion((prev) => --prev);
@@ -75,7 +82,29 @@ export default function MondaiPage() {
     } else {
       setIndex((prev) => --prev);
     }
-  };
+  }, [currentQuestion, index, finalOption]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      showBottomBar({
+        handleNext,
+        handlePrev,
+        finalQuestion,
+        currentQuestion,
+        nextFlag: false, // Calculate if needed
+      });
+    }
+    return () => hideBottomBar();
+  }, [
+    currentQuestion,
+    index,
+    isLoading,
+    finalQuestion,
+    showBottomBar,
+    hideBottomBar,
+    handleNext,
+    handlePrev,
+  ]);
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -109,13 +138,6 @@ export default function MondaiPage() {
           answers={answers}
         />
       )}
-
-      <BottomBar
-        handleNext={handleNext}
-        handlePrev={handlePrev}
-        finalQuestion={finalQuestion}
-        currentQuestion={currentQuestion}
-      />
     </div>
   );
 }

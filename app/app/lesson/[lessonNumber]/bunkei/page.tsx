@@ -3,6 +3,7 @@
 import { useContext, useEffect, useState } from "react";
 import Shuuryou from "@/components/Shuuryou";
 import BottomBar from "@/components/BottomBar";
+import { useLayout } from "@/contexts/LayoutContext";
 import axios from "axios";
 import AskAkiContext from "@/contexts/AkiContext";
 import { useParams } from "next/navigation";
@@ -15,6 +16,15 @@ function BunkeiPage() {
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
+
+  const { showBottomBar, hideBottomBar } = useLayout();
+
+  useEffect(() => {
+    showBottomBar({
+      reading: true,
+    });
+    return () => hideBottomBar();
+  }, [showBottomBar, hideBottomBar]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,7 +84,6 @@ function BunkeiPage() {
         </div>
       </div>
       {/* Bottom bar - mae tsugi */}
-      <BottomBar reading={true} />
     </div>
   );
 }

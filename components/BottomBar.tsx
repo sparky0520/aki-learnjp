@@ -3,7 +3,6 @@
 import { useContext } from "react";
 import AskAkiContext from "../contexts/AkiContext";
 import Image from "next/image";
-// import cancel from "@/public/assets/close.svg"; // Use string path
 
 interface BottomBarProps {
   handleNext?: () => void;
@@ -25,7 +24,7 @@ function BottomBar({
   const { askAki, toggleAskAki } = useContext(AskAkiContext);
 
   return (
-    <div className="flex justify-between items-center sticky bottom-0 bg-paper-bg py-4 border-t border-gray-200">
+    <div className="flex justify-between items-center sticky bottom-0">
       {reading ? (
         <div></div>
       ) : (
@@ -41,7 +40,7 @@ function BottomBar({
         style={{ zIndex: askAki ? 999 : "auto" }}
         onClick={toggleAskAki}
       >
-        <div className="mr-2">
+        <div className="">
           {askAki && (
             <Image
               src="/assets/close.svg"

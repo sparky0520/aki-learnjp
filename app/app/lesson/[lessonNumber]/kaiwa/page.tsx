@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ReadingListeningSpeakingKaiwa from "@/components/ReadingListeningSpeakingKaiwa";
 import Shuuryou from "@/components/Shuuryou";
-import BottomBar from "@/components/BottomBar";
+import { useLayout } from "@/contexts/LayoutContext";
 import LessonEnd from "@/components/LessonEnd";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
@@ -13,6 +13,7 @@ const apiUrl = "/api";
 
 export default function KaiwaPage() {
   const { updateLessonProgress, updateCourseProgress } = useProgressUpdater();
+  const { showBottomBar, hideBottomBar } = useLayout();
 
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
@@ -38,7 +39,7 @@ export default function KaiwaPage() {
     if (lessonNumber) fetchData();
   }, [lessonNumber]);
 
-  const handleNext = async () => {
+  const handleNext = useCallback(async () => {
     if (lessonCompleted === 1) {
       await updateLessonProgress(lessonNumber, "kaiwa");
       await updateCourseProgress(1, 1);
@@ -46,12 +47,29 @@ export default function KaiwaPage() {
       return;
     }
     setLessonCompleted((prev) => ++prev);
-  };
+  }, [
+    lessonCompleted,
+    lessonNumber,
+    router,
+    updateLessonProgress,
+    updateCourseProgress,
+  ]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (lessonCompleted === 0) return;
     setLessonCompleted((prev) => --prev);
-  };
+  }, [lessonCompleted]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      showBottomBar({
+        handleNext,
+        handlePrev,
+        nextFlag: true,
+      });
+    }
+    return () => hideBottomBar();
+  }, [lessonCompleted, isLoading]);
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -68,12 +86,6 @@ export default function KaiwaPage() {
           <ReadingListeningSpeakingKaiwa data={data} />
         </>
       )}
-      {/* Bottom bar - mae tsugi */}
-      <BottomBar
-        handleNext={handleNext}
-        handlePrev={handlePrev}
-        nextFlag={true}
-      />
     </div>
   );
 }
