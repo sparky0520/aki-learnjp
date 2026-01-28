@@ -83,10 +83,10 @@ function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
           <div className="font-extrabold text-xl">Reading</div>
           <div className="flex flex-col gap-2">
             {[
-              { path: "goi", label: "Vocabulary" },
+              { path: "goi", label: "Goi" },
               { path: "bunkei", label: "Bunkei" },
-              { path: "renshuua", label: "Renshuu A" },
               { path: "reibun", label: "Reibun" },
+              { path: "renshuua", label: "Renshuu A" },
             ].map((link) => (
               <Link
                 key={link.path}
@@ -116,7 +116,7 @@ function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
                 label: "Renshuu C",
                 key: "renshuu_c_completed",
               },
-              { id: "mondai", label: "Mondai", key: "mondai_completed" },
+              // { id: "mondai", label: "Mondai", key: "mondai_completed" },
               { id: "kaiwa", label: "Kaiwa", key: "kaiwa_completed" },
             ].map((item) => (
               <Link

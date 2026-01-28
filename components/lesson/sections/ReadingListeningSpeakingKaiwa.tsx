@@ -17,7 +17,7 @@ function ReadingListeningSpeakingKaiwa({ data }: { data: KaiwaData }) {
       <div className="flex gap-8 items-center w-full max-w-5xl">
         {/* Question */}
         <div className="w-1/2 flex justify-center">
-          {data.img && <Image src={data.img} className="max-w-full" />}
+          {data.img && <Image src={data.img} className="max-w-full" alt="" />}
         </div>
         <div className="w-1/2">
           {/* Heading */}
@@ -35,7 +35,7 @@ function ReadingListeningSpeakingKaiwa({ data }: { data: KaiwaData }) {
           </div>
         </div>
       </div>
-      <PlaybackBar audio={data.audio || ""} />
+      {/* <PlaybackBar audio={data.audio || ""} /> */}
     </div>
   );
 }

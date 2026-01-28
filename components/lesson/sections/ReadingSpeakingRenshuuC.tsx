@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "../../ui/Image";
 
 // Assuming data structure based on usage in original code
@@ -38,7 +38,7 @@ function ReadingSpeakingRenshuuC({ data }: { data: RenshuuCData }) {
           </div>
         </div>
         {/* Rei Image */}
-        {data.img && <Image src={data.img} className="max-w-[300px]" />}
+        {data.img && <Image src={data.img} className="max-w-75" alt="" />}
       </div>
       <div className="flex flex-col items-center text-lg">
         <span
@@ -49,7 +49,7 @@ function ReadingSpeakingRenshuuC({ data }: { data: RenshuuCData }) {
         ></span>
         {/* Question Image */}
         {data.questionImg && (
-          <Image src={data.questionImg} className="max-w-[300px]" />
+          <Image src={data.questionImg} className="max-w-75" alt="" />
         )}
       </div>
 
