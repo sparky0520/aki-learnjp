@@ -32,7 +32,7 @@ export async function getSignedImageUrl(
 
   const { data, error } = await supabase.storage
     .from("course-images")
-    .createSignedUrl(path, 3600); // 1 hour expiry
+    .createSignedUrl(path, 900); // 15 minutes expiry
 
   if (error) {
     console.error(`Error creating signed URL for ${path}:`, error);
@@ -50,7 +50,7 @@ export async function getSignedAudioUrl(
 
   const { data, error } = await supabase.storage
     .from("course-audio")
-    .createSignedUrl(path, 3600); // 1 hour expiry
+    .createSignedUrl(path, 900); // 15 minutes expiry
 
   if (error) {
     console.error(`Error creating signed audio URL for ${path}:`, error);
