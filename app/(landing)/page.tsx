@@ -114,7 +114,7 @@ export default async function Home() {
                   <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
                     <img
                       alt="App screenshot"
-                      src="/dashboard_screenshot.png"
+                      src="/app_screenshot.png"
                       className="w-full h-full aspect-video"
                     />
                   </span>
