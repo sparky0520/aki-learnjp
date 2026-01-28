@@ -63,7 +63,7 @@ export default function PricingPage() {
             </div>
 
             <div className="mb-8 relative">
-              <span className="text-4xl sm:text-5xl font-bold text-ink-color">
+              <span className="text-4xl sm:text-5xl font-bold text-ink-color line-through">
                 $29.99
               </span>
               <span className="text-lg text-pencil-gray">/mo</span>
@@ -87,12 +87,13 @@ export default function PricingPage() {
 
             <div className="mt-8">
               <button
-                onClick={() => openPayment("Basic", 29.99)}
+                // onClick={() => openPayment("Basic", 29.99)}
+                onClick={() => (window.location.href = "/dashboard")}
                 className="w-full relative group focus:outline-none cursor-pointer"
               >
                 <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-black transition-transform group-hover:translate-y-0 group-hover:translate-x-0"></span>
                 <span className="relative block border-2 border-black px-8 py-3 text-lg font-bold uppercase tracking-widest text-black bg-paper-bg">
-                  Start Free
+                  Start free
                 </span>
               </button>
             </div>
@@ -150,7 +151,7 @@ export default function PricingPage() {
               >
                 <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-black transition-transform group-hover:translate-y-0 group-hover:translate-x-0"></span>
                 <span className="relative block border-2 border-black px-8 py-3 text-lg font-bold uppercase tracking-widest text-black bg-white text-center">
-                  Go
+                  Go Pro
                 </span>
               </button>
             </div>
