@@ -310,7 +310,7 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      const result = await toolInstance.invoke(parsedArgs);
+      const result = await (toolInstance as any).invoke(parsedArgs);
       console.log("Tool result:", result);
 
       // Send tool output back to the model
