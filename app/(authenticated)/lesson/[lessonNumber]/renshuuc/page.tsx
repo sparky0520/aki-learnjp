@@ -92,6 +92,7 @@ export default function RenshuuCPage() {
           rei: parts[currentQuestion]?.rei,
           questionImg: parts[currentQuestion]?.question_image_urls?.[index],
           part: index + 1,
+          correctAnswers: parts[currentQuestion]?.correct_answers[index],
         }}
       />
       <BottomBar

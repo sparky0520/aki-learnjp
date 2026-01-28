@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { supabase } from "../../../../../lib/supabase";
-import { getPublicImageUrl } from "../../../../../lib/utils";
+import { supabase } from "@/lib/supabase";
+import { getPublicImageUrl } from "@/lib/utils";
 
 export async function GET(
   request: Request,
@@ -51,7 +51,9 @@ export async function GET(
         if (typeof urls === "string") {
           try {
             urls = JSON.parse(urls);
-          } catch (e) {}
+          } catch (e) {
+            console.error("Error parsing question_image_urls:", e);
+          }
         }
         if (Array.isArray(urls)) {
           part.question_image_urls = urls.map((url: string) =>
@@ -59,7 +61,9 @@ export async function GET(
           );
         }
       }
-      return part;
+      return {
+        ...part,
+      };
     });
 
     return NextResponse.json(processedParts);
