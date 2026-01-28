@@ -38,7 +38,13 @@ function ReadingSpeakingRenshuuC({ data }: { data: RenshuuCData }) {
           </div>
         </div>
         {/* Rei Image */}
-        {data.img && <Image src={data.img} className="max-w-75" alt="" />}
+        {data.img && (
+          <Image
+            src={data.img}
+            className="max-w-75 pointer-events-none"
+            alt=""
+          />
+        )}
       </div>
       <div className="flex flex-col items-center text-lg">
         <span
@@ -49,7 +55,11 @@ function ReadingSpeakingRenshuuC({ data }: { data: RenshuuCData }) {
         ></span>
         {/* Question Image */}
         {data.questionImg && (
-          <Image src={data.questionImg} className="max-w-75" alt="" />
+          <Image
+            src={data.questionImg}
+            className="max-w-75 pointer-events-none"
+            alt=""
+          />
         )}
       </div>
 

@@ -28,7 +28,13 @@ function ReadingWriting({ data }: ReadingWritingProps) {
   return (
     <div className="flex flex-col items-center gap-2 text-lg font-extrabold opacity-90">
       {/* Image */}
-      {data.img && <Image src={data.img} className="mb-8 max-w-1/2" />}
+      {data.img && (
+        <Image
+          src={data.img}
+          className="mb-8 max-w-1/2 pointer-events-none"
+          alt=""
+        />
+      )}
       {/* Rei */}
       <div className="flex items-center">
         <div>

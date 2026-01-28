@@ -30,12 +30,16 @@ function ListeningWritingMondai2Input({
           className={`p-px rounded-full ${chosen === "1" ? "border-2 border-black" : ""}`}
         >
           <div
-            className={`rounded-full border border-gray-400 p-4 cursor-pointer select-none w-min relative opacity-90 w-12 h-12 flex items-center justify-center`}
+            className={`rounded-full border border-gray-400 p-4 cursor-pointer select-none relative opacity-90 w-12 h-12 flex items-center justify-center`}
           >
             <div className="text-xl font-bold">1</div>
           </div>
         </div>
-        <Image src={option1Image} className="max-w-[200px]" alt="option 1" />
+        <Image
+          src={option1Image}
+          className="max-w-50 pointer-events-none"
+          alt="option 1"
+        />
       </div>
       {/* Option 2 */}
       <div
@@ -49,12 +53,16 @@ function ListeningWritingMondai2Input({
           className={`p-px rounded-full ${chosen === "2" ? "border-2 border-black" : ""}`}
         >
           <div
-            className={`rounded-full border border-gray-400 p-4 cursor-pointer select-none w-min relative opacity-90 w-12 h-12 flex items-center justify-center`}
+            className={`rounded-full border border-gray-400 p-4 cursor-pointer select-none relative opacity-90 w-12 h-12 flex items-center justify-center`}
           >
             <div className="text-xl font-bold">2</div>
           </div>
         </div>
-        <Image src={option2Image} className="max-w-[200px]" alt="option 2" />
+        <Image
+          src={option2Image}
+          className="max-w-50 pointer-events-none"
+          alt="option 2"
+        />
       </div>
       {/* Option 3 */}
       <div
@@ -68,12 +76,16 @@ function ListeningWritingMondai2Input({
           className={`p-px rounded-full ${chosen === "3" ? "border-2 border-black" : ""}`}
         >
           <div
-            className={`rounded-full border border-gray-400 p-4 cursor-pointer select-none w-min relative opacity-90 w-12 h-12 flex items-center justify-center`}
+            className={`rounded-full border border-gray-400 p-4 cursor-pointer select-none relative opacity-90 w-12 h-12 flex items-center justify-center`}
           >
             <div className="text-xl font-bold">3</div>
           </div>
         </div>
-        <Image src={option3Image} className="max-w-[200px]" alt="option 3" />
+        <Image
+          src={option3Image}
+          className="max-w-50 pointer-events-none"
+          alt="option 3"
+        />
       </div>
     </div>
   );
