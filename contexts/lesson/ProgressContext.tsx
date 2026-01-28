@@ -49,7 +49,7 @@ export function useProgressUpdater() {
       if (
         newProgress.renshuu_b_completed &&
         newProgress.renshuu_c_completed &&
-        newProgress.mondai_completed &&
+        // newProgress.mondai_completed &&  - Till mondai is completed
         newProgress.kaiwa_completed
       ) {
         updates.completed = true;
