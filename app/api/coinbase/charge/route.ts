@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       // Return a dummy URL that just refreshes the page or goes to a demo for now
       return NextResponse.json({
         hosted_url: "https://commerce.coinbase.com/checkout/demo",
-        code: "MOCK_CODE",
+        code: "SOCK_CODE",
       });
     }
 
