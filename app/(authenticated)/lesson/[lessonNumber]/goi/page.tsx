@@ -45,13 +45,13 @@ function GoiPage() {
   }
 
   return (
-    <div className="flex flex-col justify-between min-h-full h-full">
-      <div className="flex-1 overflow-hidden flex flex-col">
+    <div className="flex flex-col justify-between h-full">
+      <div className="flex-1 flex flex-col">
         <div className="mb-4">
           <Shuuryou lessonNo={parseInt(lessonNumber)} />
         </div>
         {/* Content */}
-        <div className="flex flex-col gap-8 pb-2 overflow-y-auto custom-scroll text-lg flex-1">
+        <div className="flex flex-col gap-8 pb-2 text-lg flex-1">
           {content.map((value, index) => {
             const id = `goi-${index};`;
             return (
