@@ -10,7 +10,7 @@ function ExerciseEndResult({
   answers;
 }) {
   return (
-    <div className="flex-1 w-full max-w-4xl mx-auto">
+    <div className="flex-1 w-full max-w-4xl mx-auto self-start justify-self-start">
       {/* <div className="mb-4 text-lg font-bold">{exerciseName}</div> */}
       {/* Overview */}
       <div className="mb-4 text-xl font-extrabold opacity-90">Overview</div>

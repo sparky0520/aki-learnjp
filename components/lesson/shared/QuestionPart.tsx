@@ -29,7 +29,7 @@ function QuestionPart({
         <div>{questionNumber}.</div>
         {Array.isArray(questionContent) ? (
           questionContent.map((e, i) => (
-            <Image src={e} key={i} className="w-1/4" />
+            <Image src={e} key={i} className="w-1/4" alt="" />
           ))
         ) : (
           <div
@@ -41,7 +41,7 @@ function QuestionPart({
       <div className="flex gap-2 text-red-400 items-center">
         <div>×</div>
         {isValidUrl(answered) ? (
-          <Image src={answered} className="w-1/4" />
+          <Image src={answered} className="w-1/4" alt="" />
         ) : (
           <div>{answered}</div>
         )}
@@ -49,7 +49,7 @@ function QuestionPart({
       <div className="flex gap-2 text-green-400 items-center">
         <div>✓</div>
         {isValidUrl(correct) ? (
-          <Image src={correct} className="w-1/4" />
+          <Image src={correct} className="w-1/4" alt="" />
         ) : (
           <div dangerouslySetInnerHTML={{ __html: correct }} />
         )}
