@@ -24,13 +24,13 @@ function ExerciseEndResult({
           // Or array of objects { partNo, answer } as in original code logic:
           // const a = answers.find((a) => a.partNo === index + 1);
 
-          // I need to adapt based on how AnswersContext works in aki-next.
-          // In aki-next AnswersContext, it seems to be Record<string | number, any>
+          // I need to adapt based on how AnswersContext works in aki-nextjs.
+          // In aki-nextjs AnswersContext, it seems to be Record<string | number, any>
           // So answers[index + 1] would get the value.
 
           // Wait, the original code used `answers.find` implying answers was an array of objects.
-          // In aki-next, useAnswers provides `answers` as a generic object/map usually.
-          // I will assume aki-next uses { [key]: value }.
+          // In aki-nextjs, useAnswers provides `answers` as a generic object/map usually.
+          // I will assume aki-nextjs uses { [key]: value }.
 
           // Let's support both or normalize.
           let userAns;
