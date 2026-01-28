@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "../../../../../lib/supabase";
-import { getPublicImageUrl } from "../../../../../lib/utils";
+import { getSignedImageUrl } from "../../../../../lib/utils";
 
 export async function GET(
   request: Request,
@@ -41,12 +41,15 @@ export async function GET(
     if (partsError) throw partsError;
 
     // Process image URLs
-    const processedParts = partsData.map((part) => {
-      if (part.image_url) {
-        part.image_url = getPublicImageUrl(part.image_url);
-      }
-      return part;
-    });
+    // Process image URLs
+    const processedParts = await Promise.all(
+      partsData.map(async (part) => {
+        if (part.image_url) {
+          part.image_url = await getSignedImageUrl(part.image_url);
+        }
+        return part;
+      }),
+    );
 
     return NextResponse.json(processedParts);
   } catch (error) {

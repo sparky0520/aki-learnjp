@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "../../../../../lib/supabase";
-import { getPublicImageUrl, getPublicAudioUrl } from "../../../../../lib/utils";
+import { getSignedImageUrl, getSignedAudioUrl } from "../../../../../lib/utils";
 
 export async function GET(
   request: Request,
@@ -43,50 +43,53 @@ export async function GET(
     // Helper to process recursive items/URLs
     const lessonPrefix = `lesson${lessonNumber}/`;
 
-    const processItem = (item) => {
+    const processItem = async (item) => {
       if (typeof item === "string" && item.startsWith(lessonPrefix)) {
-        return getPublicImageUrl(item);
+        return await getSignedImageUrl(item);
       }
       return item;
     };
 
-    const processStructure = (data) => {
+    const processStructure = async (data) => {
       if (Array.isArray(data)) {
-        return data.map(processStructure);
+        return Promise.all(data.map(processStructure));
       } else if (typeof data === "object" && data !== null) {
         const newData = {};
         for (const key in data) {
-          newData[key] = processStructure(data[key]);
+          newData[key] = await processStructure(data[key]);
         }
         return newData;
       } else {
-        return processItem(data);
+        return await processItem(data);
       }
     };
 
-    const processedParts = partsData.map((part) => {
-      // Parse JSON fields
-      for (const field of ["rei", "questions", "correct_answers"]) {
-        if (part[field] && typeof part[field] === "string") {
-          try {
-            part[field] = JSON.parse(part[field]);
-          } catch (e) {}
+    const processedParts = await Promise.all(
+      partsData.map(async (part) => {
+        // Parse JSON fields
+        for (const field of ["rei", "questions", "correct_answers"]) {
+          if (part[field] && typeof part[field] === "string") {
+            try {
+              part[field] = JSON.parse(part[field]);
+            } catch (e) {}
+          }
         }
-      }
 
-      // Audio URL
-      if (part.audio_url) {
-        part.audio_url = getPublicAudioUrl(part.audio_url);
-      }
+        // Audio URL
+        if (part.audio_url) {
+          part.audio_url = await getSignedAudioUrl(part.audio_url);
+        }
 
-      // Recursively process images in structures
-      if (part.rei) part.rei = processStructure(part.rei);
-      if (part.questions) part.questions = processStructure(part.questions);
-      if (part.correct_answers)
-        part.correct_answers = processStructure(part.correct_answers);
+        // Recursively process images in structures
+        if (part.rei) part.rei = await processStructure(part.rei);
+        if (part.questions)
+          part.questions = await processStructure(part.questions);
+        if (part.correct_answers)
+          part.correct_answers = await processStructure(part.correct_answers);
 
-      return part;
-    });
+        return part;
+      }),
+    );
 
     return NextResponse.json(processedParts);
   } catch (error) {

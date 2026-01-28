@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { getPublicImageUrl } from "@/lib/utils";
+import { getSignedImageUrl } from "@/lib/utils";
 
 export async function GET(
   request: Request,
@@ -41,30 +41,32 @@ export async function GET(
     if (partsError) throw partsError;
 
     // Process image URLs
-    const processedParts = partsData.map((part) => {
-      if (part.image_url) {
-        part.image_url = getPublicImageUrl(part.image_url);
-      }
+    const processedParts = await Promise.all(
+      partsData.map(async (part) => {
+        if (part.image_url) {
+          part.image_url = await getSignedImageUrl(part.image_url);
+        }
 
-      if (part.question_image_urls) {
-        let urls = part.question_image_urls;
-        if (typeof urls === "string") {
-          try {
-            urls = JSON.parse(urls);
-          } catch (e) {
-            console.error("Error parsing question_image_urls:", e);
+        if (part.question_image_urls) {
+          let urls = part.question_image_urls;
+          if (typeof urls === "string") {
+            try {
+              urls = JSON.parse(urls);
+            } catch (e) {
+              console.error("Error parsing question_image_urls:", e);
+            }
+          }
+          if (Array.isArray(urls)) {
+            part.question_image_urls = await Promise.all(
+              urls.map(async (url: string) => await getSignedImageUrl(url)),
+            );
           }
         }
-        if (Array.isArray(urls)) {
-          part.question_image_urls = urls.map((url: string) =>
-            getPublicImageUrl(url),
-          );
-        }
-      }
-      return {
-        ...part,
-      };
-    });
+        return {
+          ...part,
+        };
+      }),
+    );
 
     return NextResponse.json(processedParts);
   } catch (error) {

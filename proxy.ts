@@ -1,4 +1,20 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+
+// Simple in-memory rate limiter
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS = 100; // 100 requests per window
+const ipRequestMap = new Map<string, { count: number; startTime: number }>();
+
+// Clean up map periodically to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, data] of ipRequestMap.entries()) {
+    if (now - data.startTime > RATE_LIMIT_WINDOW) {
+      ipRequestMap.delete(ip);
+    }
+  }
+}, RATE_LIMIT_WINDOW);
 
 const isPublicRoute = createRouteMatcher([
   "/(.*)",
@@ -7,6 +23,27 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  // Rate Limiting Logic
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+
+  const now = Date.now();
+  const requestData = ipRequestMap.get(ip) || { count: 0, startTime: now };
+
+  if (now - requestData.startTime > RATE_LIMIT_WINDOW) {
+    // Reset window
+    requestData.count = 1;
+    requestData.startTime = now;
+  } else {
+    requestData.count++;
+  }
+
+  ipRequestMap.set(ip, requestData);
+
+  if (requestData.count > MAX_REQUESTS) {
+    return new NextResponse("Too Many Requests", { status: 429 });
+  }
+
+  // Clerk Auth Logic
   if (!isPublicRoute(req)) await auth.protect();
 });
 
