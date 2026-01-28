@@ -3,7 +3,7 @@ import { supabase } from "../../../../lib/supabase";
 
 export async function GET(
   request: Request,
-  { params }: { params: { lesson_number: string } },
+  { params }: { params: Promise<{ lesson_number: string }> },
 ) {
   try {
     // Await params to avoid Next.js warnings/errors in newer versions

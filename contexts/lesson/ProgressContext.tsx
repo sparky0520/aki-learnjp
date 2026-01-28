@@ -18,7 +18,7 @@ export function useProgressUpdater() {
 
     try {
       // 1. Determine local updates
-      const updates = {};
+      const updates: Record<string, boolean> = {};
       switch (exercise) {
         case "renshuu_b":
           updates.renshuu_b_completed = true;

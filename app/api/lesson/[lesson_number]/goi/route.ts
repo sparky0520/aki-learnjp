@@ -3,7 +3,7 @@ import { supabase } from "../../../../../lib/supabase";
 
 export async function GET(
   request: Request,
-  { params }: { params: { lesson_number: string } },
+  { params }: { params: Promise<{ lesson_number: string }> },
 ) {
   try {
     const { lesson_number: lessonNumberStr } = await Promise.resolve(params);
