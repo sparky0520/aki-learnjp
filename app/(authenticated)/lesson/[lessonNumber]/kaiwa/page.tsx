@@ -12,7 +12,7 @@ import { useProgressUpdater } from "@/contexts/lesson/ProgressContext";
 const apiUrl = "/api";
 
 export default function KaiwaPage() {
-  const { updateLessonProgress, updateCourseProgress } = useProgressUpdater();
+  const { updateLessonProgress } = useProgressUpdater();
 
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
@@ -41,18 +41,11 @@ export default function KaiwaPage() {
   const handleNext = useCallback(async () => {
     if (lessonCompleted === 1) {
       await updateLessonProgress(lessonNumber, "kaiwa");
-      await updateCourseProgress(1, 1);
       router.push("/dashboard"); // Redirect to Dashboard instead of "/" which is landing
       return;
     }
     setLessonCompleted((prev) => ++prev);
-  }, [
-    lessonCompleted,
-    lessonNumber,
-    router,
-    updateLessonProgress,
-    updateCourseProgress,
-  ]);
+  }, [lessonCompleted, lessonNumber, router, updateLessonProgress]);
 
   const handlePrev = useCallback(() => {
     if (lessonCompleted === 0) return;
@@ -68,7 +61,7 @@ export default function KaiwaPage() {
         <Shuuryou lessonNo={parseInt(lessonNumber)} />
       </div>
       {lessonCompleted === 1 ? (
-        <LessonEnd />
+        <LessonEnd lessonNumber={parseInt(lessonNumber)} />
       ) : (
         <>
           <ReadingListeningSpeakingKaiwa data={data} />

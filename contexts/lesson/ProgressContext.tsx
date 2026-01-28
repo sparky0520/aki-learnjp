@@ -12,10 +12,12 @@ export function useProgressUpdater() {
   const updateLessonProgress = async (
     lessonNumber: string | number,
     exercise: string,
+    courseNumber: string | number = 1, // TODO: Make a current Lesson, Course, Exercise, exercise part context
   ) => {
     if (!currentUser) return;
 
     try {
+      // 1. Determine local updates
       const updates = {};
       switch (exercise) {
         case "renshuu_b":
@@ -29,15 +31,39 @@ export function useProgressUpdater() {
           break;
         case "kaiwa":
           updates.kaiwa_completed = true;
-          updates.completed = true;
-          updates.completed_at = new Date().toISOString();
+          break;
       }
 
+      // 2. Fetch CURRENT progress state from DB to know if *everything* is done
+      //    We'll use a GET endpoint or select directly if we were server-side.
+      //    Since we are client-side, we can call the GET endpoint we found:
+      //    /api/progress/[userId]/lesson/[lessonNumber]
+      const { data: currentProgress } = await axios.get(
+        `${apiUrl}/progress/${currentUser.id}/lesson/${lessonNumber}`,
+      );
+
+      // 3. Merge current progress with new updates
+      const newProgress = { ...currentProgress, ...updates };
+
+      // 4. Check if ALL required parts are completed
+      if (
+        newProgress.renshuu_b_completed &&
+        newProgress.renshuu_c_completed &&
+        newProgress.mondai_completed &&
+        newProgress.kaiwa_completed
+      ) {
+        updates.completed = true;
+        updates.completed_at = new Date().toISOString();
+        await updateCourseProgress(courseNumber, lessonNumber);
+      }
+
+      // 5. Send only the UPDATES (not the whole object)
       await axios.post(`${apiUrl}/progress/lesson`, {
         user_id: currentUser.id,
         lesson_number: parseInt(lessonNumber.toString()),
         updates: updates,
       });
+
       console.log("Progress updated");
     } catch (err) {
       console.error("Error updating progress:", err);
