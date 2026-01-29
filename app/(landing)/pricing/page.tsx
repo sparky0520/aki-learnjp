@@ -10,8 +10,13 @@ type PlanDetails = {
   period: "mo" | "yr";
 };
 
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+
 export default function PricingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
   const [selectedPlan, setSelectedPlan] = useState<PlanDetails>({
     name: "Basic",
     price: 29.99,
@@ -19,6 +24,10 @@ export default function PricingPage() {
   });
 
   const openPayment = (name: string, price: number) => {
+    if (!isSignedIn) {
+      router.push("/sign-in?redirect_url=/pricing");
+      return;
+    }
     setSelectedPlan({ name, price, period: "mo" });
     setIsModalOpen(true);
   };

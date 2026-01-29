@@ -1,14 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import Image from "next/image";
 
 export default async function Home() {
   const { userId } = await auth();
-  if (userId) {
-    redirect("/dashboard");
-  }
   return (
     <div className="flex flex-col min-h-screen overflow-hidden relative">
       <div className="grow flex flex-col items-center justify-center p-8 sm:p-20 w-full">
@@ -48,15 +44,27 @@ export default async function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-8">
-              <Link
-                href="/dashboard" /* Changed to dashboard for App entry */
-                className="group relative inline-block focus:outline-none focus:ring"
-              >
-                <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-black transition-transform group-hover:translate-y-0 group-hover:translate-x-0"></span>
-                <span className="relative inline-block border-2 border-current px-8 py-3 text-sm font-bold uppercase tracking-widest text-black bg-white">
-                  Start Learning
-                </span>
-              </Link>
+              {userId ? (
+                <Link
+                  href="/dashboard"
+                  className="group relative inline-block focus:outline-none focus:ring"
+                >
+                  <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-black transition-transform group-hover:translate-y-0 group-hover:translate-x-0"></span>
+                  <span className="relative inline-block border-2 border-current px-8 py-3 text-sm font-bold uppercase tracking-widest text-black bg-white">
+                    Dashboard
+                  </span>
+                </Link>
+              ) : (
+                <Link
+                  href="/sign-in?redirect_url=/"
+                  className="group relative inline-block focus:outline-none focus:ring"
+                >
+                  <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-black transition-transform group-hover:translate-y-0 group-hover:translate-x-0"></span>
+                  <span className="relative inline-block border-2 border-current px-8 py-3 text-sm font-bold uppercase tracking-widest text-black bg-white">
+                    Log In
+                  </span>
+                </Link>
+              )}
 
               <Link
                 href="/pricing"

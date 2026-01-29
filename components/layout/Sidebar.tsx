@@ -44,7 +44,7 @@ function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
           {/* Aki logo */}
-          <Link href="/" className="p-4 pl-0 select-none">
+          <Link href="/dashboard" className="p-4 pl-0 select-none">
             <Image src="/aki_logo.png" alt="Logo" width={100} height={50} />
           </Link>
           {/* Close sidebar icon */}

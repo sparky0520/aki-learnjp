@@ -46,43 +46,48 @@ export default function RazorpayCheckout({
     }
 
     try {
-      // 1. Create Order
-      // For demo, we are converting USD to INR roughly x85
-      const inrAmount = Math.round(amount * 85);
+      // 1. Create Subscription
+      // We need the planId based on the amount/planName passed in props.
+      // In a real app, pass planId as a prop. For now, we infer from env or props.
 
-      const response = await fetch("/api/razorpay/order", {
+      // MAPPING LOGIC (Temporary for 'wiring up' existing UI):
+      // If amount is approx $19.99 -> Basic
+      // If amount is approx $29.99 -> Premium
+
+      let planId = process.env.NEXT_PUBLIC_BASIC_PLAN_ID;
+      if (amount > 25) {
+        planId = process.env.NEXT_PUBLIC_PREMIUM_PLAN_ID;
+      }
+
+      // If env vars are missing, or logic fails, we might error out.
+      // Ensure specific plan IDs are passed effectively.
+
+      const response = await fetch("/api/razorpay/subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: inrAmount, currency: "INR" }),
+        body: JSON.stringify({ planId: planId || "plan_def_placeholder" }),
       });
 
-      const orderData = await response.json();
+      const subData = await response.json();
 
-      if (orderData.error) throw new Error(orderData.error);
-      if (!orderData.id) throw new Error("Server returned invalid order");
+      if (subData.error) throw new Error(subData.error);
+      if (!subData.id) throw new Error("Server returned invalid subscription");
 
       // 2. Open Razorpay Options
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_PLACEHOLDER",
-        amount: orderData.amount,
-        currency: orderData.currency,
+        subscription_id: subData.id,
         name: "Aki App",
         description: `Subscription to ${planName} Plan`,
-        // image: "/logo.png", // Add logo if available
-        order_id: orderData.id,
         handler: function (response) {
-          alert(
-            `Payment Successful! Payment ID: ${response.razorpay_payment_id}`,
-          );
-          // Verify payment on server here
+          alert("Subscription Successful! Redirecting...");
+          // Redirect to dashboard
+          window.location.href = "/dashboard";
         },
         prefill: {
           name: "User Name",
           email: "user@example.com",
-          contact: "9999999999",
-        },
-        notes: {
-          address: "Aki Corporate Office",
+          contact: "",
         },
         theme: {
           color: "#000000",
