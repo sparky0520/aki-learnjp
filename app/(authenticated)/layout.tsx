@@ -3,6 +3,7 @@ import AppLayoutContent from "@/components/layout/AppLayoutContent";
 import { auth } from "@clerk/nextjs/server";
 import { ClerkProvider } from "@clerk/nextjs";
 import AIGeneratedPageModal from "@/components/ui/AIGeneratedPageModal";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "../globals.css";
 
 export default async function AppLayout({
@@ -21,6 +22,7 @@ export default async function AppLayout({
             <AIGeneratedPageModal />
           </Providers>
         </ClerkProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
