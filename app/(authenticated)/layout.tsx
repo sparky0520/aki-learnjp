@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { ClerkProvider } from "@clerk/nextjs";
 import AIGeneratedPageModal from "@/components/ui/AIGeneratedPageModal";
 import "../globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default async function AppLayout({
   children,
@@ -21,6 +22,7 @@ export default async function AppLayout({
             <AIGeneratedPageModal />
           </Providers>
         </ClerkProvider>
+        <SpeedInsights />
       </body>
     </html>
   );

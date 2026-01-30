@@ -94,7 +94,7 @@ export default function DashboardPage() {
                       ) + "%",
                   }}
                 >
-                  <div className="text-right mr-3 text-xs text-white leading-5">
+                  <div className="text-right mr-3 text-sm pl-2 text-white leading-5">
                     {Math.ceil((completedLessons * 100) / content.totalLessons)}
                     %
                   </div>
@@ -115,14 +115,12 @@ export default function DashboardPage() {
                         description={e.description}
                         sourceCode={
                           <iframe
-                            width="500"
-                            height="281"
                             src={e.media.link}
                             title="YouTube video player"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerPolicy="strict-origin-when-cross-origin"
                             allowFullScreen
-                            className="max-w-full h-auto"
+                            className="max-w-full h-48"
                           ></iframe>
                         }
                       />
@@ -134,7 +132,7 @@ export default function DashboardPage() {
                         link={e.link}
                         description={e.description}
                         sourceCode={
-                          <div className="relative w-full max-w-md h-64">
+                          <div className="relative max-w-sm h-48">
                             <Image
                               src={e.media.link}
                               className="object-contain rounded-lg"
