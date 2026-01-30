@@ -7,6 +7,7 @@ import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
 import { useLastAccessed } from "../../contexts/lesson/LastAccessedContext";
 import { useAuth } from "../../contexts/auth/AuthContext";
+import FeedbackForm from "../feedback/FeedbackForm";
 
 // Constants
 
@@ -148,7 +149,8 @@ function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
         </div>
       </div>
       <div className="mt-4 border-t pt-4">
-        <div className="flex items-center gap-3">
+        <FeedbackForm />
+        <div className="flex items-center gap-3 mt-2">
           <UserButton
             appearance={{
               elements: {

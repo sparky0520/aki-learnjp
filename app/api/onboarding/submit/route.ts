@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     } = body;
 
     // Validate environment variables
-    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+    const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"); // Handle newlines in env var
     const sheetId = process.env.GOOGLE_SHEET_ID;
 
