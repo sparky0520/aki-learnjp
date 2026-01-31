@@ -3,6 +3,7 @@
 import { useContext } from "react";
 import AskAkiContext from "../../contexts/lesson/AkiContext";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 interface BottomBarProps {
   handleNext?: () => void;
@@ -22,49 +23,57 @@ function BottomBar({
   reading = false,
 }: BottomBarProps) {
   const { askAki, toggleAskAki } = useContext(AskAkiContext);
+  const pathname = usePathname();
+  const isCoursePage = pathname.includes("/course");
 
   return (
-    <div className="flex justify-between items-center sticky bottom-0">
-      {reading ? (
-        <div></div>
-      ) : (
-        <button
-          className="text-lg font-extrabold opacity-90 cursor-pointer"
-          onClick={handlePrev}
-        >
-          {"<"} 前
-        </button>
-      )}
-      <div
-        className="btn flex items-center cursor-pointer select-none"
-        style={{ zIndex: askAki ? 999 : "auto" }}
-        onClick={toggleAskAki}
-      >
-        {askAki && (
-          <Image
-            src="/assets/close.svg"
-            alt="cancel"
-            width={16}
-            height={16}
-            className="opacity-90 mr-2"
-          />
+    <div
+      className={`fixed bottom-0 right-0 z-30 bg-paper-bg border-t border-gray-200
+        ${isCoursePage ? "left-0" : "left-0 md:left-64"}
+      `}
+    >
+      <div className="flex justify-between items-center max-w-7xl mx-auto px-8 py-4 h-full">
+        {reading ? (
+          <div></div>
+        ) : (
+          <button
+            className="text-lg font-extrabold opacity-90 cursor-pointer"
+            onClick={handlePrev}
+          >
+            {"<"} 前
+          </button>
         )}
-        Ask Aki
-      </div>
-      {reading ? (
-        <div></div>
-      ) : (
-        <button
-          className="text-lg font-extrabold opacity-90 cursor-pointer"
-          onClick={handleNext}
+        <div
+          className="btn flex items-center cursor-pointer select-none"
+          style={{ zIndex: askAki ? 999 : "auto" }}
+          onClick={toggleAskAki}
         >
-          {nextFlag
-            ? "次 >"
-            : currentQuestion === finalQuestion
-              ? "提出 >"
-              : "次 >"}
-        </button>
-      )}
+          {askAki && (
+            <Image
+              src="/assets/close.svg"
+              alt="cancel"
+              width={16}
+              height={16}
+              className="opacity-90 mr-2"
+            />
+          )}
+          Ask Aki
+        </div>
+        {reading ? (
+          <div></div>
+        ) : (
+          <button
+            className="text-lg font-extrabold opacity-90 cursor-pointer"
+            onClick={handleNext}
+          >
+            {nextFlag
+              ? "次 >"
+              : currentQuestion === finalQuestion
+                ? "提出 >"
+                : "次 >"}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

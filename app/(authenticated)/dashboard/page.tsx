@@ -64,11 +64,11 @@ export default function DashboardPage() {
       <div>
         {/* Heading */}
         <div className="mb-4 text-lg font-extrabold opacity-90">こんにちは</div>
-        <div className="flex justify-between">
+        <div className="flex flex-col md:flex-row justify-between gap-8 md:gap-0">
           {/* Statistics */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-full md:w-2/3">
             {/* Progress */}
-            <div className="flex gap-30 items-center text-lg">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-30 items-start sm:items-center text-lg">
               <div>Lessons</div>
               <div className="flex gap-8 items-center">
                 <div>
@@ -120,7 +120,7 @@ export default function DashboardPage() {
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerPolicy="strict-origin-when-cross-origin"
                             allowFullScreen
-                            className="max-w-full h-48"
+                            className="max-w-full h-48 w-full"
                           ></iframe>
                         }
                       />
@@ -132,7 +132,7 @@ export default function DashboardPage() {
                         link={e.link}
                         description={e.description}
                         sourceCode={
-                          <div className="relative max-w-sm h-48">
+                          <div className="relative w-full max-w-sm h-48">
                             <Image
                               src={e.media.link}
                               className="object-contain rounded-lg"
@@ -148,7 +148,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-          <div className="p-2 flex flex-col gap-4 items-end text-lg text-blue-400">
+          <div className="p-2 flex flex-col gap-4 items-start md:items-end text-lg text-blue-400 w-full md:w-auto">
             {/* Practice Links */}
             <PracticeLink text="Practice Hiragana" href="/hatsuon" />
             <PracticeLink text="Practice Katakana" href="/hatsuon" />

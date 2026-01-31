@@ -78,7 +78,7 @@ export default function CourseChartPage() {
   }
 
   return (
-    <div className="text-lg h-screen flex flex-col">
+    <div className="text-lg h-full flex flex-col">
       {/* Heading */}
       <div className="mb-4">
         <Shuuryou lessonNo={1} />
@@ -90,7 +90,7 @@ export default function CourseChartPage() {
       </div>
 
       {/* Body element map */}
-      <div className="flex flex-col gap-10 items-center mt-10">
+      <div className="flex flex-col gap-10 items-center mt-10 px-4 md:px-0">
         {lessons.length === 0 ? (
           <div className="text-center text-gray-500">
             レッスンが見つかりません
@@ -98,7 +98,7 @@ export default function CourseChartPage() {
         ) : (
           lessons.map((lesson, i) => (
             <div
-              className="w-3/5 border-b rounded-lg border-gray-200 pb-7"
+              className="w-full md:w-3/5 border-b rounded-lg border-gray-200 pb-7"
               key={i}
             >
               {/* Header */}
@@ -145,7 +145,7 @@ export default function CourseChartPage() {
                 </div>
               </div>
               {/* Lesson Metadata */}
-              <div className="mt-3 ml-24">
+              <div className="mt-3 ml-4 md:ml-24">
                 {lesson.metaData && lesson.metaData.length > 0 ? (
                   lesson.metaData.map((topic: string, index: number) => (
                     <div key={index}>

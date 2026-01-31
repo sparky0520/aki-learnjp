@@ -59,7 +59,7 @@ function BunkeiPage() {
               <div
                 className={getClassName(
                   id,
-                  "flex gap-2 items-center highlightable border-0",
+                  "flex gap-2 highlightable border-0",
                 )}
                 key={id}
                 id={id}
@@ -68,7 +68,10 @@ function BunkeiPage() {
                 <div className="mr-2 text-lg font-extrabold opacity-90">
                   {index + 1}.
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: ele }} />
+                <div
+                  dangerouslySetInnerHTML={{ __html: ele }}
+                  className="text-start"
+                />
               </div>
             );
           })}

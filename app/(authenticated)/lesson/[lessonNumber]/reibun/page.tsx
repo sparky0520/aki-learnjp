@@ -62,7 +62,7 @@ function ReibunPage() {
               <div
                 className={getClassName(
                   id,
-                  "flex gap-4 highlightable p-2 border-0 text-start",
+                  "flex gap-4 highlightable p-2 border-0",
                 )}
                 key={id}
                 id={id}
@@ -75,7 +75,7 @@ function ReibunPage() {
                   {parts.map((e: string, i: number) => (
                     <div
                       key={id + i}
-                      className={i > 0 ? `ml-${i * 8} mt-2` : ""}
+                      className={i > 0 ? `ml-${i * 8} mt-2` : "" + "text-start"}
                       dangerouslySetInnerHTML={{ __html: e }}
                     />
                   ))}

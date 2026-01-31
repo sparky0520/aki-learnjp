@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import BottomBar from "../../../../components/layout/BottomBar";
 
 function LessonPage() {
   const params = useParams();
@@ -39,7 +38,7 @@ function LessonPage() {
   }
 
   return (
-    <div className="flex flex-col justify-between h-full bg-paper-bg p-8">
+    <div className="flex flex-col justify-between h-full bg-paper-bg">
       <div className="flex flex-col gap-8 max-w-4xl">
         {/* Heading
         <div className="text-2xl font-bold text-gray-800">
