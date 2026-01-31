@@ -28,7 +28,7 @@ function BottomBar({
 
   return (
     <div
-      className={`fixed bottom-0 right-0 z-30 bg-paper-bg border-t border-gray-200
+      className={`fixed bottom-0 right-0 z-30 bg-transparent
         ${isCoursePage ? "left-0" : "left-0 md:left-64"}
       `}
     >
