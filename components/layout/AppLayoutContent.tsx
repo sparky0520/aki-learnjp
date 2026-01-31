@@ -112,11 +112,11 @@ function MainLayout({
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 h-full overflow-y-auto custom-scroll w-full relative">
+      <main className="flex-1 h-full overflow-y-auto custom-scroll w-full relative">
         <div className="p-4 md:p-8 w-full max-w-7xl mx-auto pb-24">
           {children}
         </div>
-      </div>
+      </main>
       <AIGeneratedPageModal />
     </div>
   );
