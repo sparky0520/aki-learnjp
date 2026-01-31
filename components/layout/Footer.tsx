@@ -114,9 +114,12 @@ const Footer = () => {
                   className="flex items-center gap-2 justify-center md:justify-start hover:text-ink group"
                 >
                   <Mail size={16} />
-                  <span className="group-hover:underline decoration-1 underline-offset-4">
-                    support@aki.ai
-                  </span>
+                  <a
+  href="mailto:darshjain05.in@gmail.com"
+  className="group-hover:underline decoration-1 underline-offset-4"
+>
+  darshjain05.in@gmail.com
+</a>
                 </a>
               </li>
               <li className="text-xs opacity-60 pt-4">
