@@ -40,7 +40,7 @@ export async function GET() {
           },
         },
         {
-          link: "https://dashboard.kanjialive.com",
+          link: "https://app.kanjialive.com",
           description:
             "Learn the correct way to write kanji and it's meaning using KanjiAlive",
           media: {
