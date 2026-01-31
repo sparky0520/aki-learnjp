@@ -4,6 +4,7 @@ import { useContext } from "react";
 import AskAkiContext from "../../contexts/lesson/AkiContext";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useLayout } from "../../contexts/layout/LayoutContext";
 
 interface BottomBarProps {
   handleNext?: () => void;
@@ -24,12 +25,13 @@ function BottomBar({
 }: BottomBarProps) {
   const { askAki, toggleAskAki } = useContext(AskAkiContext);
   const pathname = usePathname();
+  const { sidebarVisible } = useLayout();
   const isCoursePage = pathname.includes("/course");
 
   return (
     <div
       className={`fixed bottom-0 right-0 z-30 bg-transparent
-        ${isCoursePage ? "left-0" : "left-0 md:left-64"}
+        ${isCoursePage ? "left-0" : sidebarVisible ? "left-0 md:left-64" : "left-0"}
       `}
     >
       <div className="flex justify-between items-center max-w-7xl mx-auto px-8 py-4 h-full">

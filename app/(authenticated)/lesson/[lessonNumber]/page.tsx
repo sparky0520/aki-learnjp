@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Shuuryou from "@/components/lesson/shared/Shuuryou";
 
 function LessonPage() {
   const params = useParams();
@@ -39,6 +40,7 @@ function LessonPage() {
 
   return (
     <div className="flex flex-col justify-between h-full bg-paper-bg">
+      <Shuuryou lessonNo={content.lessonNo} />
       <div className="flex flex-col gap-8 max-w-4xl">
         {/* Heading
         <div className="text-2xl font-bold text-gray-800">

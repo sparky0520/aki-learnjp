@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { usePathname } from "next/navigation";
 import AskAkiContext from "../../contexts/lesson/AkiContext";
 import AIGeneratedPageModal from "../ui/AIGeneratedPageModal";
 import Image from "next/image";
+import { LayoutProvider, useLayout } from "../../contexts/layout/LayoutContext";
 
 export default function AppLayoutContent({
   children,
@@ -14,9 +15,23 @@ export default function AppLayoutContent({
   children: React.ReactNode;
   userId: string;
 }) {
+  return (
+    <LayoutProvider>
+      <MainLayout userId={userId}>{children}</MainLayout>
+    </LayoutProvider>
+  );
+}
+
+function MainLayout({
+  children,
+  userId,
+}: {
+  children: React.ReactNode;
+  userId: string;
+}) {
   const pathname = usePathname();
   const { askAki } = useContext(AskAkiContext);
-  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const { sidebarVisible, setSidebarVisible } = useLayout();
 
   useEffect(() => {
     if (!userId) {
@@ -35,56 +50,62 @@ export default function AppLayoutContent({
         <div className="absolute border-15 border-[#00c3ff] inset-0 rounded-lg blur-xl pointer-events-none animate-subtle-pulse z-50"></div>
       )}
 
-      {/* Mobile Header / Toggle */}
-      <div className="md:hidden absolute top-4 left-4 z-40">
-        {!sidebarVisible && (
-          <Image
-            src="/assets/arrow_menu_open.svg"
-            alt="Open sidebar"
-            width={32}
-            height={32}
-            className="cursor-pointer opacity-80 hover:opacity-100"
-            onClick={() => setSidebarVisible(true)}
-          />
-        )}
-      </div>
-
-      {/* Sidebar Container */}
+      {/* Sidebar logic */}
       {showSidebar && (
         <>
-          {/* Desktop Sidebar: Static */}
-          <div className="hidden md:block border-r border-gray-400 w-64 min-w-64 h-full overflow-y-auto no-scrollbar">
+          {/* Desktop Sidebar Logic */}
+          <div className="hidden md:block h-full transition-all duration-300 ease-in-out">
             {sidebarVisible ? (
-              <div className="p-8 h-full">
-                <Sidebar setSidebarVisible={setSidebarVisible} />
+              <div className="border-r border-gray-400 w-64 min-w-64 h-full overflow-y-auto no-scrollbar">
+                <div className="p-8 h-full">
+                  <Sidebar setSidebarVisible={setSidebarVisible} />
+                </div>
               </div>
             ) : (
-              <div className="mt-12 flex flex-col items-start px-4">
+              /* Desktop toggle when sidebar is closed (unmounted) */
+              <div className="absolute top-8 left-8 z-40">
                 <Image
                   src="/assets/arrow_menu_open.svg"
                   alt="Open sidebar"
                   width={24}
                   height={24}
-                  className="opacity-90 cursor-pointer"
+                  className="opacity-90 cursor-pointer hover:opacity-100"
                   onClick={() => setSidebarVisible(true)}
                 />
               </div>
             )}
           </div>
 
-          {/* Mobile Sidebar: Overlay/Drawer */}
-          <div
-            className={`
-                fixed inset-0 z-50 transform transition-transform duration-300 ease-in-out md:hidden
+          {/* Mobile Sidebar Logic (Drawer) */}
+          <div className="md:hidden">
+            {/* Mobile Header / Toggle */}
+            {!sidebarVisible && (
+              <div className="absolute top-4 left-4 z-40">
+                <Image
+                  src="/assets/arrow_menu_open.svg"
+                  alt="Open sidebar"
+                  width={32}
+                  height={32}
+                  className="cursor-pointer opacity-80 hover:opacity-100"
+                  onClick={() => setSidebarVisible(true)}
+                />
+              </div>
+            )}
+
+            {/* Mobile Overlay */}
+            <div
+              className={`
+                fixed inset-0 z-50 transform transition-transform duration-300 ease-in-out
                 ${sidebarVisible ? "translate-x-0" : "-translate-x-full"}
             `}
-          >
-            <div
-              className="absolute inset-0 bg-black/50"
-              onClick={() => setSidebarVisible(false)}
-            ></div>
-            <div className="relative bg-paper-bg w-4/5 max-w-xs h-full p-6 shadow-2xl overflow-y-auto">
-              <Sidebar setSidebarVisible={setSidebarVisible} />
+            >
+              <div
+                className="absolute inset-0 bg-black/50"
+                onClick={() => setSidebarVisible(false)}
+              ></div>
+              <div className="relative bg-paper-bg w-4/5 max-w-xs h-full p-6 shadow-2xl overflow-y-auto">
+                <Sidebar setSidebarVisible={setSidebarVisible} />
+              </div>
             </div>
           </div>
         </>

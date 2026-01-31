@@ -11,7 +11,11 @@ import FeedbackForm from "../feedback/FeedbackForm";
 
 // Constants
 
-function Sidebar({ setSidebarVisible }: { setSidebarVisible: (v) => void }) {
+function Sidebar({
+  setSidebarVisible,
+}: {
+  setSidebarVisible: (visible: boolean | ((prev: boolean) => boolean)) => void;
+}) {
   const pathname = usePathname();
   const [progress, setProgress] = useState(null);
   const { lastAccessed } = useLastAccessed();
