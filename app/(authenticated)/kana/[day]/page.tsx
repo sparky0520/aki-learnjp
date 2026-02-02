@@ -7,12 +7,15 @@ import AudioButton from "@/components/kana/AudioButton";
 // import SpeechCheck from "@/components/kana/SpeechCheck";
 import { ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import kanaStrokesData from "@/lib/kana-strokes.json";
+
+// Define schema for strokes JSON to satisfy TS if needed, or just cast
+const kanaStrokes = kanaStrokesData as Record<string, string[]>;
 
 // Define the step type for the carousel
 type ExerciseStep =
   | { type: "char"; content: string; romaji?: string }
-  | { type: "word"; content: string; romaji: string }
+  | { type: "word"; content: string; romaji: string; translation?: string }
   | { type: "sentence"; content: string; translation: string };
 
 export default function DayPage({
@@ -20,16 +23,7 @@ export default function DayPage({
 }: {
   params: Promise<{ day: string }>;
 }) {
-  const router = useRouter();
   const canvasRef = useRef<KanaCanvasHandle>(null);
-  // Unwrap params using React.use() or await (but in client component with async prop is tricky in standard React,
-  // Next.js 15 allows `params` as Promise in Page props.
-  // However, for client components, strict typing might need `use` hook or `await` in parent or treat as standard prop if not async.
-  // In Next.js 15 app router `params` is a Promise.
-  // Safe way: usage of `use` hook (available in React "actions" but also standard in 19 for promises).
-  // Or simply await it if the component was async (Server Component), but this is a Client Component.
-  // Actually, client page components receive `params` as a Promise in Next.js 15.
-  // Let's use `use(params)` pattern.
 
   const { day } = use(params);
   const dayNum = parseInt(day);
@@ -48,19 +42,15 @@ export default function DayPage({
       const newSteps: ExerciseStep[] = [];
 
       // Add chars
-      // Chars in CSV data like "あ" or "あ (a)"?
-      // The data has clean chars in array. Romaji is not explicitly in `chars` array in `KANA_DATA`
-      // (some entries have it, but standard ones don't).
-      // I might need a look up or just infer execution.
-      // For simplicity, let's just show content.
-      // Actually `KANA_DATA` `chars` are "あ", "い"...
-      // Wait, `KANA_DATA` definition: `chars: string[]`.
-      // Some chars might include parens based on my manual review of `lib/kana-data.ts`.
-      // Let's clean them if needed.
       d.chars.forEach((c) => newSteps.push({ type: "char", content: c }));
 
       d.words.forEach((w) =>
-        newSteps.push({ type: "word", content: w.text, romaji: w.romaji }),
+        newSteps.push({
+          type: "word",
+          content: w.text,
+          romaji: w.romaji,
+          translation: w.translation,
+        }),
       );
 
       if (d.sentence) {
@@ -76,7 +66,11 @@ export default function DayPage({
   }, [dayNum]);
 
   const handleNext = () => {
-    canvasRef.current?.clearCanvas();
+    if (canvasRef.current) {
+      // clearCanvas now handles resetting state, but we might want to ensure it's clean
+      canvasRef.current.clearCanvas();
+    }
+
     if (currentStepIndex < steps.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
     } else {
@@ -85,7 +79,10 @@ export default function DayPage({
   };
 
   const handlePrev = () => {
-    canvasRef.current?.clearCanvas();
+    if (canvasRef.current) {
+      canvasRef.current.clearCanvas();
+    }
+
     if (currentStepIndex > 0) {
       setCurrentStepIndex(currentStepIndex - 1);
     }
@@ -143,6 +140,14 @@ export default function DayPage({
   const currentStep = steps[currentStepIndex];
   const progress = ((currentStepIndex + 1) / steps.length) * 100;
 
+  // Get strokes for current step if it's a character
+  // Also filtering out combos based on existing data not having them or strict check
+  // The user requested: "animations are there only for individual characters"
+  const currentStrokes =
+    currentStep.type === "char" && currentStep.content.length === 1
+      ? kanaStrokes[currentStep.content]
+      : undefined;
+
   return (
     <div className="min-h-screen text-ink flex flex-col">
       {/* Top Bar */}
@@ -185,9 +190,13 @@ export default function DayPage({
             {currentStep.content}
           </h2>
           {/* Subtext (Romaji/Translation) */}
-          <div className="text-2xl text-gray-500 font-medium h-8">
+          <div className="text-2xl text-gray-500 font-medium h-8 flex flex-col items-center justify-center">
             {currentStep.type === "char" && currentStep.romaji}
-            {currentStep.type === "word" && currentStep.romaji}
+            {currentStep.type === "word" && (
+              <div className="text-gray-400 mt-1">
+                {currentStep.translation}
+              </div>
+            )}
             {currentStep.type === "sentence" && currentStep.translation}
           </div>
         </div>
@@ -206,12 +215,6 @@ export default function DayPage({
               }
               className="scale-125"
             />
-            {/*
-            TODO: Re-add speech check without Web API
-            <SpeechCheck
-              key={`mic-${currentStep.content}`}
-              targetText={currentStep.content}
-            /> */}
           </div>
 
           {/* Canvas */}
@@ -221,7 +224,7 @@ export default function DayPage({
                 Practice Writing
               </span>
             </div>
-            <KanaCanvas ref={canvasRef} />
+            <KanaCanvas ref={canvasRef} strokes={currentStrokes} />
           </div>
         </div>
       </div>
