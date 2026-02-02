@@ -45,7 +45,7 @@ export default function KanaPopup() {
         </button>
 
         <h3 className="text-xl font-bold text-gray-900 mb-2">
-          Master Japanese! 🇯🇵
+          Master Japanese Kana!
         </h3>
 
         <p className="text-gray-600 mb-6">
