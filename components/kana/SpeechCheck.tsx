@@ -22,10 +22,30 @@ interface SpeechRecognitionErrorEvent extends Event {
   error: string;
 }
 
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
+  onresult:
+    | ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any)
+    | null;
+  onerror:
+    | ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any)
+    | null;
+  onend: ((this: SpeechRecognition, ev: Event) => any) | null;
+}
+
 // Extend Window interface for webkitSpeechRecognition
 declare global {
   interface Window {
-    webkitSpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: {
+      new (): SpeechRecognition;
+    };
   }
 }
 
