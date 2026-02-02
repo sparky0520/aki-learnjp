@@ -12,6 +12,8 @@ import Image from "next/image";
 // Constants
 const apiUrl = "/api";
 
+import KanaPopup from "./_components/KanaPopup";
+
 export default function DashboardPage() {
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,6 +63,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col justify-between h-full">
+      <KanaPopup />
       <div>
         {/* Heading */}
         <div className="mb-4 text-lg font-extrabold opacity-90">こんにちは</div>
@@ -150,9 +153,8 @@ export default function DashboardPage() {
           </div>
           <div className="p-2 flex flex-col gap-4 items-start md:items-end text-lg text-blue-400 w-full md:w-auto">
             {/* Practice Links */}
-            <PracticeLink text="Practice Hiragana" href="/hatsuon" />
-            <PracticeLink text="Practice Katakana" href="/hatsuon" />
-            <PracticeLink text="Practice Kanji" href="/hatsuon" />
+            <PracticeLink text="Learn Japanese Kana" href="/kana" />
+            <PracticeLink text="Character Chart" href="/hatsuon" />
           </div>
         </div>
       </div>
