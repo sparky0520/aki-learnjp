@@ -110,16 +110,13 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li>
                 <a
-                  href="mailto:support@aki.ai"
+                  href="mailto:darshjain05.in@gmail.com"
                   className="flex items-center gap-2 justify-center md:justify-start hover:text-ink group"
                 >
                   <Mail size={16} />
-                  <a
-  href="mailto:darshjain05.in@gmail.com"
-  className="group-hover:underline decoration-1 underline-offset-4"
->
-  darshjain05.in@gmail.com
-</a>
+                  <span className="group-hover:underline decoration-1 underline-offset-4">
+                    darshjain05.in@gmail.com
+                  </span>
                 </a>
               </li>
               <li className="text-xs opacity-60 pt-4">
