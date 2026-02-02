@@ -195,5 +195,5 @@ html {
 .animate-draw-stroke {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
-  animation: drawStroke 1s linear forwards;
+  animation: drawStroke 2s linear forwards;
 }
