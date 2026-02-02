@@ -4,7 +4,7 @@ import { use, useEffect, useState, useRef } from "react";
 import { getDayData, KanaDay } from "@/lib/kana-data";
 import KanaCanvas, { KanaCanvasHandle } from "@/components/kana/KanaCanvas";
 import AudioButton from "@/components/kana/AudioButton";
-import SpeechCheck from "@/components/kana/SpeechCheck";
+// import SpeechCheck from "@/components/kana/SpeechCheck";
 import { ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
