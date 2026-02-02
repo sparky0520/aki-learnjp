@@ -206,10 +206,12 @@ export default function DayPage({
               }
               className="scale-125"
             />
+            {/*
+            TODO: Re-add speech check without Web API
             <SpeechCheck
               key={`mic-${currentStep.content}`}
               targetText={currentStep.content}
-            />
+            /> */}
           </div>
 
           {/* Canvas */}
