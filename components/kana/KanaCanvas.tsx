@@ -230,7 +230,7 @@ const KanaCanvas = forwardRef<KanaCanvasHandle, KanaCanvasProps>(
                   className="animate-draw-stroke"
                   style={{
                     // Stagger animations
-                    animationDelay: `${i * 0.8}s`,
+                    animationDelay: `${1 + i * 0.8}s`,
                   }}
                 />
               ))}
