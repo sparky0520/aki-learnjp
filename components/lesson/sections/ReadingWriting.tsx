@@ -36,7 +36,7 @@ function ReadingWriting({ data }: ReadingWritingProps) {
         />
       )}
       {/* Rei */}
-      <div className="flex items-center">
+      <div className="flex flex-wrap items-center">
         <div>
           <ruby>
             例<rt>れい</rt>
@@ -48,10 +48,12 @@ function ReadingWriting({ data }: ReadingWritingProps) {
         <div dangerouslySetInnerHTML={{ __html: data.rei[1] }} />
       </div>
       {/* Question */}
-      <div className="mt-4 text-2xl flex items-center">
-        <div>{data.part}）</div>
-        <div dangerouslySetInnerHTML={{ __html: data.question }} />
-        <div>{"　→　"}</div>
+      <div className="mt-4 text-2xl flex flex-wrap items-center">
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `${data.part}）${data.question}`,
+          }}
+        />
       </div>
       {/* Input */}
       <TextInput

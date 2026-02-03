@@ -26,7 +26,7 @@ function ListeningWritingMondai2({ data }: { data: Mondai2Data }) {
       {/* Text */}
       <div>{content.text_content}</div>
       {/* Rei */}
-      <div className="flex gap-2 items-center justify-center">
+      <div className="flex flex-wrap gap-2 items-center justify-center">
         {/* Rei text */}
         <div className="text-lg font-extrabold opacity-90">
           <ruby>

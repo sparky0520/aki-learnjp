@@ -10,7 +10,7 @@ function NewsInsight({
   link: string;
 }) {
   return (
-    <a href={link} target="_blank" className="w-max">
+    <a href={link} target="_blank" className="w-full md:w-max">
       {sourceCode}
       <div className="mt-3 hover:text-blue-400">{description}</div>
     </a>

@@ -46,7 +46,7 @@ function ListeningWritingMondai456({
     <div className="flex flex-col items-center gap-4">
       {/* Text */}
       <div>{content.text_content}</div>
-      <div className="flex items-center text-lg font-extrabold opacity-90">
+      <div className="flex flex-wrap items-center text-lg font-extrabold opacity-90">
         <div>
           <ruby>
             例<rt>れい</rt>
@@ -57,7 +57,7 @@ function ListeningWritingMondai456({
       </div>
       <div className="flex flex-col gap-8 mt-4 w-full px-10">
         {content.questions.map((ele, i) => (
-          <div className="text-lg flex gap-3 items-baseline" key={i}>
+          <div className="text-lg flex flex-wrap gap-3 items-baseline" key={i}>
             {currentQuestion + 1 !== 6 && ( // specific check from original code
               <span className="font-extrabold opacity-90">{i + 1}.</span>
             )}

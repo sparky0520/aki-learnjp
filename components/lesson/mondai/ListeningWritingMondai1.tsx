@@ -32,7 +32,7 @@ function ListeningWritingMondai1({ data }: { data: Mondai1Data }) {
       <PlaybackBar audio={content.audio_url} />
       {/* Text */}
       <div>{content.text_content}</div>
-      <div className="flex items-center text-lg font-extrabold opacity-90">
+      <div className="flex flex-wrap items-center text-lg font-extrabold opacity-90">
         <div>
           <ruby>
             例<rt>れい</rt>
@@ -42,7 +42,10 @@ function ListeningWritingMondai1({ data }: { data: Mondai1Data }) {
         <div dangerouslySetInnerHTML={{ __html: content.rei }} />
       </div>
       {Array.from({ length: 5 }).map((e, i) => (
-        <div className="text-lg flex items-end gap-3" key={"mondai1" + i}>
+        <div
+          className="text-lg flex flex-wrap items-end gap-3"
+          key={"mondai1" + i}
+        >
           <span className="font-extrabold opacity-90">{i + 1}.</span>
           <TextInput
             partNo={i + 1}

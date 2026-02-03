@@ -1,6 +1,5 @@
 import Image from "../../ui/Image";
 import KaiwaTextSnippet from "./KaiwaTextSnippet";
-import PlaybackBar from "../shared/PlaybackBar";
 
 interface KaiwaData {
   img?: string;
@@ -14,9 +13,9 @@ function ReadingListeningSpeakingKaiwa({ data }: { data: KaiwaData }) {
 
   return (
     <div className="flex flex-col items-center gap-8">
-      <div className="flex gap-8 items-center w-full max-w-5xl">
+      <div className="flex flex-col md:flex-row gap-8 items-center w-full max-w-5xl">
         {/* Question */}
-        <div className="w-1/2 flex justify-center">
+        <div className="w-full md:w-1/2 flex justify-center">
           {data.img && (
             <Image
               src={data.img}
@@ -25,7 +24,7 @@ function ReadingListeningSpeakingKaiwa({ data }: { data: KaiwaData }) {
             />
           )}
         </div>
-        <div className="w-1/2">
+        <div className="w-full md:w-1/2">
           {/* Heading */}
           <div
             className="text-center text-lg font-bold mb-2"

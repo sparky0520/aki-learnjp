@@ -123,7 +123,7 @@ export default function DashboardPage() {
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerPolicy="strict-origin-when-cross-origin"
                             allowFullScreen
-                            className="max-w-full h-48 w-full"
+                            className="w-full h-auto aspect-video md:h-48 md:aspect-auto"
                           ></iframe>
                         }
                       />
@@ -135,7 +135,7 @@ export default function DashboardPage() {
                         link={e.link}
                         description={e.description}
                         sourceCode={
-                          <div className="relative w-full max-w-sm h-48">
+                          <div className="relative w-full h-auto aspect-video md:h-48 md:max-w-sm md:aspect-auto">
                             <Image
                               src={e.media.link}
                               className="object-contain rounded-lg"

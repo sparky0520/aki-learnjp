@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "../../ui/Image";
 
 // Assuming data structure based on usage in original code
@@ -16,7 +16,7 @@ function ReadingSpeakingRenshuuC({ data }: { data: RenshuuCData }) {
   return (
     <div className="flex flex-col items-center gap-8">
       {/* Rei */}
-      <div className="w-max max-w-5/6 flex gap-8 items-end">
+      <div className="w-full md:w-max md:max-w-5/6 flex flex-col-reverse md:flex-row gap-8 items-center md:items-end">
         {/* Text */}
         <div className="text-lg">
           <div>

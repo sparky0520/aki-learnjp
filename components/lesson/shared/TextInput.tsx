@@ -19,7 +19,7 @@ function TextInput({
         maxLength={1000}
         type="text"
         value={input}
-        className="border-b border-dashed w-[600px] text-2xl font-extrabold opacity-90 p-2 focus:outline-none custom-scroll bg-transparent"
+        className="border-b border-dashed w-[85vw] md:w-[600px] text-2xl font-extrabold opacity-90 p-2 focus:outline-none custom-scroll bg-transparent"
         onChange={(e) => {
           setInput(e.target.value);
           handleTextChange(e);

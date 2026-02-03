@@ -72,7 +72,7 @@ function ListeningWritingMondai3({ data }: { data: Mondai3Data }) {
         ２：（○）
       </div>
       {/* Input */}
-      <div className="flex gap-5 mt-4">
+      <div className="flex flex-wrap gap-5 mt-4">
         <div
           id="1"
           className="select-none text-2xl font-extrabold opacity-90 p-4 border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
