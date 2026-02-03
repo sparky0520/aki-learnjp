@@ -186,7 +186,9 @@ export default function DayPage({
                 ? "Word"
                 : "Sentence"}
           </span>
-          <h2 className="text-7xl sm:text-9xl font-bold tracking-tight text-ink drop-shadow-sm font-jp">
+          <h2
+            className={`font-bold tracking-tight text-ink drop-shadow-sm font-jp ${currentStep.type === "sentence" ? "text-5xl sm:text-7xl" : "text-7xl sm:text-9xl"}`}
+          >
             {currentStep.content}
           </h2>
           {/* Subtext (Romaji/Translation) */}
