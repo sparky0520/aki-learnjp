@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Shuuryou from "@/components/lesson/shared/Shuuryou";
@@ -55,7 +56,19 @@ function LessonPage() {
 
         {/* Lesson description */}
 
-        <ReactMarkdown>{content.lessonDescription}</ReactMarkdown>
+        <div className="leading-9 text-[#2c3e50]">
+          <ReactMarkdown
+            rehypePlugins={[rehypeRaw]}
+            components={{
+              h1: ({ node, ...props }) => (
+                <h1 className="text-xl font-semibold mt-8 mb-4" {...props} />
+              ),
+              // Add other custom components as needed
+            }}
+          >
+            {content.lessonDescription}
+          </ReactMarkdown>
+        </div>
 
         {/* Start link (matching original repo) */}
         <div className="mt-4 text-lg">
