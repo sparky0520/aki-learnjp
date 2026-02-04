@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-
+import ReactMarkdown from "react-markdown";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Shuuryou from "@/components/lesson/shared/Shuuryou";
@@ -54,10 +54,8 @@ function LessonPage() {
         ></div>
 
         {/* Lesson description */}
-        <div
-          className="text-lg leading-relaxed text-gray-700"
-          dangerouslySetInnerHTML={{ __html: content.lessonDescription }}
-        ></div>
+
+        <ReactMarkdown>{content.lessonDescription}</ReactMarkdown>
 
         {/* Start link (matching original repo) */}
         <div className="mt-4 text-lg">
