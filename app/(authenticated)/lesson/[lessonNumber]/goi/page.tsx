@@ -48,10 +48,15 @@ function GoiPage() {
     <div className="flex flex-col justify-between h-full">
       <div className="flex-1 flex flex-col">
         <div className="mb-4">
-          <Shuuryou lessonNo={parseInt(lessonNumber)} />
+          <Shuuryou lessonNo={parseInt(lessonNumber)} page="goi" />
         </div>
         {/* Content */}
         <div className="flex flex-col gap-8 pb-2 text-lg flex-1">
+          <div className="flex justify-between text-center">
+            <div className="w-1/3">Kana</div>
+            <div className="w-1/3">Kanji</div>
+            <div className="w-1/3">English</div>
+          </div>
           {content.map((value, index) => {
             const id = `goi-${index};`;
             return (

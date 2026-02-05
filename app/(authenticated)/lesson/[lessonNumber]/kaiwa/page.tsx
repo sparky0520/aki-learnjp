@@ -58,7 +58,7 @@ export default function KaiwaPage() {
     <div className="flex flex-col justify-between h-full">
       {/* shuuryou */}
       <div className="mb-4">
-        <Shuuryou lessonNo={parseInt(lessonNumber)} />
+        <Shuuryou lessonNo={parseInt(lessonNumber)} page="kaiwa" />
       </div>
       {lessonCompleted === 1 ? (
         <LessonEnd lessonNumber={parseInt(lessonNumber)} />

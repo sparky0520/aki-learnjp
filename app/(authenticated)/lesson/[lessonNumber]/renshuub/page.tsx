@@ -8,6 +8,7 @@ import axios from "axios";
 import { useAnswers } from "@/contexts/lesson/AnswersContext";
 import { useProgressUpdater } from "@/contexts/lesson/ProgressContext";
 import BottomBar from "@/components/layout/BottomBar";
+import Shuuryou from "@/components/lesson/shared/Shuuryou";
 
 const apiUrl = "/api";
 
@@ -95,7 +96,7 @@ function RenshuuBPage() {
   return (
     <div className="flex flex-col justify-between min-h-full h-full">
       <div>
-        {/* <Shuuryou lessonNo={1} /> */}
+        <Shuuryou lessonNo={parseInt(lessonNumber)} page="renshuub" />
         {currentQuestion < finalQuestion && (
           <div className="mb-4 bold-text">
             Q. {currentQuestion + 1}/{finalQuestion}

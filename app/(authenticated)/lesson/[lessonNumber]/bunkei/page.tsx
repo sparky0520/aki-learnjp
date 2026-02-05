@@ -49,7 +49,7 @@ function BunkeiPage() {
       <div className="flex-1 overflow-hidden flex flex-col">
         {/* shuuryou */}
         <div className="mb-4">
-          <Shuuryou lessonNo={parseInt(lessonNumber)} />
+          <Shuuryou lessonNo={parseInt(lessonNumber)} page="bunkei" />
         </div>
         {/* Content */}
         <div className="flex flex-col gap-4 text-lg overflow-y-auto custom-scroll flex-1 pb-4">

@@ -7,6 +7,7 @@ import BottomBar from "@/components/layout/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useProgressUpdater } from "@/contexts/lesson/ProgressContext";
+import Shuuryou from "@/components/lesson/shared/Shuuryou";
 const apiUrl = "/api";
 
 export default function RenshuuCPage() {
@@ -78,7 +79,7 @@ export default function RenshuuCPage() {
   return (
     <div className="flex flex-col justify-between h-full">
       <div>
-        {/* <Shuuryou lessonNo={1} /> */}
+        <Shuuryou lessonNo={parseInt(lessonNumber)} page="renshuuc" />
         {currentQuestion < finalQuestion && (
           <div className="mb-4 text-lg font-bold">
             Q. {currentQuestion + 1}/{finalQuestion}

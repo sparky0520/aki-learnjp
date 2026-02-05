@@ -47,7 +47,7 @@ function RenshuuAPage() {
     <div className="flex flex-col justify-between min-h-full h-full">
       <div className="flex-1 flex flex-col">
         <div className="mb-4">
-          <Shuuryou lessonNo={parseInt(lessonNumber)} />
+          <Shuuryou lessonNo={parseInt(lessonNumber)} page="renshuua" />
         </div>
         {/* Content */}
         <div className="flex flex-col gap-8 pb-2 flex-1">

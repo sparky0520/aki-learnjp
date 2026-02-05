@@ -11,6 +11,7 @@ import BottomBar from "@/components/layout/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useAnswers } from "@/contexts/lesson/AnswersContext";
+import Shuuryou from "@/components/lesson/shared/Shuuryou";
 
 const apiUrl = "/api";
 
@@ -88,6 +89,7 @@ export default function MondaiPage() {
   return (
     <div className="flex flex-col justify-between h-full">
       <div>
+        {/* <Shuuryou lessonNo={parseInt(lessonNumber)} page="mondai" /> */}
         {currentQuestion < parts.length && (
           <div className="mb-4 text-lg font-bold">
             Q. {currentQuestion + 1}/{parts.length}

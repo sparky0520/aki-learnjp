@@ -48,7 +48,7 @@ function ReibunPage() {
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="mb-4">
           {/* shuuryou */}
-          <Shuuryou lessonNo={parseInt(lessonNumber)} />
+          <Shuuryou lessonNo={parseInt(lessonNumber)} page="reibun" />
         </div>
         {/* Content */}
         <div className="flex flex-col gap-4 pb-2 overflow-y-auto custom-scroll text-lg flex-1">
