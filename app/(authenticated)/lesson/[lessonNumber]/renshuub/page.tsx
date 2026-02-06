@@ -112,6 +112,8 @@ function RenshuuBPage() {
           active_question_text: parts[currentQuestion]?.questions?.[index],
         }}
         correctAnswer={parts[currentQuestion]?.correct_answers?.[index]}
+        userAnswer={answers}
+        mistakes={0}
       />
       <div>
         <Shuuryou lessonNo={parseInt(lessonNumber)} page="renshuub" />

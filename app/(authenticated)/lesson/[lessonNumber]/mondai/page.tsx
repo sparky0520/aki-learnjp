@@ -113,6 +113,8 @@ export default function MondaiPage() {
         lessonAboutContent={lessonDescription}
         currentQuestion={parts[currentQuestion]}
         correctAnswer={correctAnswer}
+        userAnswer={answers}
+        mistakes={0} // Placeholder until mistake tracking is implemented
       />
       <div>
         {/* <Shuuryou lessonNo={parseInt(lessonNumber)} page="mondai" /> */}

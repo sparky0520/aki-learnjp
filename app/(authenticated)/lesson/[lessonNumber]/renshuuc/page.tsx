@@ -100,6 +100,8 @@ export default function RenshuuCPage() {
           parts[currentQuestion]?.correct_answers?.[index] ||
           "Practice the dialogue flow"
         }
+        userAnswer={null}
+        mistakes={0}
       />
       <div>
         <Shuuryou lessonNo={parseInt(lessonNumber)} page="renshuuc" />

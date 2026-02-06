@@ -34,6 +34,8 @@ type AskAkiContextType = {
   getClassName: (id: string, baseClass: string) => string;
   toggleHighlight: (id: string) => void;
   explainCurrentPage: () => void;
+  sendContextUpdate: (context: any) => void;
+  sendUserEvent: (type: string, data: any) => void;
 };
 
 const AskAkiContext = createContext<AskAkiContextType | null>(null);
@@ -51,6 +53,7 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const isResponseActiveRef = useRef(false);
+  const currentContextRef = useRef<any>(null);
 
   // Helper to toggle highlights
   const toggleHighlight = useCallback((id: string) => {
@@ -191,6 +194,26 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
 
       dc.addEventListener("open", () => {
         console.log("Data channel opened - Connected to OpenAI Realtime API");
+        if (currentContextRef.current) {
+          console.log("Sending cached context on connection");
+          const sessionUpdate = {
+            type: "session.update",
+            session: {
+              instructions: `You are Aki, a patient Japanese sensei teaching JLPT N5 beginners.
+                  
+Current Lesson Context (JSON):
+${JSON.stringify(currentContextRef.current, null, 2)}
+
+Core Rules:
+- Always speak simple, slow Japanese using N5 vocabulary only
+- Use short sentences 
+- Be gentle and encouraging
+- Only use English/Hindi if user explicitly asks
+- Reference anime when helpful`,
+            },
+          };
+          dc.send(JSON.stringify(sessionUpdate));
+        }
       });
 
       dc.addEventListener("message", async (e) => {
@@ -397,6 +420,56 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
     });
   }, [pageModal]);
 
+  const sendContextUpdate = useCallback((context: any) => {
+    currentContextRef.current = context;
+    if (dcRef.current && dcRef.current.readyState === "open") {
+      const sessionUpdate = {
+        type: "session.update",
+        session: {
+          instructions: `You are Aki, a patient Japanese sensei teaching JLPT N5 beginners.
+          
+Current Lesson Context (JSON):
+${JSON.stringify(context, null, 2)}
+
+Core Rules:
+- Always speak simple, slow Japanese using N5 vocabulary only
+- Use short sentences 
+- Be gentle and encouraging
+- Only use English/Hindi if user explicitly asks
+- Reference anime when helpful
+
+Tool Rules:
+- When using tools: suspend persona completely, output only the tool call, no Japanese.`,
+        },
+      };
+      console.log("Sending context update to model");
+      dcRef.current.send(JSON.stringify(sessionUpdate));
+    }
+  }, []);
+
+  const sendUserEvent = useCallback((type: string, data: any) => {
+    if (dcRef.current && dcRef.current.readyState === "open") {
+      const event = {
+        type: "conversation.item.create",
+        item: {
+          type: "message",
+          role: "user",
+          content: [
+            {
+              type: "input_text",
+              text: `Event: ${type}\nData: ${JSON.stringify(data)}`,
+            },
+          ],
+        },
+      };
+      dcRef.current.send(JSON.stringify(event));
+      // Trigger response if it's an important event (like submitting an answer)
+      if (type === "answer_submitted") {
+        dcRef.current.send(JSON.stringify({ type: "response.create" }));
+      }
+    }
+  }, []);
+
   const explainCurrentPage = useCallback(() => {
     if (!dcRef.current || dcRef.current.readyState !== "open") {
       console.warn("Data channel not ready, cannot send session update");
@@ -477,6 +550,8 @@ IMPORTANT:
         getClassName,
         toggleHighlight,
         explainCurrentPage,
+        sendContextUpdate,
+        sendUserEvent,
       }}
     >
       {children}
