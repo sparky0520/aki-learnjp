@@ -32,13 +32,9 @@ Teaching Focus:
 
 Tool calls:
 - highlightElement
-- generateWebPage
-- getPageHTML
 
 Webpage tool instructions:
-- When the user asks to explain something on the screen/page/website, Use the getPageHTML tool to get the page content and explain it to the user. Highlight the element(s) using highlightElement as you explain wherever possible.
-- When the user asks to highlight a specific element(s) on the screen/page/website, Use the highlightElement tool to highlight it and explain it to the user.
-- When the user asks to generate a new page, Use the generateWebPage tool to generate a new page.`,
+- When the user asks to highlight a specific element(s) on the screen/page/website, Use the highlightElement tool to highlight it and explain it to the user.`,
       tools: [
         {
           type: "function",
@@ -53,81 +49,6 @@ Webpage tool instructions:
               },
             },
             required: ["elementId"],
-          },
-        },
-        {
-          type: "function",
-          name: "getPageHTML",
-          description: "Gets the HTML for the current page",
-          parameters: {
-            type: "object",
-            properties: {},
-          },
-        },
-        {
-          type: "function",
-          name: "generateWebPage",
-          description:
-            "Generate a fullscreen web page to be shown in a modal. Supports either structured content pages (sections) or mini-games (raw HTML/JS).",
-          parameters: {
-            type: "object",
-            properties: {
-              mode: {
-                type: "string",
-                enum: ["interactive", "static"],
-                description: "Mode of the page",
-              },
-              title: {
-                type: "string",
-                description: "Title of the page or game",
-              },
-              sections: {
-                type: "array",
-                description:
-                  "For content pages: ordered sections with headings and body text.",
-                items: {
-                  type: "object",
-                  properties: {
-                    heading: {
-                      type: "string",
-                      description: "Section heading text",
-                    },
-                    body: {
-                      type: "string",
-                      description: "Paragraph content for the section",
-                    },
-                  },
-                  required: ["body"],
-                },
-              },
-              accentColor: {
-                type: "string",
-                description: "Accent color for the page",
-              },
-              backgroundColor: {
-                type: "string",
-                description: "Background color for the page",
-              },
-              description: {
-                type: "string",
-                description: "Description of the page",
-              },
-              html: {
-                type: "string",
-                description:
-                  "For games: full HTML markup including any <canvas>, <button>, and inline <script> needed.",
-              },
-              css: {
-                type: "string",
-                description:
-                  "Optional CSS that applies inside the modal for styling the game or page.",
-              },
-              footerStatus: {
-                type: "string",
-                description: "Footer status text",
-              },
-            },
-            required: ["title"],
           },
         },
       ],

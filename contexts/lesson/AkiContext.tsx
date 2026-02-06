@@ -11,29 +11,11 @@ import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import { API_URL } from "@/app/constants";
 
-type PageModalState = {
-  isOpen: boolean;
-  page: {
-    mode: "interactive" | "static";
-    title: string;
-    sections: any[] | null;
-    accentColor: string;
-    backgroundColor: string;
-    description: string;
-    html: string | null;
-    css: string;
-    footerStatus: string;
-  } | null;
-};
-
 type AskAkiContextType = {
   askAki: boolean;
   toggleAskAki: () => void;
-  pageModal: PageModalState;
-  setPageModal: React.Dispatch<React.SetStateAction<PageModalState>>;
   getClassName: (id: string, baseClass: string) => string;
   toggleHighlight: (id: string) => void;
-  explainCurrentPage: () => void;
   sendContextUpdate: (context: any) => void;
   sendUserEvent: (type: string, data: any) => void;
 };
@@ -43,10 +25,6 @@ const AskAkiContext = createContext<AskAkiContextType | null>(null);
 export function AskAkiProvider({ children }: { children: React.ReactNode }) {
   const [askAki, setAskAki] = useState(false);
   const [highlightState, setHighlightState] = useState<string[]>([]);
-  const [pageModal, setPageModal] = useState<PageModalState>({
-    isOpen: false,
-    page: null,
-  });
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const dcRef = useRef<RTCDataChannel | null>(null);
@@ -54,6 +32,7 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
   const localStreamRef = useRef<MediaStream | null>(null);
   const isResponseActiveRef = useRef(false);
   const currentContextRef = useRef<any>(null);
+  const lastSentContextRef = useRef<string>("");
 
   // Helper to toggle highlights
   const toggleHighlight = useCallback((id: string) => {
@@ -64,18 +43,6 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
 
   // --- Tool Definitions ---
   const tools = {
-    getPageHTML: tool(
-      async () => {
-        return { success: true, html: document.body.innerHTML };
-      },
-      {
-        name: "getPageHTML",
-        description:
-          "Get the full HTML content of the current page to understand what the user is seeing.",
-        schema: z.object({}),
-      },
-    ),
-
     highlightElement: tool(
       async ({ elementId }) => {
         toggleHighlight(elementId);
@@ -86,66 +53,6 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
         description: "Highlight a specific DOM element on the page by its ID.",
         schema: z.object({
           elementId: z.string().describe("The ID of the element to highlight"),
-        }),
-      },
-    ),
-
-    generateWebPage: tool(
-      async (args) => {
-        const {
-          mode,
-          title,
-          sections,
-          accentColor,
-          backgroundColor,
-          description,
-          html,
-          css,
-          footerStatus,
-        } = args;
-
-        const pageMode = mode === "interactive" ? "interactive" : "static";
-
-        // If the model sends a full HTML document, extract just the body content.
-        let bodyHtml = html || null;
-        if (bodyHtml) {
-          const bodyMatch = bodyHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-          if (bodyMatch && bodyMatch[1]) {
-            bodyHtml = bodyMatch[1];
-          }
-        }
-
-        setPageModal({
-          isOpen: true,
-          page: {
-            mode: pageMode,
-            title: title || "Untitled Page",
-            sections: Array.isArray(sections) ? sections : null,
-            accentColor: accentColor || "#4CAF50",
-            backgroundColor: backgroundColor || "#fffce8",
-            description: description || "",
-            html: bodyHtml,
-            css: css || "",
-            footerStatus: footerStatus || "",
-          },
-        });
-
-        return { success: true };
-      },
-      {
-        name: "generateWebPage",
-        description:
-          "Generate and display a custom web page overlay for the user.",
-        schema: z.object({
-          mode: z.enum(["interactive", "static"]).optional(),
-          title: z.string().optional(),
-          sections: z.array(z.any()).optional(),
-          accentColor: z.string().optional(),
-          backgroundColor: z.string().optional(),
-          description: z.string().optional(),
-          html: z.string().optional(),
-          css: z.string().optional(),
-          footerStatus: z.string().optional(),
         }),
       },
     ),
@@ -379,49 +286,16 @@ Core Rules:
     return () => disconnect();
   }, [disconnect]);
 
-  // Handle rendering generated HTML content
-  useEffect(() => {
-    if (
-      !pageModal ||
-      !pageModal.isOpen ||
-      !pageModal.page ||
-      !pageModal.page.html
-    )
-      return;
-
-    const container = document.getElementById("generated-game-root");
-    if (!container) return;
-
-    // Clear previous content
-    container.innerHTML = "";
-
-    // Create a temporary wrapper to parse the HTML string
-    const temp = document.createElement("div");
-    temp.innerHTML = pageModal.page.html || "";
-
-    // Move everything except <script> tags into the container
-    const scriptContents: string[] = [];
-    Array.from(temp.childNodes).forEach((node) => {
-      if (node.nodeName && node.nodeName.toLowerCase() === "script") {
-        scriptContents.push(node.textContent || "");
-      } else {
-        container.appendChild(node);
-      }
-    });
-
-    // Execute script contents after DOM is in place
-    scriptContents.forEach((code) => {
-      try {
-        const fn = new Function(code);
-        fn();
-      } catch (e) {
-        console.error("Failed to execute script in generated page:", e);
-      }
-    });
-  }, [pageModal]);
-
   const sendContextUpdate = useCallback((context: any) => {
+    // Deep comparison optimization
+    const contextStr = JSON.stringify(context);
+    if (contextStr === lastSentContextRef.current) {
+      // console.log("Context unchanged, skipping update");
+      return;
+    }
+    lastSentContextRef.current = contextStr;
     currentContextRef.current = context;
+
     if (dcRef.current && dcRef.current.readyState === "open") {
       const sessionUpdate = {
         type: "session.update",
@@ -470,6 +344,7 @@ Tool Rules:
     }
   }, []);
 
+  /*
   const explainCurrentPage = useCallback(() => {
     if (!dcRef.current || dcRef.current.readyState !== "open") {
       console.warn("Data channel not ready, cannot send session update");
@@ -520,6 +395,7 @@ IMPORTANT:
     // Mark response as active
     isResponseActiveRef.current = true;
   }, []);
+  */
 
   const toggleAskAki = useCallback(() => {
     if (askAki) {
@@ -545,11 +421,8 @@ IMPORTANT:
       value={{
         askAki,
         toggleAskAki,
-        pageModal,
-        setPageModal,
         getClassName,
         toggleHighlight,
-        explainCurrentPage,
         sendContextUpdate,
         sendUserEvent,
       }}
