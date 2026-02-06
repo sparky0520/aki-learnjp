@@ -4,7 +4,6 @@ import { useContext, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { usePathname } from "next/navigation";
 import AskAkiContext from "../../contexts/lesson/AkiContext";
-import AIGeneratedPageModal from "../ui/AIGeneratedPageModal";
 import Image from "next/image";
 import { LayoutProvider, useLayout } from "../../contexts/layout/LayoutContext";
 
@@ -117,7 +116,6 @@ function MainLayout({
           {children}
         </div>
       </main>
-      <AIGeneratedPageModal />
     </div>
   );
 }
