@@ -8,6 +8,9 @@ import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useProgressUpdater } from "@/contexts/lesson/ProgressContext";
 import Shuuryou from "@/components/lesson/shared/Shuuryou";
+// ... imports
+import AkiContext from "@/components/lesson/shared/AkiContext";
+
 const apiUrl = "/api";
 
 export default function RenshuuCPage() {
@@ -18,6 +21,7 @@ export default function RenshuuCPage() {
   const [parts, setParts] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [index, setIndex] = useState(0);
+  const [lessonDescription, setLessonDescription] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const finalQuestion = parts.length;
@@ -60,6 +64,14 @@ export default function RenshuuCPage() {
           `${apiUrl}/lesson/${lessonNumber}/renshuu_c`,
         );
         setParts(response.data);
+
+        // Fetch lesson description
+        const lessonResponse = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}`,
+        );
+        if (lessonResponse.data && lessonResponse.data.lessonDescription) {
+          setLessonDescription(lessonResponse.data.lessonDescription);
+        }
       } catch (err) {
         console.error("Error:", err.message);
       } finally {
@@ -69,15 +81,26 @@ export default function RenshuuCPage() {
     if (lessonNumber) fetchData();
   }, [lessonNumber]);
 
-  // ... inside component ... (this comment will be removed by replacement)
-
-  // NOTE: Moving this to the top with other hooks is cleaner, but for now I will just clean up the comment and ensure it works.
-  // Actually, I will move it to the top.
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="flex flex-col justify-between h-full">
+      <AkiContext
+        questionType="renshuu_c"
+        lessonAboutContent={lessonDescription}
+        currentQuestion={{
+          ...parts[currentQuestion],
+          active_part_index: index,
+          active_question_img:
+            parts[currentQuestion]?.question_image_urls?.[index],
+        }}
+        // Renshuu C often has multiple possible answers or open-ended dialogue.
+        // If there's a strict answer key:
+        correctAnswer={
+          parts[currentQuestion]?.correct_answers?.[index] ||
+          "Practice the dialogue flow"
+        }
+      />
       <div>
         <Shuuryou lessonNo={parseInt(lessonNumber)} page="renshuuc" />
         {currentQuestion < finalQuestion && (

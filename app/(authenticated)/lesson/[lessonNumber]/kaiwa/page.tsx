@@ -9,6 +9,9 @@ import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useProgressUpdater } from "@/contexts/lesson/ProgressContext";
 
+// ... imports
+import AkiContext from "@/components/lesson/shared/AkiContext";
+
 const apiUrl = "/api";
 
 export default function KaiwaPage() {
@@ -18,6 +21,7 @@ export default function KaiwaPage() {
   const lessonNumber = params?.lessonNumber as string;
   const router = useRouter();
   const [data, setData] = useState(null);
+  const [lessonDescription, setLessonDescription] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [lessonCompleted, setLessonCompleted] = useState(0);
 
@@ -28,6 +32,14 @@ export default function KaiwaPage() {
           `${apiUrl}/lesson/${lessonNumber}/kaiwa`,
         );
         setData(response.data);
+
+        // Fetch lesson description
+        const lessonResponse = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}`,
+        );
+        if (lessonResponse.data && lessonResponse.data.lessonDescription) {
+          setLessonDescription(lessonResponse.data.lessonDescription);
+        }
       } catch (err) {
         console.error("Error:", err.message);
       } finally {
@@ -56,6 +68,12 @@ export default function KaiwaPage() {
 
   return (
     <div className="flex flex-col justify-between h-full">
+      <AkiContext
+        questionType="kaiwa"
+        lessonAboutContent={lessonDescription}
+        currentQuestion={data}
+        correctAnswer={null}
+      />
       {/* shuuryou */}
       <div className="mb-4">
         <Shuuryou lessonNo={parseInt(lessonNumber)} page="kaiwa" />

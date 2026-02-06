@@ -11,7 +11,8 @@ import BottomBar from "@/components/layout/BottomBar";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { useAnswers } from "@/contexts/lesson/AnswersContext";
-import Shuuryou from "@/components/lesson/shared/Shuuryou";
+// ... imports
+import AkiContext from "@/components/lesson/shared/AkiContext";
 
 const apiUrl = "/api";
 
@@ -25,6 +26,7 @@ export default function MondaiPage() {
   const [parts, setParts] = useState([]);
   const [index, setIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [lessonDescription, setLessonDescription] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -34,6 +36,14 @@ export default function MondaiPage() {
           `${apiUrl}/lesson/${lessonNumber}/mondai`,
         );
         setParts(response.data);
+
+        // Fetch lesson description
+        const lessonResponse = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}`,
+        );
+        if (lessonResponse.data && lessonResponse.data.lessonDescription) {
+          setLessonDescription(lessonResponse.data.lessonDescription);
+        }
       } catch (err) {
         console.error("Error:", err.message);
       } finally {
@@ -86,8 +96,24 @@ export default function MondaiPage() {
 
   if (isLoading) return <div>Loading...</div>;
 
+  // Determine correct answer
+  const currentPart = parts[currentQuestion];
+  const hasCorrectAnswers =
+    currentPart?.correct_answers && currentPart.correct_answers.length > 0;
+  // If we are looking at specific sub-questions in exercise results or similar, we might need more logic context
+  // but for the main question wrapper:
+  const correctAnswer = hasCorrectAnswers
+    ? currentPart.correct_answers
+    : "Self Answered";
+
   return (
     <div className="flex flex-col justify-between h-full">
+      <AkiContext
+        questionType="mondai"
+        lessonAboutContent={lessonDescription}
+        currentQuestion={parts[currentQuestion]}
+        correctAnswer={correctAnswer}
+      />
       <div>
         {/* <Shuuryou lessonNo={parseInt(lessonNumber)} page="mondai" /> */}
         {currentQuestion < parts.length && (

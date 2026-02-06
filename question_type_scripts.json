@@ -1,0 +1,172 @@
+{
+  "question_types": {
+    "goi": {
+      "name": "Goi (Vocabulary)",
+      "japanese": "語彙",
+      "detection_keywords": ["vocabulary", "goi", "word", "vocab", "語彙"],
+      "static_audio_script": "This is Goi, the vocabulary section. Here you'll learn new words from this lesson. Each word is shown in kana, kanji if applicable, and English. Read through each word carefully and try to remember its meaning. These words will appear in the practice sections ahead.",
+      "aki_realtime_script": "This is the Goi section - the vocabulary list for this lesson. Each entry shows you three things: the Japanese word in hiragana or katakana, the kanji version if applicable, and the English meaning. Try to read each word and understand its meaning. You can practice by covering the English and testing yourself, or by using the words in simple sentences. Take your time to familiarize yourself with these words before moving to the example sentences.",
+      "tips": [
+        "Cover the English column and test yourself",
+        "Try using each word in a simple sentence",
+        "Pay attention to kanji if you're learning them",
+        "These words will appear in later exercises"
+      ],
+      "structure_explanation": "Each vocabulary entry contains: Japanese in kana, kanji version (if applicable), and English meaning."
+    },
+    "reibun": {
+      "name": "Reibun (Example Sentences)",
+      "japanese": "例文",
+      "detection_keywords": [
+        "example",
+        "reibun",
+        "sentence",
+        "例文",
+        "how to use"
+      ],
+      "static_audio_script": "This is Reibun, the example sentences section. These sentences demonstrate the grammar patterns you learned earlier. Read each one and notice how the patterns are applied. These examples will help you understand how to use the grammar in real situations.",
+      "aki_realtime_script": "You're looking at Reibun - example sentences that show how the grammar patterns from this lesson are used in real contexts. Each sentence demonstrates one or more of the bunkei patterns you learned. Read each sentence carefully and try to identify which grammar pattern it uses. Notice how the vocabulary and grammar work together. If you're unsure about a sentence, you can ask me to explain a specific one.",
+      "tips": [
+        "Try to identify which bunkei pattern each sentence uses",
+        "Notice how vocabulary and grammar work together",
+        "Read each sentence out loud for practice",
+        "These prepare you for the Renshuu exercises"
+      ],
+      "structure_explanation": "A list of complete sentences demonstrating the lesson's grammar patterns in context."
+    },
+    "bunkei": {
+      "name": "Bunkei (Sentence Patterns)",
+      "japanese": "文型",
+      "detection_keywords": [
+        "pattern",
+        "bunkei",
+        "grammar",
+        "structure",
+        "文型"
+      ],
+      "static_audio_script": "This is Bunkei, the sentence patterns section. These are the grammar structures you'll practice in this lesson. Each pattern is a template showing you how to form sentences. Study these carefully - they're the foundation for the exercises ahead.",
+      "aki_realtime_script": "This is the Bunkei section - the core grammar patterns for this lesson. Each pattern shows you the structure using placeholders like 'meishi1' or 'verb'. These are templates you'll use to create your own sentences. Read each pattern and understand what it means. The 'About Content' section you saw earlier explained these in detail. These patterns are what you'll practice in the Renshuu exercises coming up.",
+      "tips": [
+        "Understand the meaning and function of each pattern",
+        "Pay attention to particles and their positions",
+        "These are templates - you'll fill them with different words",
+        "Refer back to the About Content for detailed explanations"
+      ],
+      "structure_explanation": "Grammar templates using placeholders (like めいし1, めいし2) that you'll practice replacing with actual words."
+    },
+    "renshuu_a": {
+      "name": "Renshuu A (Pattern Practice)",
+      "japanese": "練習A",
+      "detection_keywords": [
+        "renshuu a",
+        "practice a",
+        "drill",
+        "練習a",
+        "fill in"
+      ],
+      "static_audio_script": "This is Renshuu A, pattern practice. Here you'll practice the grammar patterns by filling in blanks with different words. Look at the example first, then complete each practice sentence. This repetition helps you master the sentence structure.",
+      "aki_realtime_script": "Welcome to Renshuu A - structured pattern practice. This is a fill-in-the-blank drill where you substitute different words into the sentence pattern. You'll see a number indicating which bunkei pattern you're practicing, followed by blanks where you need to insert words. Look at the example first to see how it works, then try the others. This drill helps you internalize the grammar pattern through repetition. Focus on the structure - the pattern stays the same, only the words change.",
+      "tips": [
+        "The number indicates which bunkei pattern you're practicing",
+        "Look at the example answer carefully",
+        "The structure stays the same, only words change",
+        "This is mechanical practice - focus on accuracy"
+      ],
+      "structure_explanation": "Drills with a pattern number, example answer, and blanks to fill with provided words. Practice the same structure with different vocabulary."
+    },
+    "renshuu_b": {
+      "name": "Renshuu B (Guided Practice)",
+      "japanese": "練習B",
+      "detection_keywords": [
+        "renshuu b",
+        "practice b",
+        "picture",
+        "練習b",
+        "image"
+      ],
+      "static_audio_script": "This is Renshuu B, guided practice. Look at the example answer, then create your own sentences following the same pattern. Use the images and word cues provided. This helps you apply grammar patterns to different contexts.",
+      "aki_realtime_script": "You're now at Renshuu B - guided practice with visual cues. Each question shows you an image and a 'rei' or example answer to guide you. Your task is to create similar sentences based on the cues given. Look at the image carefully - it provides context for your answer. Follow the pattern shown in the 'rei' example, but use the specific information from each question prompt. This exercise helps you apply the grammar pattern to different situations.",
+      "tips": [
+        "Look at images for context clues",
+        "The 'rei' example shows the format to follow",
+        "Apply the same pattern to each question",
+        "Images help you understand the situation"
+      ],
+      "structure_explanation": "Each part has an example (rei), images for context, and question cues. Create sentences following the example pattern using the given information."
+    },
+    "renshuu_c": {
+      "name": "Renshuu C (Conversation Practice)",
+      "japanese": "練習C",
+      "detection_keywords": [
+        "renshuu c",
+        "practice c",
+        "conversation",
+        "dialogue",
+        "練習c"
+      ],
+      "static_audio_script": "This is Renshuu C, conversation practice. You'll create short dialogues based on the example shown. Look at the 'rei' conversation first, then practice with the given cues. This exercise helps you use grammar patterns in natural conversations.",
+      "aki_realtime_script": "This is Renshuu C - conversation practice. Here you'll practice short dialogues using the patterns you've learned. You'll see a 'rei' example conversation showing you the format. Then you'll have images or cues to create similar conversations. This is more complex than Renshuu B because you're creating natural back-and-forth exchanges. Pay attention to how the grammar patterns fit into conversational contexts. Practice both parts of the conversation - this helps you prepare for real interactions in Japanese.",
+      "tips": [
+        "Study the 'rei' example conversation carefully",
+        "Create natural back-and-forth exchanges",
+        "Practice both speaker A and speaker B parts",
+        "Notice how grammar fits into conversation flow"
+      ],
+      "structure_explanation": "Dialogue practice with an example conversation (rei) and cues to create similar exchanges. More complex than Renshuu B as it involves multi-turn interactions."
+    },
+    "kaiwa": {
+      "name": "Kaiwa (Conversation)",
+      "japanese": "会話",
+      "detection_keywords": [
+        "kaiwa",
+        "conversation",
+        "dialogue",
+        "会話",
+        "audio"
+      ],
+      "static_audio_script": "This is Kaiwa, the conversation section. This dialogue shows how the lesson's grammar and vocabulary are used naturally. Read it carefully and listen to the audio if available. Notice how the patterns you practiced appear in real conversation. This helps you understand natural Japanese communication.",
+      "aki_realtime_script": "You've reached the Kaiwa section - a full conversation that brings together everything from this lesson. This is a realistic dialogue showing how native speakers use the grammar and vocabulary you've learned. Read through it first to get the general meaning. You'll notice it uses the bunkei patterns naturally in context. If there's an audio file, listen to it multiple times - pay attention to pronunciation, intonation, and natural speech rhythm. Try to understand the situation and relationship between the speakers. This is your chance to see how everything works together in real Japanese conversation.",
+      "tips": [
+        "Read the entire dialogue first for overall meaning",
+        "Listen to audio multiple times if available",
+        "Notice pronunciation and intonation",
+        "Identify grammar patterns in natural context",
+        "Understand the relationship between speakers"
+      ],
+      "structure_explanation": "A complete dialogue with heading, speaker turns, and often includes an image and audio file. This synthesizes all lesson content in a natural conversation."
+    },
+    "mondai": {
+      "name": "Mondai (Exercises)",
+      "japanese": "問題",
+      "detection_keywords": ["mondai", "exercises", "quiz", "test", "問題"],
+      "static_audio_script": "This is Mondai, the comprehensive exercises for this lesson. It covers listening, grammar, and writing. Test your understanding of everything you've learned. Usually, there are no hints here, so try your best to answer on your own.",
+      "aki_realtime_script": "You've reached the Mondai section - the final exercises for this lesson. This is your chance to test yourself on everything you've learned: vocabulary, grammar, and listening. These questions are similar to what you might see on a test. Try to answer them without looking back at the lesson first, to see what you remember. If you get stuck, I can help, but try your best to solve them on your own to check your real progress.",
+      "tips": [
+        "Treat this like a real test",
+        "Try to answer without looking back at notes",
+        "Listen carefully to audio questions",
+        "Check your answers after finishing each section"
+      ],
+      "structure_explanation": "Comprehensive overlapping exercises including listening, grammar choices, and composition."
+    }
+  },
+  "usage_recommendations": {
+    "hybrid_approach": {
+      "static_audio": "Use for initial section introductions when users first enter a section. Quick, consistent explanation available at button press.",
+      "aki_realtime": "Use for follow-up questions, specific clarifications, adaptive help based on user progress, and personalized encouragement."
+    },
+    "implementation_notes": [
+      "Static audio provides consistent, quick onboarding to each section",
+      "Aki provides adaptive, contextual help and answers specific questions",
+      "Users can replay static audio as needed without engaging Aki",
+      "Aki can reference the static script content in follow-up conversations"
+    ]
+  },
+  "common_follow_up_questions": {
+    "what_section": "Detect current section and provide appropriate explanation",
+    "what_do_i_do": "Explain how to approach the current exercise type",
+    "explain_this": "Provide detailed explanation of specific sentence or pattern",
+    "how_to_answer": "Give strategy for completing current question type",
+    "im_confused": "Offer encouragement and break down the task into smaller steps"
+  }
+}

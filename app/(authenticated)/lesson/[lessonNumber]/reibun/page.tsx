@@ -7,12 +7,16 @@ import axios from "axios";
 import AskAkiContext from "@/contexts/lesson/AkiContext";
 import { useParams } from "next/navigation";
 
+// ... imports
+import AkiContext from "@/components/lesson/shared/AkiContext";
+
 const apiUrl = "/api";
 
 function ReibunPage() {
   const params = useParams();
   const lessonNumber = params?.lessonNumber as string;
   const [content, setContent] = useState(null);
+  const [lessonDescription, setLessonDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { getClassName, toggleHighlight } = useContext(AskAkiContext);
 
@@ -24,6 +28,14 @@ function ReibunPage() {
           `${apiUrl}/lesson/${lessonNumber}/reibun`,
         );
         setContent(response.data);
+
+        // Fetch lesson description
+        const lessonResponse = await axios.get(
+          `${apiUrl}/lesson/${lessonNumber}`,
+        );
+        if (lessonResponse.data && lessonResponse.data.lessonDescription) {
+          setLessonDescription(lessonResponse.data.lessonDescription);
+        }
       } catch (err) {
         console.error("Error:", err.message);
       } finally {
@@ -45,6 +57,12 @@ function ReibunPage() {
   }
   return (
     <div className="flex flex-col justify-between min-h-full h-full">
+      <AkiContext
+        questionType="reibun"
+        lessonAboutContent={lessonDescription}
+        currentQuestion={content}
+        correctAnswer={null}
+      />
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="mb-4">
           {/* shuuryou */}

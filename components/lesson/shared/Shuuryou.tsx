@@ -32,7 +32,7 @@ function Shuuryou({
 
   return (
     <div
-      className="text-sm opacity-70 hover:opacity-100 mb-4 cursor-pointer"
+      className="text-sm opacity-70 hover:opacity-100 mb-4 cursor-pointer select-none"
       onClick={toggleAudio}
     >
       <audio
