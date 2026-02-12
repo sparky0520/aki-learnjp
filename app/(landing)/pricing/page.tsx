@@ -38,7 +38,7 @@ export default function PricingPage() {
             period="mo"
             description="Everything you need to start"
             isPopular={true}
-            originalPrice={29.99}
+            originalPrice={19.99}
             features={[
               <span key="1">
                 <span className="text-xl mt-0.5">あ</span> Access to curated
@@ -55,11 +55,11 @@ export default function PricingPage() {
 
           {/* Pro Plan */}
           <PlanCard
-            name="Pro"
-            price={39.99}
+            name="Premium"
+            price={29.99}
             period="mo"
             description="For serious learners"
-            yearlyPrice={431.89}
+            yearlyPrice={323.89}
             promoText="10% OFF YEARLY"
             features={[
               <span key="1">
@@ -70,7 +70,7 @@ export default function PricingPage() {
                 extension if you run out.
               </span>,
             ]}
-            buttonText="Go Pro"
+            buttonText="Go Premium"
             onButtonClick={handleProClick}
           />
         </div>

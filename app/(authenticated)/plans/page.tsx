@@ -5,7 +5,7 @@ import PaymentModal from "@/components/ui/PaymentModal";
 import PlanCard from "@/components/pricing/PlanCard";
 
 type PlanDetails = {
-    name: "Basic" | "Pro";
+    name: "Basic" | "Premium";
     price: number;
     period: "mo" | "yr";
 };
@@ -14,11 +14,11 @@ export default function PlansPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPlan, setSelectedPlan] = useState<PlanDetails>({
         name: "Basic",
-        price: 29.99,
+        price: 19.99,
         period: "mo",
     });
 
-    const openPayment = (name: "Basic" | "Pro", price: number) => {
+    const openPayment = (name: "Basic" | "Premium", price: number) => {
         setSelectedPlan({ name, price, period: "mo" });
         setIsModalOpen(true);
     };
@@ -49,7 +49,7 @@ export default function PlansPage() {
                         period="mo"
                         description="Everything you need to start"
                         isPopular={true} // Reusing this for the "Free Beta" stamp
-                        originalPrice={29.99}
+                        originalPrice={19.99}
                         features={[
                             <span key="1">
                                 <span className="text-xl mt-0.5">あ</span> Access to curated
@@ -66,11 +66,11 @@ export default function PlansPage() {
 
                     {/* Pro Plan */}
                     <PlanCard
-                        name="Pro"
-                        price={39.99}
+                        name="Premium"
+                        price={29.99}
                         period="mo"
                         description="For serious learners"
-                        yearlyPrice={431.89}
+                        yearlyPrice={323.89}
                         promoText="10% OFF YEARLY"
                         features={[
                             <span key="1">
@@ -81,8 +81,8 @@ export default function PlansPage() {
                                 extension if you run out.
                             </span>,
                         ]}
-                        buttonText="Go Pro"
-                        onButtonClick={() => openPayment("Pro", 39.99)}
+                        buttonText="Go Premium"
+                        onButtonClick={() => openPayment("Premium", 29.99)}
                     />
                 </div>
             </div>

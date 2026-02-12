@@ -1,7 +1,7 @@
 import React from "react";
 
 type PlanCardProps = {
-    name: "Basic" | "Pro";
+    name: "Basic" | "Premium";
     price: number;
     period?: "mo" | "yr";
     description: string;
@@ -96,7 +96,7 @@ export default function PlanCard({
                 >
                     <span className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-black transition-transform group-hover:translate-y-0 group-hover:translate-x-0"></span>
                     <span
-                        className={`relative block border-2 border-black px-8 py-3 text-lg font-bold uppercase tracking-widest text-black ${name === "Pro" ? "bg-white text-center" : "bg-paper-bg"
+                        className={`relative block border-2 border-black px-8 py-3 text-lg font-bold uppercase tracking-widest text-black ${name === "Premium" ? "bg-white text-center" : "bg-paper-bg"
                             }`}
                     >
                         {buttonText}

@@ -37,6 +37,13 @@ export async function POST(request: NextRequest) {
     });
 
     // Create Subscription
+    console.log(`Creating subscription for Plan ID: ${planId}`);
+
+    // Validate planId format (basic check)
+    if (!planId.startsWith("plan_")) {
+      console.warn(`Invalid Plan ID format: ${planId}`);
+    }
+
     const subscription = await instance.subscriptions.create({
       plan_id: planId,
       customer_notify: 1,
@@ -50,9 +57,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(subscription);
   } catch (error: any) {
     console.error("Error creating subscription:", error);
+    // Enhanced error logging
+    if (error.error && error.error.description) {
+      console.error("Razorpay Error Description:", error.error.description);
+    }
+
     return NextResponse.json(
       { error: error.message || "Internal Server Error" },
       { status: 500 },
     );
   }
 }
+
