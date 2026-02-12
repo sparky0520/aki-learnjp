@@ -43,3 +43,5 @@ next-env.d.ts
 # assets and database
 assets
 database
+# clerk configuration (can include secrets)
+/.clerk/
