@@ -33,6 +33,7 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
   const isResponseActiveRef = useRef(false);
   const currentContextRef = useRef<any>(null);
   const lastSentContextRef = useRef<string>("");
+  const transcriptRef = useRef<string>("");
 
   // Helper to toggle highlights
   const toggleHighlight = useCallback((id: string) => {
@@ -126,6 +127,13 @@ Core Rules:
       dc.addEventListener("message", async (e) => {
         const msg = JSON.parse(e.data);
         console.log("Realtime Event:", msg.type);
+
+        // Capture transcript
+        if (msg.type === "conversation.item.input_audio_transcription.completed") {
+          transcriptRef.current += `User: ${msg.transcript}\n`;
+        } else if (msg.type === "response.audio_transcript.done") {
+          transcriptRef.current += `Aki: ${msg.transcript}\n`;
+        }
 
         // Track response lifecycle
         if (msg.type === "response.created") {
@@ -264,6 +272,16 @@ Core Rules:
   };
 
   const disconnect = useCallback(() => {
+    if (transcriptRef.current.trim().length > 0) {
+      console.log("Sending session transcript for summarization...");
+      fetch(`${API_URL}/summarize`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: transcriptRef.current }),
+      }).catch((err) => console.error("Failed to summarize session:", err));
+    }
+    transcriptRef.current = "";
+
     if (dcRef.current) {
       dcRef.current.close();
       dcRef.current = null;

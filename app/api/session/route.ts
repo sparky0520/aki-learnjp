@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
   try {
@@ -9,49 +11,59 @@ export async function POST(req: Request) {
     }
 
     // Step 1: Create an ephemeral session token
+    const { userId } = await auth();
+
+    let userContext = "";
+    if (userId) {
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SECRET_KEY!
+      );
+      const { data } = await supabase
+        .from("user_context")
+        .select("last_session_summary")
+        .eq("user_id", userId)
+        .single();
+
+      if (data?.last_session_summary) {
+        userContext = `\n\nUser Context:\n${data.last_session_summary}`;
+      }
+    }
+
     const sessionConfig = {
-      model: "gpt-4o-realtime-preview-2024-12-17",
+      model: "gpt-4o-mini-realtime-preview-2024-12-17",
       voice: "marin",
-      instructions: `You are Aki, a patient Japanese sensei teaching JLPT N5 beginners.
+      // input_audio_transcription: { model: "whisper-1" },
+      instructions: `You are Aki, a Japanese sensei teaching JLPT N5.
 
-Core Rules:
-- Always speak simple, slow Japanese using N5 vocabulary only
-- Use short sentences 
-- Be gentle and encouraging
-- Only use English/Hindi if user explicitly asks
-- Reference anime when helpful
+Rules:
+- Speak simple, slow Japanese (N5 vocab).
+- Use short sentences. Be extremely concise.
+- Gentle and encouraging.
+- English/Hindi only if asked.
+- Reference anime when helpful.
 
-Tool Rules:
-- When using tools: suspend persona completely, output only the tool call, no Japanese.
+Tools:
+- Suspend persona, output tool call only.
 
-Teaching Focus:
-- Basic greetings, numbers, family words
-- Simple present tense verbs
-- は、を、に particles
-- Common daily expressions
-
-Tool calls:
-- highlightElement
-
-Webpage tool instructions:
-- When the user asks to highlight a specific element(s) on the screen/page/website, Use the highlightElement tool to highlight it and explain it to the user.`,
-      tools: [
-        {
-          type: "function",
-          name: "highlightElement",
-          description: "Highlights a specific element by id",
-          parameters: {
-            type: "object",
-            properties: {
-              elementId: {
-                type: "string",
-                description: "The ID of the element",
-              },
-            },
-            required: ["elementId"],
-          },
-        },
-      ],
+Teaching:
+- Greetings, numbers, family, simple verbs, particles (wa, wo, ni).` + userContext,
+      // Webpage tool:
+      // - highlightElement: highlight element by ID when asked.
+      //       tools: [
+      //         {
+      //           type: "function",
+      //           name: "highlightElement",
+      //           description: "Highlights a specific element by id",
+      //           properties: {
+      //             elementId: {
+      //               type: "string",
+      //               description: "The ID of the element",
+      //             },
+      //           },
+      //           required: ["elementId"],
+      //         },
+      //       ],
     };
 
     // Create ephemeral session token
@@ -78,7 +90,7 @@ Webpage tool instructions:
 
     // Step 2: Exchange SDP using the ephemeral key
     const sdpResponse = await fetch(
-      "https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17",
+      "https://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview-2024-12-17",
       {
         method: "POST",
         headers: {

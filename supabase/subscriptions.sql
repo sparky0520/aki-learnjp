@@ -24,5 +24,6 @@ create policy "Users can view own subscriptions"
 -- Policy: Service role (admin/webhooks) can manage all
 create policy "Service role can manage all"
   on public.subscriptions for all
+  to service_role
   using (true)
   with check (true);
