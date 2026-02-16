@@ -35,11 +35,13 @@ function ListeningWritingMondai2Input({
             <div className="text-xl font-bold">1</div>
           </div>
         </div>
-        <Image
-          src={option1Image}
-          className="max-w-50 pointer-events-none"
-          alt="option 1"
-        />
+        {option1Image && (
+          <Image
+            src={option1Image}
+            className="max-w-50 pointer-events-none"
+            alt="option 1"
+          />
+        )}
       </div>
       {/* Option 2 */}
       <div
@@ -58,11 +60,13 @@ function ListeningWritingMondai2Input({
             <div className="text-xl font-bold">2</div>
           </div>
         </div>
-        <Image
-          src={option2Image}
-          className="max-w-50 pointer-events-none"
-          alt="option 2"
-        />
+        {option2Image && (
+          <Image
+            src={option2Image}
+            className="max-w-50 pointer-events-none"
+            alt="option 2"
+          />
+        )}
       </div>
       {/* Option 3 */}
       <div
@@ -81,11 +85,13 @@ function ListeningWritingMondai2Input({
             <div className="text-xl font-bold">3</div>
           </div>
         </div>
-        <Image
-          src={option3Image}
-          className="max-w-50 pointer-events-none"
-          alt="option 3"
-        />
+        {option3Image && (
+          <Image
+            src={option3Image}
+            className="max-w-50 pointer-events-none"
+            alt="option 3"
+          />
+        )}
       </div>
     </div>
   );

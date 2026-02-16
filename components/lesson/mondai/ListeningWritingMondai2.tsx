@@ -48,11 +48,13 @@ function ListeningWritingMondai2({ data }: { data: Mondai2Data }) {
                   <div className="text-xl font-bold">{i + 1}</div>
                 </div>
               </div>
-              <Image
-                src={e}
-                className="max-w-50 pointer-events-none"
-                alt={`rei ${i + 1}`}
-              />
+              {e && (
+                <Image
+                  src={e}
+                  className="max-w-50 pointer-events-none"
+                  alt={`rei ${i + 1}`}
+                />
+              )}
             </div>
           ))}
       </div>

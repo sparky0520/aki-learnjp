@@ -45,7 +45,7 @@ function Sidebar({
   }, [currentUser, lessonNumber]);
 
   return (
-    <div className="flex flex-col justify-between h-full">
+    <div className="flex flex-col justify-between h-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
           {/* Aki logo */}
@@ -66,21 +66,19 @@ function Sidebar({
         </div>
         <Link
           href={`/course/${lastAccessed?.courseNumber || 1}`}
-          className={`${
-            pathname.includes("/course")
-              ? "underline decoration-gray-400 decoration-1 underline-offset-8"
-              : "no-underline"
-          }`}
+          className={`${pathname.includes("/course")
+            ? "underline decoration-gray-400 decoration-1 underline-offset-8"
+            : "no-underline"
+            }`}
         >
           Course Chart
         </Link>
         <Link
           href={`/lesson/${lessonNumber}`}
-          className={`btn py-2 ${
-            pathname === `/lesson/${lessonNumber}`
-              ? "underline decoration-gray-400 decoration-1 underline-offset-8"
-              : "no-underline"
-          }`}
+          className={`btn py-2 ${pathname === `/lesson/${lessonNumber}`
+            ? "underline decoration-gray-400 decoration-1 underline-offset-8"
+            : "no-underline"
+            }`}
         >
           About Lesson
         </Link>
@@ -96,11 +94,10 @@ function Sidebar({
               <Link
                 key={link.path}
                 href={`/lesson/${lessonNumber}/${link.path}`}
-                className={`${
-                  pathname.includes(`/${link.path}`)
-                    ? "underline decoration-gray-400 decoration-1 underline-offset-8"
-                    : "no-underline"
-                }`}
+                className={`${pathname.includes(`/${link.path}`)
+                  ? "underline decoration-gray-400 decoration-1 underline-offset-8"
+                  : "no-underline"
+                  }`}
               >
                 {link.label}
               </Link>
@@ -121,7 +118,7 @@ function Sidebar({
                 label: "Renshuu C",
                 key: "renshuu_c_completed",
               },
-              // { id: "mondai", label: "Mondai", key: "mondai_completed" },
+              { id: "mondai", label: "Mondai", key: "mondai_completed" },
               { id: "kaiwa", label: "Kaiwa", key: "kaiwa_completed" },
             ].map((item) => (
               <Link
@@ -139,11 +136,10 @@ function Sidebar({
                   />
                 ) : null}
                 <div
-                  className={`${
-                    pathname.includes(`/${item.id}`)
-                      ? "underline decoration-gray-400 decoration-1 underline-offset-8"
-                      : "no-underline"
-                  }`}
+                  className={`${pathname.includes(`/${item.id}`)
+                    ? "underline decoration-gray-400 decoration-1 underline-offset-8"
+                    : "no-underline"
+                    }`}
                 >
                   {item.label}
                 </div>
