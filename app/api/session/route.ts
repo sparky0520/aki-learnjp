@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     }
 
     const sessionConfig = {
-      model: "gpt-4o-mini-realtime-preview-2024-12-17",
+      model: "gpt-realtime-mini",
       voice: "marin",
       // input_audio_transcription: { model: "whisper-1" },
       instructions: `You are Aki, a Japanese sensei teaching JLPT N5.
