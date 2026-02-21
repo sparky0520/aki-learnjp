@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     }
 
     // Step 1: Create an ephemeral session token
-    const { userId } = await auth();
+    const { userId, orgId } = await auth();
 
     let userContext = "";
     if (userId) {
@@ -23,6 +23,7 @@ export async function POST(req: Request) {
         .from("user_context")
         .select("last_session_summary")
         .eq("user_id", userId)
+        .eq("org_id", orgId)
         .single();
 
       if (data?.last_session_summary) {

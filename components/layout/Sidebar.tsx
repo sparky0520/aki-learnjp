@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { UserButton } from "@clerk/nextjs";
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { useLastAccessed } from "../../contexts/lesson/LastAccessedContext";
 import { useAuth } from "../../contexts/auth/AuthContext";
 import FeedbackForm from "../feedback/FeedbackForm";
@@ -148,8 +148,13 @@ function Sidebar({
           </div>
         </div>
       </div>
-      <div className="mt-4 border-t pt-4">
+      <div className="mt-16 border-t pt-4 flex flex-col gap-2">
         <FeedbackForm />
+        <OrganizationSwitcher
+          afterCreateOrganizationUrl="/dashboard"
+          afterSelectOrganizationUrl="/dashboard"
+          afterLeaveOrganizationUrl="/select-organization"
+        />
         <div className="flex items-center gap-3 mt-2">
           <UserButton
             appearance={{

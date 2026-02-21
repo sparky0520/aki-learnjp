@@ -44,7 +44,19 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // Clerk Auth Logic
-  if (!isPublicRoute(req)) await auth.protect();
+  if (!isPublicRoute(req)) {
+    const { userId, orgId } = await auth();
+    if (!userId) {
+      return auth.redirectToSignIn();
+    }
+    // If authenticated but no active organization, redirect to organization selection
+    // Note: Clerk handles this via /select-organization if configured, 
+    // but we can also check for orgId here.
+    if (!orgId && !req.nextUrl.pathname.startsWith('/select-organization')) {
+      const orgSelection = new URL('/select-organization', req.url);
+      return NextResponse.redirect(orgSelection);
+    }
+  }
 });
 
 export const config = {

@@ -145,7 +145,8 @@ CREATE TABLE user_course_attempts(
     last_accessed TIMESTAMPTZ DEFAULT NOW(),
     completed BOOLEAN DEFAULT FALSE,
     completed_at TIMESTAMPTZ,
-    UNIQUE(user_id, course_id)
+    org_id TEXT NOT NULL,
+    UNIQUE(user_id, course_id, org_id)
 );
 
 -- Track lesson progress
@@ -163,7 +164,8 @@ CREATE TABLE user_lesson_progress(
     mondai_completed BOOLEAN DEFAULT FALSE,
     kaiwa_completed BOOLEAN DEFAULT FALSE,
     
-    UNIQUE(user_id, lesson_id)
+    org_id TEXT NOT NULL,
+    UNIQUE(user_id, lesson_id, org_id)
 );
 
 -- Store user answers for exercises
@@ -176,6 +178,7 @@ CREATE TABLE user_exercise_progress(
     question_index INTEGER,  -- for array based sections
     answer TEXT NOT NULL,
     is_correct BOOLEAN,
+    org_id TEXT NOT NULL,
     answered_at TIMESTAMPTZ DEFAULT NOW() 
 );
 
@@ -187,18 +190,21 @@ CREATE TABLE user_course_progress(
     started_at TIMESTAMPTZ DEFAULT NOW(),
     completed BOOLEAN DEFAULT FALSE,
     completed_at TIMESTAMPTZ,
+    org_id TEXT NOT NULL,
     last_accessed TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(user_id, course_id, lesson_id)
+    UNIQUE(user_id, course_id, lesson_id, org_id)
 );
 
 -- ================ LAST ACCESSED TRACKING ================
 
 CREATE TABLE user_last_accessed(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     course_number INTEGER NOT NULL,
     lesson_number INTEGER NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    org_id TEXT NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, org_id)
 );
 
 -- ==================== INDEXES ====================
@@ -285,43 +291,43 @@ CREATE POLICY "Kaiwa are viewable by everyone" ON kaiwa
 
 -- Users can manage their own progress
 CREATE POLICY "Users can view own course attempts" ON user_course_attempts
-    FOR SELECT USING (auth.uid() = user_id);
+    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own course attempts" ON user_course_attempts
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 CREATE POLICY "Users can update own course attempts" ON user_course_attempts
-    FOR UPDATE USING (auth.uid() = user_id);
+    FOR UPDATE USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can view own lesson progress" ON user_lesson_progress
-    FOR SELECT USING (auth.uid() = user_id);
+    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own lesson progress" ON user_lesson_progress
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 CREATE POLICY "Users can update own lesson progress" ON user_lesson_progress
-    FOR UPDATE USING (auth.uid() = user_id);
+    FOR UPDATE USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can view own answers" ON user_exercise_progress
-    FOR SELECT USING (auth.uid() = user_id);
+    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own answers" ON user_exercise_progress
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 CREATE POLICY "Users can view own course progress" ON user_course_progress
-    FOR SELECT USING (auth.uid() = user_id);
+    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own course progress" ON user_course_progress
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 CREATE POLICY "Users can update own course progress" ON user_course_progress
-    FOR UPDATE USING (auth.uid() = user_id);
+    FOR UPDATE USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can view own last accessed" ON user_last_accessed
-    FOR SELECT USING (auth.uid() = user_id);
+    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own last accessed" ON user_last_accessed
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 CREATE POLICY "Users can update own last accessed" ON user_last_accessed
-    FOR UPDATE USING (auth.uid() = user_id);
+    FOR UPDATE USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
