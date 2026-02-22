@@ -1,4 +1,5 @@
 import Image from "../../ui/Image";
+import PlaybackBar from "../shared/PlaybackBar";
 import KaiwaTextSnippet from "./KaiwaTextSnippet";
 
 interface KaiwaData {
@@ -40,7 +41,7 @@ function ReadingListeningSpeakingKaiwa({ data }: { data: KaiwaData }) {
           </div>
         </div>
       </div>
-      {/* <PlaybackBar audio={data.audio || ""} /> */}
+      <PlaybackBar audio={data.audio || ""} />
     </div>
   );
 }

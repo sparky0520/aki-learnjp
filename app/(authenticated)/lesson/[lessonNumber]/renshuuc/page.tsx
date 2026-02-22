@@ -30,7 +30,7 @@ export default function RenshuuCPage() {
   const handleNext = useCallback(async () => {
     if (currentQuestion === finalQuestion - 1 && index === finalOption) {
       await updateLessonProgress(lessonNumber, "renshuu_c");
-      router.push(`/lesson/${lessonNumber}/kaiwa`); // Mondai -> Kaiwa : Till mondai is done
+      router.push(`/lesson/${lessonNumber}/mondai`);
     } else if (index === finalOption) {
       setCurrentQuestion((prev) => ++prev);
       setIndex(0);
