@@ -1,14 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE users(
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email TEXT UNIQUE NOT NULL,
-    name TEXT NOT NULL,
-    profile_image_url TEXT,
-    subscribed INTEGER DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- The 'users' table has been removed as Clerk is our single source of truth for user profiles.
+-- User IDs are now stored as TEXT to match Clerk's IDs (e.g. user_...).
 
 CREATE TABLE courses(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -139,7 +132,7 @@ CREATE TABLE kaiwa(
 -- Track which courses a user has attempted
 CREATE TABLE user_course_attempts(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id TEXT NOT NULL,
     course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
     started_at TIMESTAMPTZ DEFAULT NOW(),
     last_accessed TIMESTAMPTZ DEFAULT NOW(),
@@ -152,7 +145,7 @@ CREATE TABLE user_course_attempts(
 -- Track lesson progress
 CREATE TABLE user_lesson_progress(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id TEXT NOT NULL,
     lesson_id UUID NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
     started_at TIMESTAMPTZ DEFAULT NOW(),
     completed BOOLEAN DEFAULT FALSE,
@@ -171,7 +164,7 @@ CREATE TABLE user_lesson_progress(
 -- Store user answers for exercises
 CREATE TABLE user_exercise_progress(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id TEXT NOT NULL,
     lesson_id UUID NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
     section_type TEXT NOT NULL, -- 'renshuu a','renshuu b','renshuu c','mondai'
     part_id UUID,   -- reference to specific part if applicable
@@ -184,7 +177,7 @@ CREATE TABLE user_exercise_progress(
 
 CREATE TABLE user_course_progress(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id TEXT NOT NULL,
     course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
     lesson_id UUID NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
     started_at TIMESTAMPTZ DEFAULT NOW(),
@@ -199,7 +192,7 @@ CREATE TABLE user_course_progress(
 
 CREATE TABLE user_last_accessed(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id TEXT NOT NULL,
     course_number INTEGER NOT NULL,
     lesson_number INTEGER NOT NULL,
     org_id TEXT NOT NULL,
@@ -220,7 +213,6 @@ CREATE INDEX idx_user_last_accessed_user_id ON user_last_accessed(user_id);
 
 -- ==================== ROW LEVEL SECURITY (RLS) ====================
 -- Enable RLS on all tables
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lessons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE about_lessons ENABLE ROW LEVEL SECURITY;
@@ -240,10 +232,6 @@ ALTER TABLE user_lesson_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_exercise_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_course_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_last_accessed ENABLE ROW LEVEL SECURITY;
-
--- Users can read their own data
-CREATE POLICY "Users can read own data" ON users
-    FOR SELECT USING (auth.uid() = id);
 
 -- Everyone can read courses and lessons
 CREATE POLICY "Courses are viewable by everyone" ON courses
@@ -291,43 +279,43 @@ CREATE POLICY "Kaiwa are viewable by everyone" ON kaiwa
 
 -- Users can manage their own progress
 CREATE POLICY "Users can view own course attempts" ON user_course_attempts
-    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
+    FOR SELECT USING (auth.uid()::text = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own course attempts" ON user_course_attempts
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
+    FOR INSERT WITH CHECK (auth.uid()::text = user_id);
 
 CREATE POLICY "Users can update own course attempts" ON user_course_attempts
-    FOR UPDATE USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
+    FOR UPDATE USING (auth.uid()::text = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can view own lesson progress" ON user_lesson_progress
-    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
+    FOR SELECT USING (auth.uid()::text = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own lesson progress" ON user_lesson_progress
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
+    FOR INSERT WITH CHECK (auth.uid()::text = user_id);
 
 CREATE POLICY "Users can update own lesson progress" ON user_lesson_progress
-    FOR UPDATE USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
+    FOR UPDATE USING (auth.uid()::text = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can view own answers" ON user_exercise_progress
-    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
+    FOR SELECT USING (auth.uid()::text = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own answers" ON user_exercise_progress
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
+    FOR INSERT WITH CHECK (auth.uid()::text = user_id);
 
 CREATE POLICY "Users can view own course progress" ON user_course_progress
-    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
+    FOR SELECT USING (auth.uid()::text = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own course progress" ON user_course_progress
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
+    FOR INSERT WITH CHECK (auth.uid()::text = user_id);
 
 CREATE POLICY "Users can update own course progress" ON user_course_progress
-    FOR UPDATE USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
+    FOR UPDATE USING (auth.uid()::text = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can view own last accessed" ON user_last_accessed
-    FOR SELECT USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
+    FOR SELECT USING (auth.uid()::text = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
 
 CREATE POLICY "Users can insert own last accessed" ON user_last_accessed
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
+    FOR INSERT WITH CHECK (auth.uid()::text = user_id);
 
 CREATE POLICY "Users can update own last accessed" ON user_last_accessed
-    FOR UPDATE USING (auth.uid() = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));
+    FOR UPDATE USING (auth.uid()::text = user_id AND org_id = (SELECT current_setting('app.current_org_id', true)));

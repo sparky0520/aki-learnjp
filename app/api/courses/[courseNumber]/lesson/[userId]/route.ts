@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ courseNumber: string; userId: string }> },
 ) {
   try {
-    const { courseNumber, userId } = await params;
+    const { userId: authedUserId, orgId } = await auth();
+    const { courseNumber, userId: targetUserId } = await params;
+
+    // Security check
+    if (!authedUserId || !orgId || authedUserId !== targetUserId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     // 1. Get course_id from course_number
     const { data: courseData, error: courseError } = await supabase
@@ -40,7 +47,8 @@ export async function GET(
     const { data: userProgress, error: progressError } = await supabase
       .from("user_lesson_progress")
       .select("lesson_id, completed")
-      .eq("user_id", userId);
+      .eq("user_id", targetUserId)
+      .eq("org_id", orgId);
 
     if (progressError) {
       console.error("Error fetching user progress:", progressError);

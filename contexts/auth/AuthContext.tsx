@@ -10,6 +10,7 @@ interface AuthContextType {
   isLoading: boolean;
   error: string | null;
   isAuthenticated: boolean;
+  isSynced: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -17,6 +18,7 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   error: null,
   isAuthenticated: false,
+  isSynced: false,
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -26,57 +28,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const syncUser = async () => {
-      // Wait for Clerk to load
-      if (!isLoaded) {
-        return;
-      }
+    if (!isLoaded) return;
 
-      // If not signed in, clear state
-      if (!isSignedIn || !user) {
-        setCurrentUser(null);
-        setIsLoading(false);
-        return;
-      }
+    if (!isSignedIn || !user) {
+      setCurrentUser(null);
+      setIsLoading(false);
+      return;
+    }
 
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const email = user.primaryEmailAddress?.emailAddress;
-        if (!email) {
-          throw new Error("User email not found");
-        }
-
-        // Try to sign up/sync user with backend
-        const signupResponse = await fetch(`${apiUrl}/auth/signup`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            clerk_user_id: user.id,
-            email: email,
-            name: user.fullName || user.firstName || "User",
-            profile_image_url: user.imageUrl || null,
-          }),
-        });
-
-        if (!signupResponse.ok) {
-          throw new Error("Failed to sync user with backend");
-        }
-
-        const signupData = await signupResponse.json();
-        setCurrentUser(signupData.user);
-      } catch (err) {
-        console.error("Error syncing user:", err);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    syncUser();
+    // Set current user from Clerk data
+    setCurrentUser({
+      id: user.id,
+      email: user.primaryEmailAddress?.emailAddress,
+      name: user.fullName || user.firstName || user.username || "User",
+      profile_image_url: user.imageUrl,
+      publicMetadata: user.publicMetadata,
+    });
+    setIsLoading(false);
   }, [isSignedIn, isLoaded, user]);
 
   const value = {
