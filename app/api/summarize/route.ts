@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
-    const { userId } = await auth();
+    const { userId, orgId } = await auth();
     if (!userId) {
         return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -27,6 +27,7 @@ export async function POST(req: Request) {
                 .from("user_context")
                 .upsert({
                     user_id: userId,
+                    org_id: orgId,
                     last_session_summary: summary,
                     updated_at: new Date().toISOString()
                 });
