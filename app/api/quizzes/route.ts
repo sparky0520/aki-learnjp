@@ -31,19 +31,18 @@ export async function GET() {
             .from("org_quiz_attempts")
             .select("quiz_id, score, total_questions, attempted_at")
             .eq("user_id", userId)
-            .eq("org_id", orgId);
+            .eq("org_id", orgId)
+            .order("attempted_at", { ascending: false });
 
         if (attemptsError) throw attemptsError;
 
         // Combine quiz data with attempt status
         const quizzesWithResults = quizzes.map(quiz => {
-            const attempt = attempts.find(a => a.quiz_id === quiz.id);
+            const quizAttempts = attempts.filter(a => a.quiz_id === quiz.id);
             return {
                 ...quiz,
-                attempted: !!attempt,
-                last_score: attempt ? attempt.score : null,
-                total_q: attempt ? attempt.total_questions : null,
-                attempted_at: attempt ? attempt.attempted_at : null
+                attempted: quizAttempts.length > 0,
+                attempts: quizAttempts
             };
         });
 

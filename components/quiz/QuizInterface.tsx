@@ -110,7 +110,7 @@ export function QuizInterface({ questions, onRestart, onComplete }: QuizInterfac
             <Card>
                 <CardHeader>
                     <CardTitle className="text-xl">
-                        <ReactMarkdown>{currentQuestion.question}</ReactMarkdown>
+                        <div dangerouslySetInnerHTML={{ __html: currentQuestion.question }} />
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -150,7 +150,7 @@ export function QuizInterface({ questions, onRestart, onComplete }: QuizInterfac
                   `}
                                 >
                                     <div className="flex justify-between items-center">
-                                        <span>{option}</span>
+                                        <span dangerouslySetInnerHTML={{ __html: option }} />
                                         {isAnswerChecked &&
                                             option === currentQuestion.correct_answer && (
                                                 <CheckCircle2 className="w-5 h-5 text-green-600" />
@@ -169,9 +169,7 @@ export function QuizInterface({ questions, onRestart, onComplete }: QuizInterfac
                     {isAnswerChecked && (
                         <div className="mt-4 p-4 bg-muted rounded-lg animate-in fade-in slide-in-from-top-2">
                             <p className="font-semibold text-sm mb-1">Explanation:</p>
-                            <p className="text-sm text-muted-foreground">
-                                {currentQuestion.explanation}
-                            </p>
+                            <p className="text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: currentQuestion.explanation }} />
                         </div>
                     )}
 

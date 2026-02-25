@@ -9,15 +9,19 @@ import { useAuth } from "@clerk/nextjs";
 import { QuizInterface } from "@/components/quiz/QuizInterface";
 import { Badge } from "@/components/ui/badge";
 
+interface Attempt {
+    score: number;
+    total_questions: number;
+    attempted_at: string;
+}
+
 interface Quiz {
     id: string;
     created_at: string;
     lesson_ids: string[];
     questions: any[];
     attempted: boolean;
-    last_score: number | null;
-    total_q: number | null;
-    attempted_at: string | null;
+    attempts: Attempt[];
 }
 
 export default function StudentQuizzesPage() {
@@ -169,7 +173,7 @@ export default function StudentQuizzesPage() {
                 <div className="space-y-6">
                     <div className="flex items-center gap-2">
                         <History className="w-6 h-6 text-muted-foreground" />
-                        <h2 className="text-2xl font-semibold">Past Attempts</h2>
+                        <h2 className="text-2xl font-semibold">Attempt History</h2>
                     </div>
                     {pastQuizzes.length === 0 ? (
                         <Card className="bg-muted/10 border-dashed">
@@ -180,33 +184,50 @@ export default function StudentQuizzesPage() {
                     ) : (
                         <div className="grid gap-4">
                             {pastQuizzes.map(quiz => (
-                                <Card key={quiz.id} className="opacity-80">
-                                    <CardHeader className="pb-3">
-                                        <div className="flex justify-between items-start">
+                                <Card key={quiz.id} className="opacity-90">
+                                    <CardHeader className="pb-3 border-b bg-muted/20">
+                                        <div className="flex justify-between items-center">
                                             <div>
-                                                <CardTitle className="text-lg">
-                                                    Attempted {new Date(quiz.attempted_at!).toLocaleDateString()}
+                                                <CardTitle className="text-base uppercase tracking-wider text-muted-foreground">
+                                                    Quiz from {new Date(quiz.created_at).toLocaleDateString()}
                                                 </CardTitle>
                                                 <CardDescription>
-                                                    Assigned {new Date(quiz.created_at).toLocaleDateString()}
+                                                    {quiz.questions.length} total questions
                                                 </CardDescription>
                                             </div>
-                                            <div className="text-right">
-                                                <div className="text-2xl font-bold text-primary">
-                                                    {quiz.last_score}/{quiz.total_q}
-                                                </div>
-                                                <p className="text-xs text-muted-foreground text-center">Score</p>
-                                            </div>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleAttemptQuiz(quiz)}
+                                            >
+                                                Retake Quiz
+                                            </Button>
                                         </div>
                                     </CardHeader>
-                                    <CardContent>
-                                        <Button
-                                            variant="outline"
-                                            className="w-full"
-                                            onClick={() => handleAttemptQuiz(quiz)}
-                                        >
-                                            Retake Quiz
-                                        </Button>
+                                    <CardContent className="pt-4 p-0">
+                                        <div className="divide-y">
+                                            {quiz.attempts.map((attempt, index) => (
+                                                <div key={index} className="flex justify-between items-center p-4 hover:bg-muted/10 transition-colors">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-medium">Attempt {quiz.attempts.length - index}</span>
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {new Date(attempt.attempted_at).toLocaleString()}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="text-right">
+                                                            <div className="text-lg font-bold text-primary">
+                                                                {attempt.score}/{attempt.total_questions}
+                                                            </div>
+                                                            <div className="text-[10px] text-muted-foreground uppercase">Score</div>
+                                                        </div>
+                                                        <Badge variant={attempt.score / attempt.total_questions >= 0.8 ? "default" : attempt.score / attempt.total_questions >= 0.5 ? "secondary" : "destructive"} className="text-[10px]">
+                                                            {Math.round((attempt.score / attempt.total_questions) * 100)}%
+                                                        </Badge>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </CardContent>
                                 </Card>
                             ))}
