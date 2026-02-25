@@ -81,7 +81,7 @@ The questions should cover vocabulary, grammar patterns, and sentence usage from
 Format the output strictly as a JSON array of objects with the following schema:
 [
   {
-    "question": "The question text (in Japanese (hiragana and katakana) or English as appropriate)",
+    "question": "The question text in Hiragana, Katakana or English as appropriate",
     "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
     "correct_answer": "The correct option text (must calculate to one of the options)",
     "explanation": "Brief explanation of why the answer is correct"

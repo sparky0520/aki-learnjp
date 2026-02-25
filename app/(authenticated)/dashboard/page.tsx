@@ -157,7 +157,12 @@ export default function DashboardPage() {
           </div>
           <div className="p-2 flex flex-col gap-4 items-start md:items-end text-lg text-blue-400 w-full md:w-auto">
             {/* Practice Links */}
-            {isAdmin && <PracticeLink text="Generate Quiz" href="/quiz" />}
+            {isAdmin && (
+              <>
+                <PracticeLink text="Analyze Class" href="/analyse" />
+                <PracticeLink text="Generate Quiz" href="/quiz" />
+              </>
+            )}
             <PracticeLink text="Assigned Quiz" href="/quizzes" />
             <PracticeLink text="Learn Japanese Kana" href="/kana" />
             <PracticeLink text="Character Chart" href="/hatsuon" />
