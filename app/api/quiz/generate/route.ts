@@ -1,14 +1,30 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(request: Request) {
     try {
-        const { lesson_ids } = await request.json();
+        const { userId, orgId, orgRole } = await auth();
+        if (!userId || !orgId) {
+            return NextResponse.json(
+                { error: "Unauthorized: Missing user or organization context" },
+                { status: 401 }
+            );
+        }
+
+        const { lesson_ids, dispatch } = await request.json();
 
         if (!lesson_ids || !Array.isArray(lesson_ids) || lesson_ids.length === 0) {
             return NextResponse.json(
                 { error: "Invalid lesson_ids provided" },
                 { status: 400 },
+            );
+        }
+
+        if (dispatch && orgRole !== "org:admin") {
+            return NextResponse.json(
+                { error: "Forbidden: Only organization admins can dispatch quizzes" },
+                { status: 403 }
             );
         }
 
@@ -86,8 +102,6 @@ ${context}
             headers: {
                 "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
                 "Content-Type": "application/json",
-                // "HTTP-Referer": "https://aki-next.vercel.app", // Optional
-                // "X-Title": "Aki Next", // Optional
             },
             body: JSON.stringify({
                 "model": "google/gemini-2.0-flash-001",
@@ -114,6 +128,20 @@ ${context}
         }
 
         const questions = JSON.parse(responseText);
+
+        // If dispatch is requested, save to org_quizzes
+        if (dispatch) {
+            const { error: saveError } = await supabase
+                .from("org_quizzes")
+                .insert({
+                    org_id: orgId,
+                    created_by: userId,
+                    lesson_ids,
+                    questions
+                });
+
+            if (saveError) throw saveError;
+        }
 
         return NextResponse.json(questions);
     } catch (error) {

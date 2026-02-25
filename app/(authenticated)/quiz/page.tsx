@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@clerk/nextjs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2 } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { QuizInterface } from "@/components/quiz/QuizInterface";
+import { useRouter } from "next/navigation";
 
 interface Lesson {
     id: string;
@@ -15,15 +17,23 @@ interface Lesson {
 }
 
 export default function QuizPage() {
+    const { orgRole, isLoaded: isAuthLoaded } = useAuth();
+    const router = useRouter();
     const [lessons, setLessons] = useState<Lesson[]>([]);
     const [selectedLessonIds, setSelectedLessonIds] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isDispatching, setIsDispatching] = useState(false);
     const [quizQuestions, setQuizQuestions] = useState(null);
     const [error, setError] = useState<string | null>(null);
 
-    // supabase is already initialized
+    const isAdmin = orgRole === "org:admin";
 
+    useEffect(() => {
+        if (isAuthLoaded && !isAdmin) {
+            router.push("/quizzes");
+        }
+    }, [isAuthLoaded, isAdmin, router]);
 
     useEffect(() => {
         async function fetchLessons() {
@@ -54,10 +64,12 @@ export default function QuizPage() {
         );
     };
 
-    const handleStartQuiz = async () => {
+    const handleStartQuiz = async (dispatch = false) => {
         if (selectedLessonIds.length === 0) return;
 
-        setIsGenerating(true);
+        if (dispatch) setIsDispatching(true);
+        else setIsGenerating(true);
+
         setError(null);
 
         try {
@@ -66,20 +78,32 @@ export default function QuizPage() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ lesson_ids: selectedLessonIds }),
+                body: JSON.stringify({
+                    lesson_ids: selectedLessonIds,
+                    dispatch
+                }),
             });
 
             if (!response.ok) {
-                throw new Error("Failed to generate quiz");
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to generate quiz");
             }
 
             const questions = await response.json();
-            setQuizQuestions(questions);
-        } catch (e) {
+
+            if (dispatch) {
+                alert("Quiz dispatched successfully to the class!");
+                handleRestart();
+            } else {
+                setQuizQuestions(questions);
+            }
+        } catch (e: any) {
             console.error("Error generating quiz:", e);
-            setError("Failed to generate quiz. Please try again.");
+            setError(e.message || "Failed to generate quiz. Please try again.");
+            alert(e.message || "Failed to generate quiz");
         } finally {
             setIsGenerating(false);
+            setIsDispatching(false);
         }
     };
 
@@ -88,7 +112,7 @@ export default function QuizPage() {
         setSelectedLessonIds([]);
     };
 
-    if (isLoading) {
+    if (isLoading || !isAuthLoaded) {
         return (
             <div className="flex justify-center items-center min-h-[50vh]">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -100,14 +124,18 @@ export default function QuizPage() {
         return <QuizInterface questions={quizQuestions} onRestart={handleRestart} />;
     }
 
+    if (!isAdmin) return null; // Prevent flash of content before redirect
+
     return (
         <div className="container max-w-4xl py-8">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold mb-2">Practice Quiz</h1>
-                <p className="text-muted-foreground">
-                    Select lessons to generate a custom quiz testing your vocabulary and
-                    grammar knowledge.
-                </p>
+            <div className="mb-8 flex justify-between items-end">
+                <div>
+                    <h1 className="text-3xl font-bold mb-2">Practice Quiz</h1>
+                    <p className="text-muted-foreground">
+                        Select lessons to generate a custom quiz testing your vocabulary and
+                        grammar knowledge.
+                    </p>
+                </div>
             </div>
 
             <Card>
@@ -136,7 +164,6 @@ export default function QuizPage() {
                             >
                                 <Checkbox
                                     checked={selectedLessonIds.includes(lesson.id)}
-                                    onCheckedChange={() => handleLessonToggle(lesson.id)}
                                 />
                                 <div className="space-y-1">
                                     <p className="font-medium leading-none">
@@ -148,11 +175,32 @@ export default function QuizPage() {
                         ))}
                     </div>
 
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-4">
+                        {isAdmin && (
+                            <Button
+                                variant="outline"
+                                size="lg"
+                                onClick={() => handleStartQuiz(true)}
+                                disabled={selectedLessonIds.length === 0 || isDispatching || isGenerating}
+                                className="min-w-[150px]"
+                            >
+                                {isDispatching ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Dispatching...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Send className="mr-2 h-4 w-4" />
+                                        Dispatch to Class
+                                    </>
+                                )}
+                            </Button>
+                        )}
                         <Button
                             size="lg"
-                            onClick={handleStartQuiz}
-                            disabled={selectedLessonIds.length === 0 || isGenerating}
+                            onClick={() => handleStartQuiz(false)}
+                            disabled={selectedLessonIds.length === 0 || isGenerating || isDispatching}
                             className="min-w-[150px]"
                         >
                             {isGenerating ? (
@@ -161,7 +209,7 @@ export default function QuizPage() {
                                     Generating...
                                 </>
                             ) : (
-                                "Start Quiz"
+                                "Start Practice"
                             )}
                         </Button>
                     </div>

@@ -16,14 +16,16 @@ interface Question {
 interface QuizInterfaceProps {
     questions: Question[];
     onRestart: () => void;
+    onComplete?: (results: any[]) => void;
 }
 
-export function QuizInterface({ questions, onRestart }: QuizInterfaceProps) {
+export function QuizInterface({ questions, onRestart, onComplete }: QuizInterfaceProps) {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [isAnswerChecked, setIsAnswerChecked] = useState(false);
     const [score, setScore] = useState(0);
     const [showResults, setShowResults] = useState(false);
+    const [results, setResults] = useState<any[]>([]);
 
     const currentQuestion = questions[currentQuestionIndex];
 
@@ -39,6 +41,18 @@ export function QuizInterface({ questions, onRestart }: QuizInterfaceProps) {
         if (isCorrect) {
             setScore((prev) => prev + 1);
         }
+
+        setResults((prev) => [
+            ...prev,
+            {
+                questionIndex: currentQuestionIndex,
+                question: currentQuestion.question,
+                selectedOption,
+                correctOption: currentQuestion.correct_answer,
+                isCorrect
+            }
+        ]);
+
         setIsAnswerChecked(true);
     };
 
@@ -49,6 +63,11 @@ export function QuizInterface({ questions, onRestart }: QuizInterfaceProps) {
             setIsAnswerChecked(false);
         } else {
             setShowResults(true);
+            if (onComplete) {
+                // We need to make sure the final result is in the array
+                // handleCheckAnswer already adds it, so we can pass results
+                onComplete(results);
+            }
         }
     };
 

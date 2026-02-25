@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useLastAccessed } from "@/contexts/lesson/LastAccessedContext";
 import { useAuth } from "@/contexts/auth/AuthContext";
+import { useAuth as useClerkAuth } from "@clerk/nextjs";
 import Image from "next/image";
 
 // Constants
@@ -15,11 +16,14 @@ const apiUrl = "/api";
 import KanaPopup from "./_components/KanaPopup";
 
 export default function DashboardPage() {
+  const { orgRole } = useClerkAuth();
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [completedLessons, setCompletedLessons] = useState(0);
   const { lastAccessed } = useLastAccessed();
   const { currentUser } = useAuth();
+
+  const isAdmin = orgRole === "org:admin";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -153,7 +157,8 @@ export default function DashboardPage() {
           </div>
           <div className="p-2 flex flex-col gap-4 items-start md:items-end text-lg text-blue-400 w-full md:w-auto">
             {/* Practice Links */}
-            <PracticeLink text="Quiz" href="/quiz" />
+            {isAdmin && <PracticeLink text="Generate Quiz" href="/quiz" />}
+            <PracticeLink text="Assigned Quiz" href="/quizzes" />
             <PracticeLink text="Learn Japanese Kana" href="/kana" />
             <PracticeLink text="Character Chart" href="/hatsuon" />
           </div>
