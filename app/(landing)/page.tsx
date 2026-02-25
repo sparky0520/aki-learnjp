@@ -229,13 +229,10 @@ export default async function Home() {
                 </p>
               </div>
               <div className="flex-1 w-full">
-                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
-                  <div className="text-pencil-gray font-handwriting text-center p-8 opacity-40 italic">
-                    [Student Scores History Placeholder]
-                    <br />
-                    (Analytics & Performance Tables)
-                  </div>
-                </div>
+                <ZoomableImage
+                  src="/analyse.png"
+                  alt="Webpage generation screenshot"
+                />
               </div>
             </div>
           </div>
