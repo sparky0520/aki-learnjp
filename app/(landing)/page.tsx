@@ -106,14 +106,14 @@ export default async function Home() {
 
           {/* Info Sections */}
           <div className="w-full max-w-5xl mt-32 space-y-32 text-left">
-            {/* Section 1: Old School Method */}
+            {/* Section 1: Learn the basics */}
             <div className="flex flex-col md:flex-row gap-12 items-center">
               <div className="flex-1 space-y-4">
-                <h2 className="subheading-title">Old School Pen & Pencil</h2>
+                <h2 className="subheading-title">Learn Japanese Kana</h2>
                 <p className="text-lg leading-relaxed text-pencil-gray">
-                  It removes the fluff and goes the old school pen and pencil
-                  method encouraging writing down things in your notebook at
-                  every step.
+                  Complete beginner? Start with Hiragana and Katakana. Aki will
+                  guide you through the basics. Learn to read and write Japanese
+                  with ease.
                 </p>
               </div>
               <div className="flex-1 w-full">
@@ -121,7 +121,7 @@ export default async function Home() {
                   <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
                     <img
                       alt="App screenshot"
-                      src="/app_screenshot.png"
+                      src="/basics.png"
                       className="w-full h-full aspect-video"
                     />
                   </span>
@@ -135,9 +135,9 @@ export default async function Home() {
               <div className="flex-1 space-y-4">
                 <h2 className="subheading-title">Meet Aki: Your AI Partner</h2>
                 <p className="text-lg leading-relaxed text-pencil-gray">
-                  The GPT-Realtime voice chatbot (&quot;Aki&quot;) provides a
-                  human conversation partner for listening and speaking
-                  practice, always there to clear your doubts.
+                  Your companion to practice speaking and listening Japanese.
+                  The Voice Chatbot (&quot;Aki&quot;) provides a natural
+                  conversation partner, always there to clear your doubts.
                 </p>
               </div>
               <div className="flex-1 w-full">
@@ -145,7 +145,7 @@ export default async function Home() {
                   <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
                     <img
                       alt="Voice chat screenshot"
-                      src="/voicechat_aki.png"
+                      src="/ai.png"
                       className="w-full h-full aspect-video"
                     />
                   </span>
@@ -153,14 +153,12 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Section 3: Analogies & Webpage Gen */}
+            {/* Section 3: Explanation & Analogies */}
             <div className="flex flex-col md:flex-row gap-12 items-center">
               <div className="flex-1 space-y-4">
                 <h2 className="subheading-title">Deep Understanding</h2>
                 <p className="text-lg leading-relaxed text-pencil-gray">
-                  You can ask Aki for analogies in your mother tongue or even
-                  generate a webpage for a quick detour, aiding ground-level
-                  understanding of the Japanese language.
+                  Stuck somewhere? Ask Aki to get full explanations or fun analogies in your mother tongue.
                 </p>
               </div>
               <div className="flex-1 w-full">
@@ -168,7 +166,7 @@ export default async function Home() {
                   <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
                     <img
                       alt="Webpage generation screenshot"
-                      src="/generated_webpage.png"
+                      src="/deep_understanding.png"
                       className="w-full h-full aspect-video"
                     />
                   </span>
@@ -176,15 +174,12 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Section 4: Curriculum */}
+            {/* Section 4: Feedback and iterate */}
             <div className="flex flex-col md:flex-row-reverse gap-12 items-center">
               <div className="flex-1 space-y-4">
-                <h2 className="subheading-title">Structured Curriculum</h2>
+                <h2 className="subheading-title">Improvise</h2>
                 <p className="text-lg leading-relaxed text-pencil-gray">
-                  The curriculum has a strong emphasis on all aspects of the
-                  language with detailed assets and a JLPT aligned (not
-                  strictly) curriculum so you always walk out with skills to
-                  show.
+                  Got something wrong? Get instant feedback and improve.
                 </p>
               </div>
               <div className="flex-1 w-full">
@@ -192,7 +187,7 @@ export default async function Home() {
                   <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
                     <img
                       alt="Curriculum view"
-                      src="/curriculum_view.png"
+                      src="/improvise.png"
                       className="w-full h-full aspect-video"
                     />
                   </span>
@@ -200,8 +195,79 @@ export default async function Home() {
               </div>
             </div>
           </div>
+
+          {/* For Teachers Section */}
+          <div className="w-full max-w-5xl mt-32 space-y-32 text-left">
+            <div>
+              <h2 className="subheading-title text-center mb-4">先生ですか。</h2>
+              <p className="text-xl leading-relaxed text-pencil-gray text-center max-w-2xl mx-auto mb-16">
+                Aki can help you create engaging lessons and manage your students with ease.
+              </p>
+            </div>
+
+            {/* Teacher Section 1: Quizzes */}
+            <div className="flex flex-col md:flex-row gap-12 items-center">
+              <div className="flex-1 space-y-4">
+                <h2 className="subheading-title">Create & Quiz</h2>
+                <p className="text-lg leading-relaxed text-pencil-gray">
+                  Generate quizzes from your customized lessons and dispatch them to your entire class with one click.
+                  Tailor the learning experience to your students&apos; needs.
+                </p>
+              </div>
+              <div className="flex-1 w-full">
+                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
+                  <div className="text-pencil-gray font-handwriting text-center p-8 opacity-40 italic">
+                    [Quiz Management Dashboard Placeholder]
+                    <br />
+                    (Lesson Selection → AI Quiz Gen)
+                  </div>
+                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Teacher Section 2: Student Management */}
+            <div className="flex flex-col md:flex-row-reverse gap-12 items-center">
+              <div className="flex-1 space-y-4">
+                <h2 className="subheading-title">Manage Your Class</h2>
+                <p className="text-lg leading-relaxed text-pencil-gray">
+                  Keep track of your classes, enroll students, and manage their learning pace effortlessly.
+                  A centralized hub for all your teaching needs.
+                </p>
+              </div>
+              <div className="flex-1 w-full">
+                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
+                  <div className="text-pencil-gray font-handwriting text-center p-8 opacity-40 italic">
+                    [Student Roster Placeholder]
+                    <br />
+                    (Class Lists & Enrollments)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Teacher Section 3: Performance Tracking */}
+            <div className="flex flex-col md:flex-row gap-12 items-center">
+              <div className="flex-1 space-y-4">
+                <h2 className="subheading-title">Monitor Progress</h2>
+                <p className="text-lg leading-relaxed text-pencil-gray">
+                  Get detailed insights into student performance. View score history and
+                  identify areas where your class needs more focus through Aki&apos;s intelligent analysis.
+                </p>
+              </div>
+              <div className="flex-1 w-full">
+                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
+                  <div className="text-pencil-gray font-handwriting text-center p-8 opacity-40 italic">
+                    [Student Scores History Placeholder]
+                    <br />
+                    (Analytics & Performance Tables)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </main>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
