@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
+import ZoomableImage from "@/components/ui/ZoomableImage";
 
 export default async function Home() {
   const { userId } = await auth();
@@ -117,16 +118,10 @@ export default async function Home() {
                 </p>
               </div>
               <div className="flex-1 w-full">
-                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
-                  <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
-                    <img
-                      alt="App screenshot"
-                      src="/basics.png"
-                      className="w-full h-full aspect-video"
-                    />
-                  </span>
-                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                </div>
+                <ZoomableImage
+                  src="/basics.png"
+                  alt="App screenshot"
+                />
               </div>
             </div>
 
@@ -141,15 +136,10 @@ export default async function Home() {
                 </p>
               </div>
               <div className="flex-1 w-full">
-                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
-                  <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
-                    <img
-                      alt="Voice chat screenshot"
-                      src="/ai.png"
-                      className="w-full h-full aspect-video"
-                    />
-                  </span>
-                </div>
+                <ZoomableImage
+                  src="/ai.png"
+                  alt="Voice chat screenshot"
+                />
               </div>
             </div>
 
@@ -162,15 +152,10 @@ export default async function Home() {
                 </p>
               </div>
               <div className="flex-1 w-full">
-                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
-                  <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
-                    <img
-                      alt="Webpage generation screenshot"
-                      src="/deep_understanding.png"
-                      className="w-full h-full aspect-video"
-                    />
-                  </span>
-                </div>
+                <ZoomableImage
+                  src="/deep_understanding.png"
+                  alt="Webpage generation screenshot"
+                />
               </div>
             </div>
 
@@ -183,15 +168,10 @@ export default async function Home() {
                 </p>
               </div>
               <div className="flex-1 w-full">
-                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
-                  <span className="text-pencil-gray font-handwriting transform group-hover:scale-110 transition-transform">
-                    <img
-                      alt="Curriculum view"
-                      src="/improvise.png"
-                      className="w-full h-full aspect-video"
-                    />
-                  </span>
-                </div>
+                <ZoomableImage
+                  src="/improvise.png"
+                  alt="Curriculum view"
+                />
               </div>
             </div>
           </div>
@@ -215,14 +195,10 @@ export default async function Home() {
                 </p>
               </div>
               <div className="flex-1 w-full">
-                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
-                  <div className="text-pencil-gray font-handwriting text-center p-8 opacity-40 italic">
-                    [Quiz Management Dashboard Placeholder]
-                    <br />
-                    (Lesson Selection → AI Quiz Gen)
-                  </div>
-                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                </div>
+                <ZoomableImage
+                  src="/generate.png"
+                  alt="Webpage generation screenshot"
+                />
               </div>
             </div>
 
@@ -236,13 +212,10 @@ export default async function Home() {
                 </p>
               </div>
               <div className="flex-1 w-full">
-                <div className="aspect-video bg-white hand-drawn-border flex items-center justify-center relative overflow-hidden group">
-                  <div className="text-pencil-gray font-handwriting text-center p-8 opacity-40 italic">
-                    [Student Roster Placeholder]
-                    <br />
-                    (Class Lists & Enrollments)
-                  </div>
-                </div>
+                <ZoomableImage
+                  src="/manage.png"
+                  alt="Webpage generation screenshot"
+                />
               </div>
             </div>
 
