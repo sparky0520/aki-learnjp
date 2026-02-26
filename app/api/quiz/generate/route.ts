@@ -129,20 +129,6 @@ ${context}
 
         const questions = JSON.parse(responseText);
 
-        // If dispatch is requested, save to org_quizzes
-        if (dispatch) {
-            const { error: saveError } = await supabase
-                .from("org_quizzes")
-                .insert({
-                    org_id: orgId,
-                    created_by: userId,
-                    lesson_ids,
-                    questions
-                });
-
-            if (saveError) throw saveError;
-        }
-
         return NextResponse.json(questions);
     } catch (error) {
         console.error("Error generating quiz:", error);

@@ -8,6 +8,7 @@ import { useAuth } from "@clerk/nextjs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Send } from "lucide-react";
 import { QuizInterface } from "@/components/quiz/QuizInterface";
+import { QuizEditor } from "@/components/quiz/QuizEditor";
 import { useRouter } from "next/navigation";
 
 interface Lesson {
@@ -24,7 +25,8 @@ export default function QuizPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
     const [isDispatching, setIsDispatching] = useState(false);
-    const [quizQuestions, setQuizQuestions] = useState(null);
+    const [quizQuestions, setQuizQuestions] = useState<any[] | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const isAdmin = orgRole === "org:admin";
@@ -64,12 +66,10 @@ export default function QuizPage() {
         );
     };
 
-    const handleStartQuiz = async (dispatch = false) => {
+    const handleStartQuiz = async (preview = false) => {
         if (selectedLessonIds.length === 0) return;
 
-        if (dispatch) setIsDispatching(true);
-        else setIsGenerating(true);
-
+        setIsGenerating(true);
         setError(null);
 
         try {
@@ -80,7 +80,6 @@ export default function QuizPage() {
                 },
                 body: JSON.stringify({
                     lesson_ids: selectedLessonIds,
-                    dispatch
                 }),
             });
 
@@ -91,11 +90,9 @@ export default function QuizPage() {
 
             const questions = await response.json();
 
-            if (dispatch) {
-                alert("Quiz dispatched successfully to the class!");
-                handleRestart();
-            } else {
-                setQuizQuestions(questions);
+            setQuizQuestions(questions);
+            if (preview) {
+                setIsEditing(true);
             }
         } catch (e: any) {
             console.error("Error generating quiz:", e);
@@ -103,6 +100,37 @@ export default function QuizPage() {
             alert(e.message || "Failed to generate quiz");
         } finally {
             setIsGenerating(false);
+        }
+    };
+
+    const handleDispatch = async (editedQuestions: any[]) => {
+        setIsDispatching(true);
+        setError(null);
+
+        try {
+            const response = await fetch("/api/quiz/dispatch", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    lesson_ids: selectedLessonIds,
+                    questions: editedQuestions
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to dispatch quiz");
+            }
+
+            alert("Quiz dispatched successfully to the class!");
+            handleRestart();
+        } catch (e: any) {
+            console.error("Error dispatching quiz:", e);
+            setError(e.message || "Failed to dispatch quiz. Please try again.");
+            alert(e.message || "Failed to dispatch quiz");
+        } finally {
             setIsDispatching(false);
         }
     };
@@ -110,6 +138,7 @@ export default function QuizPage() {
     const handleRestart = () => {
         setQuizQuestions(null);
         setSelectedLessonIds([]);
+        setIsEditing(false);
     };
 
     if (isLoading || !isAuthLoaded) {
@@ -121,6 +150,18 @@ export default function QuizPage() {
     }
 
     if (quizQuestions) {
+        if (isEditing) {
+            return (
+                <div className="container max-w-5xl py-8">
+                    <QuizEditor
+                        questions={quizQuestions}
+                        onSave={handleDispatch}
+                        onCancel={handleRestart}
+                        isSaving={isDispatching}
+                    />
+                </div>
+            );
+        }
         return <QuizInterface questions={quizQuestions} onRestart={handleRestart} />;
     }
 
@@ -130,21 +171,21 @@ export default function QuizPage() {
         <div className="container max-w-4xl py-8">
             <div className="mb-8 flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-bold mb-2">Practice Quiz</h1>
+                    <h1 className="text-3xl font-bold mb-2">Quiz Generator</h1>
                     <p className="text-muted-foreground">
-                        Select lessons to generate a custom quiz testing your vocabulary and
-                        grammar knowledge.
+                        Select lessons to generate a custom quiz. Admins can preview and edit
+                        before dispatching to the class.
                     </p>
                 </div>
             </div>
 
-            <Card>
+            <Card className="shadow-lg border-primary/10">
                 <CardHeader>
-                    <CardTitle>Select Lessons</CardTitle>
+                    <CardTitle className="text-2xl">Select Lessons</CardTitle>
                 </CardHeader>
                 <CardContent>
                     {error && (
-                        <div className="bg-red-50 text-red-600 p-4 rounded-md mb-6">
+                        <div className="bg-destructive/10 text-destructive p-4 rounded-md mb-6 border border-destructive/20 animate-in shake-1">
                             {error}
                         </div>
                     )}
@@ -154,10 +195,10 @@ export default function QuizPage() {
                             <div
                                 key={lesson.id}
                                 className={`
-                  flex items-start space-x-3 p-4 rounded-lg border transition-all cursor-pointer
+                  flex items-start space-x-3 p-4 rounded-lg border transition-all cursor-pointer shadow-sm
                   ${selectedLessonIds.includes(lesson.id)
-                                        ? "border-primary bg-primary/5"
-                                        : "hover:bg-muted/50"
+                                        ? "border-primary bg-primary/5 ring-1 ring-primary/20"
+                                        : "hover:bg-muted/50 border-muted"
                                     }
                 `}
                                 onClick={() => handleLessonToggle(lesson.id)}
@@ -166,10 +207,10 @@ export default function QuizPage() {
                                     checked={selectedLessonIds.includes(lesson.id)}
                                 />
                                 <div className="space-y-1">
-                                    <p className="font-medium leading-none">
+                                    <p className="font-semibold leading-none">
                                         Lesson {lesson.lesson_number}
                                     </p>
-                                    <p className="text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: lesson.title }} />
+                                    <p className="text-sm text-muted-foreground line-clamp-2" dangerouslySetInnerHTML={{ __html: lesson.title }} />
                                 </div>
                             </div>
                         ))}
@@ -181,18 +222,18 @@ export default function QuizPage() {
                                 variant="outline"
                                 size="lg"
                                 onClick={() => handleStartQuiz(true)}
-                                disabled={selectedLessonIds.length === 0 || isDispatching || isGenerating}
-                                className="min-w-[150px]"
+                                disabled={selectedLessonIds.length === 0 || isGenerating}
+                                className="min-w-[200px] border-primary/20 hover:border-primary/50"
                             >
-                                {isDispatching ? (
+                                {isGenerating ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Dispatching...
+                                        Generating...
                                     </>
                                 ) : (
                                     <>
                                         <Send className="mr-2 h-4 w-4" />
-                                        Dispatch to Class
+                                        Generate & Preview
                                     </>
                                 )}
                             </Button>
@@ -200,10 +241,10 @@ export default function QuizPage() {
                         <Button
                             size="lg"
                             onClick={() => handleStartQuiz(false)}
-                            disabled={selectedLessonIds.length === 0 || isGenerating || isDispatching}
-                            className="min-w-[150px]"
+                            disabled={selectedLessonIds.length === 0 || isGenerating}
+                            className="min-w-[150px] shadow-md shadow-primary/20"
                         >
-                            {isGenerating ? (
+                            {isGenerating && !isAdmin ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     Generating...
