@@ -17,6 +17,11 @@ interface KanaCanvasProps {
   strokes?: string[]; // Array of SVG path data
 }
 
+const STROKE_INITIAL_DELAY_S = 1; // seconds before first stroke begins
+const STROKE_STAGGER_S = 0.8; // seconds between each successive stroke
+const STROKE_DRAW_DURATION_S = 2; // seconds each individual stroke takes to draw
+const ANIMATION_BUFFER_MS = 500; // extra buffer after the last stroke finishes
+
 const KanaCanvas = forwardRef<KanaCanvasHandle, KanaCanvasProps>(
   ({ strokes }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,7 +53,12 @@ const KanaCanvas = forwardRef<KanaCanvasHandle, KanaCanvasProps>(
         // or just let them all draw.
         // Better: Set a timeout to "finish" animating so the dark lines disappear, leaving stencil.
         // Total duration approx: 1s per stroke?
-        const duration = strokes.length * 1000 + 500;
+        const duration =
+          (STROKE_INITIAL_DELAY_S +
+            (strokes.length - 1) * STROKE_STAGGER_S +
+            STROKE_DRAW_DURATION_S) *
+            1000 +
+          ANIMATION_BUFFER_MS;
         const timer = setTimeout(() => {
           setAnimating(false);
         }, duration);
@@ -106,7 +116,12 @@ const KanaCanvas = forwardRef<KanaCanvasHandle, KanaCanvasProps>(
         setAnimating(false);
         // Small delay to restart
         setTimeout(() => setAnimating(true), 50);
-        const duration = strokes.length * 1000 + 500;
+        const duration =
+          (STROKE_INITIAL_DELAY_S +
+            (strokes.length - 1) * STROKE_STAGGER_S +
+            STROKE_DRAW_DURATION_S) *
+            1000 +
+          ANIMATION_BUFFER_MS;
         setTimeout(() => setAnimating(false), duration);
       }
     };
@@ -230,7 +245,7 @@ const KanaCanvas = forwardRef<KanaCanvasHandle, KanaCanvasProps>(
                   className="animate-draw-stroke"
                   style={{
                     // Stagger animations
-                    animationDelay: `${1 + i * 0.8}s`,
+                    animationDelay: `${STROKE_INITIAL_DELAY_S + i * STROKE_STAGGER_S}s`,
                   }}
                 />
               ))}
