@@ -18,6 +18,8 @@ type AskAkiContextType = {
   toggleHighlight: (id: string) => void;
   sendContextUpdate: (context: any) => void;
   sendUserEvent: (type: string, data: any) => void;
+  languagePreference: string;
+  setLanguagePreference: (lang: string) => void;
 };
 
 const AskAkiContext = createContext<AskAkiContextType | null>(null);
@@ -25,6 +27,12 @@ const AskAkiContext = createContext<AskAkiContextType | null>(null);
 export function AskAkiProvider({ children }: { children: React.ReactNode }) {
   const [askAki, setAskAki] = useState(false);
   const [highlightState, setHighlightState] = useState<string[]>([]);
+  const [languagePreference, setLanguagePreference] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("aki_language_preference") || "en";
+    }
+    return "en";
+  });
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const dcRef = useRef<RTCDataChannel | null>(null);
@@ -34,6 +42,39 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
   const currentContextRef = useRef<any>(null);
   const lastSentContextRef = useRef<string>("");
   const transcriptRef = useRef<string>("");
+
+  // Map of language codes to full names for consistent prompting
+  const languageNames: Record<string, string> = {
+    en: "English",
+    hi: "Hindi",
+    ja: "Japanese",
+    mr: "Marathi",
+    bn: "Bengali",
+    te: "Telugu",
+    ta: "Tamil",
+    gu: "Gujarati",
+    kn: "Kannada",
+    ml: "Malayalam",
+    pa: "Punjabi",
+  };
+
+  const handleSetLanguagePreference = (lang: string) => {
+    setLanguagePreference(lang);
+    localStorage.setItem("aki_language_preference", lang);
+
+    // Update session instructions if session exists
+    if (dcRef.current && dcRef.current.readyState === "open") {
+      const langName = languageNames[lang] || "English";
+      const instructionUpdate = {
+        type: "session.update",
+        session: {
+          instructions: `Identity & Style: You are Aki, a friendly and experienced Japanese sensei. You're encouraging, use a mix of Japanese and English, and focus on practical usage. You provide helpful examples and clarify nuances. You love Japanese culture.
+The student prefers explanations in ${langName}. Always respond or explain concepts primarily using this language when teaching Japanese.`,
+        },
+      };
+      dcRef.current.send(JSON.stringify(instructionUpdate));
+    }
+  };
 
   // Helper to toggle highlights
   const toggleHighlight = useCallback((id: string) => {
@@ -104,6 +145,7 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
         console.log("Data channel opened - Connected to OpenAI Realtime API");
         if (currentContextRef.current) {
           console.log("Sending cached context on connection");
+          const langName = languageNames[languagePreference] || "English";
           const sessionUpdate = {
             type: "session.update",
             session: {
@@ -112,11 +154,13 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
 Current Lesson Context (JSON):
 ${JSON.stringify(currentContextRef.current, null, 2)}
 
+Preferred Language for Explanations: ${langName}
+
 Core Rules:
 - Always speak simple, slow Japanese using N5 vocabulary only
 - Use short sentences 
 - Be gentle and encouraging
-- Only use English/Hindi if user explicitly asks
+- Use ${langName} for explanations and if the student is confused
 - Reference anime when helpful`,
             },
           };
@@ -323,11 +367,13 @@ Core Rules:
 Current Lesson Context (JSON):
 ${JSON.stringify(context, null, 2)}
 
+Preferred Language for Explanations: ${languagePreference === 'hi' ? 'Hindi' : languagePreference === 'ja' ? 'Japanese' : 'English'}
+
 Core Rules:
 - Always speak simple, slow Japanese using N5 vocabulary only
 - Use short sentences 
 - Be gentle and encouraging
-- Only use English/Hindi if user explicitly asks
+- Use ${languagePreference === 'hi' ? 'Hindi' : languagePreference === 'ja' ? 'Japanese' : 'English'} for explanations and if the student is confused
 - Reference anime when helpful
 
 Tool Rules:
@@ -443,6 +489,8 @@ IMPORTANT:
         toggleHighlight,
         sendContextUpdate,
         sendUserEvent,
+        languagePreference,
+        setLanguagePreference: handleSetLanguagePreference,
       }}
     >
       {children}

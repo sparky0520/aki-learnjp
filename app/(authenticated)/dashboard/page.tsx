@@ -90,7 +90,7 @@ export default function DashboardPage() {
               </div>
             </div>
             {/* Progress bar */}
-            <div className="w-full">
+            <div id="dashboard-progress" className="w-full">
               <div className=" bg-gray-400 rounded-lg">
                 <div
                   className={`h-5 bg-green-400 rounded-lg`}
@@ -155,7 +155,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-          <div className="p-2 flex flex-col gap-4 items-start md:items-end text-lg text-blue-400 w-full md:w-auto">
+          <div id="practice-links" className="p-2 flex flex-col gap-4 items-start md:items-end text-lg text-blue-400 w-full md:w-auto">
             {/* Practice Links */}
             {isAdmin && (
               <>
@@ -166,6 +166,7 @@ export default function DashboardPage() {
             <PracticeLink text="Assigned Quiz" href="/quizzes" />
             <PracticeLink text="Learn Japanese Kana" href="/kana" />
             <PracticeLink text="Character Chart" href="/hatsuon" />
+            <PracticeLink text="Tutorial / Help" href="/dashboard?tutorial=true" />
           </div>
         </div>
       </div>

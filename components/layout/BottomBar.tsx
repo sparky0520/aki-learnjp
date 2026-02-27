@@ -46,6 +46,7 @@ function BottomBar({
           </button>
         )}
         <div
+          id="ask-aki-button"
           className="btn flex items-center cursor-pointer select-none"
           style={{ zIndex: askAki ? 999 : "auto" }}
           onClick={toggleAskAki}

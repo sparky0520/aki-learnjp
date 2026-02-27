@@ -66,6 +66,7 @@ function Sidebar({
         </div>
         <Link
           href={`/course/${lastAccessed?.courseNumber || 1}`}
+          id="sidebar-course-chart"
           className={`${pathname.includes("/course")
             ? "underline decoration-gray-400 decoration-1 underline-offset-8"
             : "no-underline"
@@ -82,14 +83,14 @@ function Sidebar({
         >
           About Lesson
         </Link>
-        <div className="flex flex-col gap-2">
+        <div id="sidebar-reading" className="flex flex-col gap-2">
           <div className="font-extrabold text-xl">Reading</div>
           <div className="flex flex-col gap-2">
             {[
-              { path: "goi", label: "Goi" },
-              { path: "bunkei", label: "Bunkei" },
-              { path: "reibun", label: "Reibun" },
-              { path: "renshuua", label: "Renshuu A" },
+              { path: "goi", label: "Vocabulary" },
+              { path: "bunkei", label: "Sentence Patterns" },
+              { path: "reibun", label: "Example Sentences" },
+              { path: "renshuua", label: "Practice A" },
             ].map((link) => (
               <Link
                 key={link.path}
@@ -104,22 +105,22 @@ function Sidebar({
             ))}
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div id="sidebar-exercise" className="flex flex-col gap-2">
           <div className="font-extrabold text-xl">Exercise</div>
           <div className="flex flex-col gap-2">
             {[
               {
                 id: "renshuub",
-                label: "Renshuu B",
+                label: "Practice B",
                 key: "renshuu_b_completed",
               },
               {
                 id: "renshuuc",
-                label: "Renshuu C",
+                label: "Practice C",
                 key: "renshuu_c_completed",
               },
-              { id: "mondai", label: "Mondai", key: "mondai_completed" },
-              { id: "kaiwa", label: "Kaiwa", key: "kaiwa_completed" },
+              { id: "mondai", label: "Problems", key: "mondai_completed" },
+              { id: "kaiwa", label: "Conversation", key: "kaiwa_completed" },
             ].map((item) => (
               <Link
                 key={item.id}

@@ -1,11 +1,13 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { usePathname } from "next/navigation";
 import AskAkiContext from "../../contexts/lesson/AkiContext";
 import Image from "next/image";
 import { LayoutProvider, useLayout } from "../../contexts/layout/LayoutContext";
+import Tutorial from "../tutorial/Tutorial";
+import { useSearchParams } from "next/navigation";
 
 export default function AppLayoutContent({
   children,
@@ -29,8 +31,29 @@ function MainLayout({
   userId: string;
 }) {
   const pathname = usePathname();
-  const { askAki } = useContext(AskAkiContext);
+  const searchParams = useSearchParams();
+  const askAkiContext = useContext(AskAkiContext);
+  const { askAki, setLanguagePreference } = askAkiContext!;
+  const [showTutorial, setShowTutorial] = useState(false);
   const { sidebarVisible, setSidebarVisible } = useLayout();
+
+  useEffect(() => {
+    // Check if tutorial should be shown
+    if (typeof window !== "undefined" && userId) {
+      const isCompleted = localStorage.getItem(`tutorial_completed_${userId}`);
+      const forceTutorial = searchParams.get("tutorial") === "true";
+
+      if (!isCompleted || forceTutorial) {
+        setShowTutorial(true);
+      }
+    }
+  }, [userId, searchParams]);
+
+  const handleTutorialComplete = (lang: string) => {
+    setLanguagePreference(lang);
+    localStorage.setItem(`tutorial_completed_${userId}`, "true");
+    setShowTutorial(false);
+  };
 
   useEffect(() => {
     if (!userId) {
@@ -116,6 +139,11 @@ function MainLayout({
           {children}
         </div>
       </main>
+
+      <Tutorial
+        show={showTutorial}
+        onComplete={handleTutorialComplete}
+      />
     </div>
   );
 }
