@@ -9,7 +9,14 @@ import React, {
 } from "react";
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
+import { Room, RoomEvent, createLocalTracks, DataPacket_Kind } from "livekit-client";
 import { API_URL } from "@/app/constants";
+import { useContext } from "react";
+
+export function useAki() {
+  const context = useContext(AskAkiContext);
+  return context;
+}
 
 type AskAkiContextType = {
   askAki: boolean;
@@ -34,14 +41,13 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
     return "en";
   });
 
-  const pcRef = useRef<RTCPeerConnection | null>(null);
-  const dcRef = useRef<RTCDataChannel | null>(null);
+  const roomRef = useRef<Room | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const localStreamRef = useRef<MediaStream | null>(null);
+  const transcriptRef = useRef<string>("");
+
   const isResponseActiveRef = useRef(false);
   const currentContextRef = useRef<any>(null);
   const lastSentContextRef = useRef<string>("");
-  const transcriptRef = useRef<string>("");
 
   // Map of language codes to full names for consistent prompting
   const languageNames: Record<string, string> = {
@@ -62,17 +68,9 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
     setLanguagePreference(lang);
     localStorage.setItem("aki_language_preference", lang);
 
-    // Update session instructions if session exists
-    if (dcRef.current && dcRef.current.readyState === "open") {
-      const langName = languageNames[lang] || "English";
-      const instructionUpdate = {
-        type: "session.update",
-        session: {
-          instructions: `Identity & Style: You are Aki, a friendly and experienced Japanese sensei. You're encouraging, use a mix of Japanese and English, and focus on practical usage. You provide helpful examples and clarify nuances. You love Japanese culture.
-The student prefers explanations in ${langName}. Always respond or explain concepts primarily using this language when teaching Japanese.`,
-        },
-      };
-      dcRef.current.send(JSON.stringify(instructionUpdate));
+    if (roomRef.current?.localParticipant) {
+      // Update metadata so the agent knows to switch voice/instructions
+      roomRef.current.localParticipant.setMetadata(lang);
     }
   };
 
@@ -102,167 +100,75 @@ The student prefers explanations in ${langName}. Always respond or explain conce
 
   const connectToRealtime = async () => {
     try {
-      console.log(`API URL: ${API_URL}`);
+      console.log(`Connecting to LiveKit...`);
 
-      // Create peer connection
-      const pc = new RTCPeerConnection();
-      pcRef.current = pc;
+      // 1. Get token from backend
+      const response = await fetch(`${API_URL}/session`, {
+        method: "POST",
+      });
+      if (!response.ok) throw new Error("Failed to get LiveKit token");
+      const { token, url } = await response.json();
 
-      // Set up audio element for playback
-      if (!audioRef.current) {
-        audioRef.current = document.createElement("audio");
-        audioRef.current.autoplay = true;
-      }
+      // 2. Initialize Room
+      const room = new Room({
+        adaptiveStream: true,
+        dynacast: true,
+      });
+      roomRef.current = room;
 
-      pc.ontrack = (e) => {
-        console.log("Received remote track");
-        if (audioRef.current) {
-          audioRef.current.srcObject = e.streams[0];
-        }
-      };
+      // 3. Handle Events
+      room
+        .on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
+          if (track.kind === "audio") {
+            const element = track.attach();
+            document.body.appendChild(element);
+          }
+        })
+        .on(RoomEvent.DataReceived, (payload, participant, kind, topic) => {
+          const decoder = new TextDecoder();
+          const str = decoder.decode(payload);
+          try {
+            const data = JSON.parse(str);
+            console.log("LiveKit Data Record:", data);
+            // Handle transcripts or events from agent here
+          } catch (e) {
+            console.log("LiveKit Data Message:", str);
+          }
+        });
 
-      // Monitor connection state
-      pc.onconnectionstatechange = () => {
-        console.log("Connection state:", pc.connectionState);
-      };
+      // 4. Connect and Publish
+      await room.connect(url, token);
+      console.log("Connected to room:", room.name);
 
-      // Get microphone access
-      const ms = await navigator.mediaDevices.getUserMedia({
+      const localTracks = await createLocalTracks({
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true,
         },
-      });
-      localStreamRef.current = ms;
-      ms.getTracks().forEach((track) => pc.addTrack(track, ms));
-
-      // Set up data channel for events
-      const dc = pc.createDataChannel("oai-events");
-      dcRef.current = dc;
-
-      dc.addEventListener("open", () => {
-        console.log("Data channel opened - Connected to OpenAI Realtime API");
-        if (currentContextRef.current) {
-          console.log("Sending cached context on connection");
-          const langName = languageNames[languagePreference] || "English";
-          const sessionUpdate = {
-            type: "session.update",
-            session: {
-              instructions: `You are Aki, a patient Japanese sensei teaching JLPT N5 beginners.
-                  
-Current Lesson Context (JSON):
-${JSON.stringify(currentContextRef.current, null, 2)}
-
-Preferred Language for Explanations: ${langName}
-
-Core Rules:
-- Always speak simple, slow Japanese using N5 vocabulary only
-- Use short sentences 
-- Be gentle and encouraging
-- Use ${langName} for explanations and if the student is confused
-- Reference anime when helpful`,
-            },
-          };
-          dc.send(JSON.stringify(sessionUpdate));
-        }
+        video: false,
       });
 
-      dc.addEventListener("message", async (e) => {
-        const msg = JSON.parse(e.data);
-        console.log("Realtime Event:", msg.type);
-
-        // Capture transcript
-        if (msg.type === "conversation.item.input_audio_transcription.completed") {
-          transcriptRef.current += `User: ${msg.transcript}\n`;
-        } else if (msg.type === "response.audio_transcript.done") {
-          transcriptRef.current += `Aki: ${msg.transcript}\n`;
-        }
-
-        // Track response lifecycle
-        if (msg.type === "response.created") {
-          isResponseActiveRef.current = true;
-        } else if (msg.type === "response.done") {
-          isResponseActiveRef.current = false;
-        }
-
-        // Handle function calls - Standard event type
-        if (msg.type === "response.function_call_arguments.done") {
-          await handleToolCall(msg.name, msg.arguments, msg.call_id);
-        }
-        // Handle function calls - Alternative event via output_item.done
-        else if (
-          msg.type === "response.output_item.done" &&
-          msg.item?.type === "function_call"
-        ) {
-          await handleToolCall(
-            msg.item.name,
-            msg.item.arguments,
-            msg.item.call_id,
-          );
-        }
-      });
-
-      dc.addEventListener("close", () => {
-        console.log("Data channel closed - Disconnected from API");
-      });
-
-      dc.addEventListener("error", (error) => {
-        console.error("Data channel error:", error);
-      });
-
-      // Create and send offer
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-
-      // Wait for ICE gathering to complete
-      await waitForIceGatheringComplete(pc);
-
-      console.log("Sending SDP offer to server...");
-      const sessionResponse = await fetch(`${API_URL}/session`, {
-        method: "POST",
-        body: pc.localDescription?.sdp,
-        headers: {
-          "Content-Type": "application/sdp",
-        },
-      });
-
-      if (!sessionResponse.ok) {
-        const errorText = await sessionResponse.text();
-        throw new Error(`Failed to connect to server: ${errorText}`);
+      for (const track of localTracks) {
+        await room.localParticipant.publishTrack(track);
       }
 
-      const answerSdp = await sessionResponse.text();
-      const answer: RTCSessionDescriptionInit = {
-        type: "answer",
-        sdp: answerSdp,
-      };
+      // 5. Send initial context via metadata or data channel
+      if (currentContextRef.current) {
+        const langName = languageNames[languagePreference] || "English";
+        room.localParticipant.setMetadata(languagePreference);
 
-      await pc.setRemoteDescription(answer);
-      console.log("WebRTC connection established successfully");
+        const msg = JSON.stringify({
+          type: "context_update",
+          context: currentContextRef.current,
+          language: langName
+        });
+        room.localParticipant.publishData(new TextEncoder().encode(msg), { reliability: DataPacket_Kind.RELIABLE });
+      }
+
     } catch (error: any) {
       console.error("Connection error:", error);
       disconnect();
     }
-  };
-
-  // Helper to wait for ICE gathering to complete
-  const waitForIceGatheringComplete = (
-    pc: RTCPeerConnection,
-  ): Promise<void> => {
-    return new Promise((resolve) => {
-      if (pc.iceGatheringState === "complete") {
-        resolve();
-      } else {
-        const checkState = () => {
-          if (pc.iceGatheringState === "complete") {
-            pc.removeEventListener("icegatheringstatechange", checkState);
-            resolve();
-          }
-        };
-        pc.addEventListener("icegatheringstatechange", checkState);
-      }
-    });
   };
 
   // Handle tool calls from the model
@@ -297,18 +203,16 @@ Core Rules:
 
       // Send tool output back to the model
       const event = {
-        type: "conversation.item.create",
-        item: {
-          type: "function_call_output",
-          call_id: callId,
-          output: JSON.stringify(result),
-        },
+        type: "tool_output",
+        call_id: callId,
+        output: JSON.stringify(result),
       };
 
-      if (dcRef.current && dcRef.current.readyState === "open") {
-        dcRef.current.send(JSON.stringify(event));
-        // Trigger another response after tool output
-        dcRef.current.send(JSON.stringify({ type: "response.create" }));
+      if (roomRef.current?.localParticipant) {
+        roomRef.current.localParticipant.publishData(
+          new TextEncoder().encode(JSON.stringify(event)),
+          { reliability: DataPacket_Kind.RELIABLE }
+        );
       }
     } catch (err) {
       console.error("Tool execution error:", err);
@@ -316,31 +220,11 @@ Core Rules:
   };
 
   const disconnect = useCallback(() => {
-    if (transcriptRef.current.trim().length > 0) {
-      console.log("Sending session transcript for summarization...");
-      fetch(`${API_URL}/summarize`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript: transcriptRef.current }),
-      }).catch((err) => console.error("Failed to summarize session:", err));
+    if (roomRef.current) {
+      roomRef.current.disconnect();
+      roomRef.current = null;
     }
     transcriptRef.current = "";
-
-    if (dcRef.current) {
-      dcRef.current.close();
-      dcRef.current = null;
-    }
-    if (pcRef.current) {
-      pcRef.current.close();
-      pcRef.current = null;
-    }
-    if (localStreamRef.current) {
-      localStreamRef.current.getTracks().forEach((track) => track.stop());
-      localStreamRef.current = null;
-    }
-    if (audioRef.current) {
-      audioRef.current.srcObject = null;
-    }
     isResponseActiveRef.current = false;
   }, []);
 
@@ -358,53 +242,32 @@ Core Rules:
     lastSentContextRef.current = contextStr;
     currentContextRef.current = context;
 
-    if (dcRef.current && dcRef.current.readyState === "open") {
+    if (roomRef.current?.localParticipant) {
+      const langName = languageNames[languagePreference] || "English";
       const sessionUpdate = {
-        type: "session.update",
-        session: {
-          instructions: `You are Aki, a patient Japanese sensei teaching JLPT N5 beginners.
-          
-Current Lesson Context (JSON):
-${JSON.stringify(context, null, 2)}
-
-Preferred Language for Explanations: ${languagePreference === 'hi' ? 'Hindi' : languagePreference === 'ja' ? 'Japanese' : 'English'}
-
-Core Rules:
-- Always speak simple, slow Japanese using N5 vocabulary only
-- Use short sentences 
-- Be gentle and encouraging
-- Use ${languagePreference === 'hi' ? 'Hindi' : languagePreference === 'ja' ? 'Japanese' : 'English'} for explanations and if the student is confused
-- Reference anime when helpful
-
-Tool Rules:
-- When using tools: suspend persona completely, output only the tool call, no Japanese.`,
-        },
+        type: "context_update",
+        context: context,
+        preferred_language: langName
       };
-      console.log("Sending context update to model");
-      dcRef.current.send(JSON.stringify(sessionUpdate));
+      console.log("Sending context update to LiveKit agent");
+      roomRef.current.localParticipant.publishData(
+        new TextEncoder().encode(JSON.stringify(sessionUpdate)),
+        { reliability: DataPacket_Kind.RELIABLE }
+      );
     }
-  }, []);
+  }, [languagePreference]);
 
   const sendUserEvent = useCallback((type: string, data: any) => {
-    if (dcRef.current && dcRef.current.readyState === "open") {
+    if (roomRef.current?.localParticipant) {
       const event = {
-        type: "conversation.item.create",
-        item: {
-          type: "message",
-          role: "user",
-          content: [
-            {
-              type: "input_text",
-              text: `Event: ${type}\nData: ${JSON.stringify(data)}`,
-            },
-          ],
-        },
+        type: "user_event",
+        event_type: type,
+        data: data
       };
-      dcRef.current.send(JSON.stringify(event));
-      // Trigger response if it's an important event (like submitting an answer)
-      if (type === "answer_submitted") {
-        dcRef.current.send(JSON.stringify({ type: "response.create" }));
-      }
+      roomRef.current.localParticipant.publishData(
+        new TextEncoder().encode(JSON.stringify(event)),
+        { reliability: DataPacket_Kind.RELIABLE }
+      );
     }
   }, []);
 
