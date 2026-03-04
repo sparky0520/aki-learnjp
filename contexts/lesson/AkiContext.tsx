@@ -72,8 +72,9 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
       // Update metadata as JSON so the agent can parse it consistently
       const metadata = JSON.stringify({
         lang: lang,
-        context: currentContextRef.current
+        context: currentContextRef.current,
       });
+      console.log("[FRONTEND] Updating participant metadata:", metadata);
       roomRef.current.localParticipant.setMetadata(metadata);
     }
   };
@@ -163,10 +164,9 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
         await room.localParticipant.publishTrack(track);
       }
 
-      // 5. Send initial context via metadata or data channel
+      // 5. Send initial context via data channel
       if (currentContextRef.current) {
         const langName = languageNames[languagePreference] || "English";
-        room.localParticipant.setMetadata(languagePreference);
 
         const msg = JSON.stringify({
           type: "context_update",

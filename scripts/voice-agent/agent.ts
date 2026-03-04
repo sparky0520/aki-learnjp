@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 export default defineAgent({
     entry: async (ctx: JobContext) => {
         await ctx.connect();
+        console.log(`[AGENT] Connected to room: ${ctx.room.name}`);
 
         const initialContext = new llm.ChatContext();
         initialContext.addMessage({
@@ -24,22 +25,6 @@ export default defineAgent({
       Speak simple, slow Japanese. Use short sentences. 
       Explanations should be in the student's preferred language. 
       Identity: Patient, encouraging, loves anime.`,
-        });
-
-        const agent = new voice.Agent({
-            instructions: 'You are Aki, a patient Japanese sensei teaching JLPT N5. Speak simple, slow Japanese. Use short sentences. Explanations should be in the student\'s preferred language. Identity: Patient, encouraging, loves anime.',
-            stt: new deepgram.STT(),
-            llm: new openai.LLM({
-                model: 'gpt-4o-mini',
-            }),
-            tts: new elevenlabs.TTS(), // Uses ELEVEN_API_KEY from .env
-            chatCtx: initialContext,
-        });
-
-        const session = new voice.AgentSession({
-            stt: agent.stt,
-            llm: agent.llm,
-            tts: agent.tts,
         });
 
         const langVoiceMap: Record<string, string> = {
@@ -70,25 +55,138 @@ export default defineAgent({
             pa: "Punjabi",
         };
 
-        // Check for initial metadata of the human participant if already present
-        const handleInitialMetadata = () => {
-            const human = Array.from(ctx.room.remoteParticipants.values()).find(p => p.identity.startsWith('user-'));
+        // Initialize session placeholders
+        let session: voice.AgentSession;
+
+        // Function to wait for and parse initial metadata
+        const getInitialMetadata = async () => {
+            let human = null;
+            let retries = 0;
+            const maxRetries = 15; // Wait up to 7.5 seconds
+
+            while (!human && retries < maxRetries) {
+                human = Array.from(ctx.room.remoteParticipants.values()).find(p => p.identity.startsWith('user-'));
+                if (!human || !human.metadata) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    retries++;
+                } else {
+                    break;
+                }
+            }
+
             if (human?.metadata) {
                 try {
                     const data = JSON.parse(human.metadata);
-                    const lang = data.lang || data.language || human.metadata;
+                    console.log(`[AGENT] Parsed metadata:`, data);
+                    return {
+                        lang: data.lang || data.language || human.metadata,
+                        context: data.context
+                    };
+                } catch (e) {
+                    console.warn("[AGENT] Failed to parse initial metadata as JSON, using raw string", human.metadata);
+                    return { lang: human.metadata, context: null };
+                }
+            }
+            return { lang: 'en', context: null };
+        };
+
+        // 1. Get metadata BEFORE starting the session
+        const { lang, context } = await getInitialMetadata();
+        const langName = languageNames[lang] || lang || 'English';
+        console.log(`[AGENT] Initializing with lang=${langName}, contextPresent=${!!context}`);
+
+        // 2. Build initial instructions
+        let instructions = 'You are Aki, a patient Japanese sensei teaching JLPT N5. Speak simple, slow Japanese. Use short sentences. Explanations should be in the student\'s preferred language. Identity: Patient, encouraging, loves anime.';
+        let greeting = "Konnichiwa! I am Aki. I am ready to help you learn Japanese! What shall we do today?";
+
+        if (context?.lesson) {
+            const lesson = context.lesson;
+            const question = context.question;
+            instructions = `
+You are Aki, a patient Japanese sensei teaching JLPT N5.
+Current Lesson: ${lesson.name} (${lesson.japanese})
+Lesson Goal: ${lesson.structure_explanation}
+Aki's Guide: ${lesson.aki_realtime_script}
+
+${question ? `Current Question: ${JSON.stringify(question)}` : ''}
+
+Maintain your persona: patient, encouraging, loves anime.
+Speak simple, slow Japanese. Explanations in ${langName}.
+`;
+            greeting = `Konnichiwa! I am Aki. I see we are starting the lesson on ${lesson.japanese}. I will explain things in ${langName}. How can I help you?`;
+        } else {
+            initialContext.addMessage({
+                role: 'system',
+                content: `The student's preferred language for explanations is ${langName}.`
+            });
+        }
+
+        // 3. Create the agent with correct initial state
+        const agent = new voice.Agent({
+            instructions: instructions,
+            stt: new deepgram.STT(),
+            llm: new openai.LLM({ model: 'gpt-4o-mini' }),
+            tts: new elevenlabs.TTS({ voiceId: langVoiceMap[lang] || langVoiceMap['en'] }),
+            chatCtx: initialContext,
+        });
+
+        session = new voice.AgentSession({
+            stt: agent.stt,
+            llm: agent.llm,
+            tts: agent.tts,
+        });
+
+        // 4. Start session and greet
+        await session.start({ agent, room: ctx.room });
+        await session.say(greeting);
+
+        // Handle dynamic updates from the room (metadata-based)
+        ctx.room.on(RoomEvent.ParticipantMetadataChanged, (_prevMetadata, participant) => {
+            if (participant?.identity === ctx.room.localParticipant.identity) return;
+            if (!participant.identity.startsWith('user-') || !participant.metadata) return;
+
+            console.log(`[AGENT] ParticipantMetadataChanged: ${participant.identity}`);
+            try {
+                const data = JSON.parse(participant.metadata);
+                const lang = data.lang || data.language;
+
+                if (lang && langVoiceMap[lang]) {
+                    console.log(`[AGENT] Updating voice to: ${lang}`);
+                    session.tts = new elevenlabs.TTS({ voiceId: langVoiceMap[lang] });
+                    session.history.addMessage({
+                        role: 'system',
+                        content: `The student's preferred language for explanations is now ${languageNames[lang] || lang}.`
+                    });
+                }
+            } catch (e) {
+                // Fallback for raw string metadata
+                const lang = participant.metadata;
+                if (langVoiceMap[lang]) {
+                    session.tts = new elevenlabs.TTS({ voiceId: langVoiceMap[lang] });
+                }
+            }
+        });
+
+        // Handle session updates via data channel
+        ctx.room.on(RoomEvent.DataReceived, (payload, participant, _kind, _topic) => {
+            if (participant?.identity === ctx.room.localParticipant.identity) return;
+
+            const decoder = new TextDecoder();
+            const dataStr = decoder.decode(payload);
+            try {
+                const data = JSON.parse(dataStr);
+                if (data.type === 'session.update' || data.type === 'context_update') {
                     const context = data.context;
+                    const lang = data.preferred_language || data.language || data.lang;
 
-                    console.log(`[AGENT] Detected initial metadata language: ${lang}`);
-
-                    if (langVoiceMap[lang]) {
+                    if (lang && langVoiceMap[lang]) {
                         session.tts = new elevenlabs.TTS({ voiceId: langVoiceMap[lang] });
                     }
 
-                    if (context) {
-                        console.log("[AGENT] Applying initial lesson context from metadata");
+                    if (context?.lesson) {
                         const lesson = context.lesson;
                         const question = context.question;
+                        const currentLang = languageNames[lang] || lang || langName;
 
                         const newInstructions = `
 You are Aki, a patient Japanese sensei teaching JLPT N5.
@@ -99,129 +197,21 @@ Aki's Guide: ${lesson.aki_realtime_script}
 ${question ? `Current Question: ${JSON.stringify(question)}` : ''}
 
 Maintain your persona: patient, encouraging, loves anime.
-Speak simple, slow Japanese. Explanations in ${languageNames[lang] || lang || 'the student\'s preferred language'}.
+Speak simple, slow Japanese. Explanations in ${currentLang}.
 `;
-                        // Update the agent with these instructions
-                        const updatedAgent = new voice.Agent({
+                        session.updateAgent(new voice.Agent({
                             instructions: newInstructions,
                             stt: session.stt!,
                             llm: session.llm!,
                             tts: session.tts!,
                             chatCtx: session.history,
-                        });
-                        session.updateAgent(updatedAgent);
-                    } else if (langVoiceMap[lang]) {
-                        const langName = languageNames[lang] || lang;
-                        session.history.addMessage({
-                            role: 'system',
-                            content: `The student's preferred language for explanations is ${langName}.`
-                        });
-                    }
-                } catch (e) {
-                    // Fallback if metadata is not JSON (legacy or simple string)
-                    const lang = human.metadata;
-                    if (langVoiceMap[lang]) {
-                        session.tts = new elevenlabs.TTS({ voiceId: langVoiceMap[lang] });
-                        const langName = languageNames[lang] || lang;
-                        session.history.addMessage({
-                            role: 'system',
-                            content: `The student's preferred language for explanations is ${langName}.`
-                        });
+                        }));
                     }
                 }
-            }
-        };
-
-        await session.start({ agent, room: ctx.room });
-        handleInitialMetadata();
-
-        // Handle dynamic updates from the room (metadata-based)
-        ctx.room.on(RoomEvent.ParticipantMetadataChanged, (_prevMetadata, participant) => {
-            console.log(`[AGENT] ParticipantMetadataChanged: ${participant.identity} has metadata: ${participant.metadata}`);
-            if (participant?.identity === ctx.room.localParticipant.identity) return;
-
-            const lang = participant.metadata;
-            if (lang && langVoiceMap[lang]) {
-                console.log(`[AGENT] Setting ElevenLabs voice for language: ${lang}`);
-
-                // Update the session's TTS directly for immediate effect
-                session.tts = new elevenlabs.TTS({ voiceId: langVoiceMap[lang] });
-
-                session.history.addMessage({
-                    role: 'system',
-                    content: `The student's preferred language for explanations is now ${lang}.`
-                });
-            }
-        });
-
-        // Handle session updates via data channel (e.g., from AkiContext.tsx)
-        ctx.room.on(RoomEvent.DataReceived, (payload, participant, kind, topic) => {
-            if (participant?.identity === ctx.room.localParticipant.identity) return;
-
-            const decoder = new TextDecoder();
-            const dataStr = decoder.decode(payload);
-            console.log(`[AGENT] DataReceived from ${participant?.identity}. Type: ${dataStr.slice(0, 100)}...`);
-
-            try {
-                const data = JSON.parse(dataStr);
-
-                if (data.type === 'session.update' || data.type === 'context_update') {
-                    const context = data.context;
-                    const instructions = data.session?.instructions || context?.instructions;
-                    const lang = data.preferred_language || data.language;
-
-                    // Update voice if language is provided in data channel
-                    if (lang && langVoiceMap[lang]) {
-                        console.log(`[AGENT] Setting ElevenLabs voice from data channel: ${lang}`);
-                        session.tts = new elevenlabs.TTS({ voiceId: langVoiceMap[lang] });
-                    }
-
-                    if (context || instructions) {
-                        console.log("[AGENT] Updating agent context/instructions via data channel");
-
-                        let newInstructions = instructions || agent.instructions;
-
-                        if (context?.lesson) {
-                            const lesson = context.lesson;
-                            const question = context.question;
-
-                            newInstructions = `
-You are Aki, a patient Japanese sensei teaching JLPT N5.
-Current Lesson: ${lesson.name} (${lesson.japanese})
-Lesson Goal: ${lesson.structure_explanation}
-Aki's Guide: ${lesson.aki_realtime_script}
-
-${question ? `Current Question: ${JSON.stringify(question)}` : ''}
-
-Maintain your persona: patient, encouraging, loves anime.
-Speak simple, slow Japanese. Explanations in ${lang || 'the student\'s preferred language'}.
-`;
-                        }
-
-                        // Create a new agent with updated instructions but keep existing context/models
-                        const updatedAgent = new voice.Agent({
-                            instructions: newInstructions,
-                            stt: session.stt!,
-                            llm: session.llm!,
-                            tts: session.tts!, // Use the (potentially updated) TTS
-                            chatCtx: session.history,
-                        });
-
-                        session.updateAgent(updatedAgent);
-                    }
-                }
-
-                // Handle other custom events
-                if (data.type === 'user_event') {
-                    console.log(`[AGENT] Received user event: ${data.event_type}`, data.data);
-                }
-
             } catch (e) {
-                console.warn("[AGENT] Failed to parse data message as JSON", dataStr);
+                console.warn("[AGENT] Failed to parse data message", e);
             }
         });
-
-        await session.say("Konnichiwa! I am Aki. How can I help you today?");
     },
 });
 
