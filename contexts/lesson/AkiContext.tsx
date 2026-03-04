@@ -69,8 +69,12 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("aki_language_preference", lang);
 
     if (roomRef.current?.localParticipant) {
-      // Update metadata so the agent knows to switch voice/instructions
-      roomRef.current.localParticipant.setMetadata(lang);
+      // Update metadata as JSON so the agent can parse it consistently
+      const metadata = JSON.stringify({
+        lang: lang,
+        context: currentContextRef.current
+      });
+      roomRef.current.localParticipant.setMetadata(metadata);
     }
   };
 
@@ -102,9 +106,16 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
     try {
       console.log(`Connecting to LiveKit...`);
 
-      // 1. Get token from backend
+      // 1. Get token from backend with initial context
+      const initialMetadata = JSON.stringify({
+        lang: languagePreference,
+        context: currentContextRef.current,
+      });
+
       const response = await fetch(`${API_URL}/session`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ metadata: initialMetadata }),
       });
       if (!response.ok) throw new Error("Failed to get LiveKit token");
       const { token, url } = await response.json();
@@ -162,7 +173,8 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
           context: currentContextRef.current,
           language: langName
         });
-        room.localParticipant.publishData(new TextEncoder().encode(msg), { reliability: DataPacket_Kind.RELIABLE });
+        console.log("[FRONTEND] Sending initial context to LiveKit agent:", msg);
+        room.localParticipant.publishData(new TextEncoder().encode(msg), { reliable: true });
       }
 
     } catch (error: any) {
@@ -211,7 +223,7 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
       if (roomRef.current?.localParticipant) {
         roomRef.current.localParticipant.publishData(
           new TextEncoder().encode(JSON.stringify(event)),
-          { reliability: DataPacket_Kind.RELIABLE }
+          { reliable: true }
         );
       }
     } catch (err) {
@@ -249,13 +261,21 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
         context: context,
         preferred_language: langName
       };
-      console.log("Sending context update to LiveKit agent");
+      console.log("[FRONTEND] Sending context update to LiveKit agent:", sessionUpdate);
       roomRef.current.localParticipant.publishData(
         new TextEncoder().encode(JSON.stringify(sessionUpdate)),
-        { reliability: DataPacket_Kind.RELIABLE }
+        { reliable: true }
       );
     }
   }, [languagePreference]);
+
+  // Ensure language updates are sent to the agent immediately
+  useEffect(() => {
+    if (languagePreference && currentContextRef.current) {
+      console.log("[FRONTEND] Language preference changed, re-syncing context...");
+      sendContextUpdate(currentContextRef.current);
+    }
+  }, [languagePreference, sendContextUpdate]);
 
   const sendUserEvent = useCallback((type: string, data: any) => {
     if (roomRef.current?.localParticipant) {
@@ -264,9 +284,10 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
         event_type: type,
         data: data
       };
+      console.log("[FRONTEND] Sending user event to LiveKit agent:", event);
       roomRef.current.localParticipant.publishData(
         new TextEncoder().encode(JSON.stringify(event)),
-        { reliability: DataPacket_Kind.RELIABLE }
+        { reliable: true }
       );
     }
   }, []);

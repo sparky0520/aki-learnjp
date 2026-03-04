@@ -7,19 +7,13 @@ import AskAkiContext from "@/contexts/lesson/AkiContext";
 interface AkiContextProps {
   questionType: keyof typeof questionScripts.question_types;
   lessonAboutContent?: string;
-  currentQuestion?: unknown;
-  correctAnswer?: unknown;
-  userAnswer?: unknown;
-  mistakes?: number;
+  currentQuestion?: any;
 }
 
 const AkiContext: React.FC<AkiContextProps> = ({
   questionType,
   lessonAboutContent,
   currentQuestion,
-  correctAnswer,
-  userAnswer,
-  mistakes,
 }) => {
   const { sendContextUpdate } = useContext(AskAkiContext) || {};
   const lastContextRef = useRef<string>("");
@@ -37,13 +31,6 @@ const AkiContext: React.FC<AkiContextProps> = ({
         description: lessonAboutContent,
       },
       question: currentQuestion,
-      answer: {
-        correct: correctAnswer,
-        user_current: userAnswer,
-      },
-      user_state: {
-        mistakes: mistakes || 0,
-      },
     };
 
     // Deep compare or just stringify check to avoid loop/spam
@@ -56,9 +43,6 @@ const AkiContext: React.FC<AkiContextProps> = ({
     questionType,
     lessonAboutContent,
     currentQuestion,
-    correctAnswer,
-    userAnswer,
-    mistakes,
     sendContextUpdate,
   ]);
 

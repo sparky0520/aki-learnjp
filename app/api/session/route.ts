@@ -10,7 +10,8 @@ export async function POST(req: Request) {
     }
 
     const { userId, orgId } = await auth();
-    
+    const { metadata } = await req.json().catch(() => ({ metadata: undefined }));
+
     // Generate a unique room name for the user/session
     const roomName = `room-${userId || 'anon'}-${Date.now()}`;
     const participantName = `user-${userId || 'anon'}`;
@@ -22,6 +23,7 @@ export async function POST(req: Request) {
       {
         identity: participantName,
         name: participantName,
+        metadata: metadata,
       }
     );
 
@@ -31,6 +33,7 @@ export async function POST(req: Request) {
       canPublish: true,
       canSubscribe: true,
       canPublishData: true,
+      canUpdateOwnMetadata: true,
     });
 
     const token = await at.toJwt();

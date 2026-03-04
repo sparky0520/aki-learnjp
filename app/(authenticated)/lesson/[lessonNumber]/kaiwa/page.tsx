@@ -72,7 +72,6 @@ export default function KaiwaPage() {
         questionType="kaiwa"
         lessonAboutContent={lessonDescription}
         currentQuestion={data}
-        correctAnswer={null}
       />
       {/* shuuryou */}
       <div className="mb-4">

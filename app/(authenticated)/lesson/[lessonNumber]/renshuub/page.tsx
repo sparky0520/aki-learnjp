@@ -45,7 +45,7 @@ function RenshuuBPage() {
         if (response.data && response.data.length > 0) {
           console.log(
             "response.data[0].questions.length: " +
-              response.data[0].questions.length,
+            response.data[0].questions.length,
           );
           setFinalQuestion(response.data.length);
           setFinalOption(response.data[0].questions.length);
@@ -111,9 +111,6 @@ function RenshuuBPage() {
           active_question_index: index,
           active_question_text: parts[currentQuestion]?.questions?.[index],
         }}
-        correctAnswer={parts[currentQuestion]?.correct_answers?.[index]}
-        userAnswer={answers}
-        mistakes={0}
       />
       <div>
         <Shuuryou lessonNo={parseInt(lessonNumber)} page="renshuub" />

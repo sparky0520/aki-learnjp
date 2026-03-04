@@ -62,7 +62,6 @@ function GoiPage() {
         questionType="goi"
         lessonAboutContent={lessonDescription}
         currentQuestion={content}
-        correctAnswer={null}
       />
       <div className="flex-1 flex flex-col">
         <div className="mb-4">

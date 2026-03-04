@@ -61,7 +61,6 @@ function ReibunPage() {
         questionType="reibun"
         lessonAboutContent={lessonDescription}
         currentQuestion={content}
-        correctAnswer={null}
       />
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="mb-4">

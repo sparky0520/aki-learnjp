@@ -94,14 +94,6 @@ export default function RenshuuCPage() {
           active_question_img:
             parts[currentQuestion]?.question_image_urls?.[index],
         }}
-        // Renshuu C often has multiple possible answers or open-ended dialogue.
-        // If there's a strict answer key:
-        correctAnswer={
-          parts[currentQuestion]?.correct_answers?.[index] ||
-          "Practice the dialogue flow"
-        }
-        userAnswer={null}
-        mistakes={0}
       />
       <div>
         <Shuuryou lessonNo={parseInt(lessonNumber)} page="renshuuc" />

@@ -8,6 +8,7 @@ import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { useLastAccessed } from "../../contexts/lesson/LastAccessedContext";
 import { useAuth } from "../../contexts/auth/AuthContext";
 import FeedbackForm from "../feedback/FeedbackForm";
+import { MotherTongueSelector } from "../MotherTongueSelector";
 
 // Constants
 
@@ -149,7 +150,8 @@ function Sidebar({
           </div>
         </div>
       </div>
-      <div className="mt-16 border-t pt-4 flex flex-col gap-2">
+      <div className="mt-16 border-t pt-4 flex flex-col gap-4">
+        <MotherTongueSelector />
         <FeedbackForm />
         <OrganizationSwitcher
           afterCreateOrganizationUrl="/dashboard"

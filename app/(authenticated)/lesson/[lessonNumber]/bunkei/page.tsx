@@ -62,7 +62,6 @@ function BunkeiPage() {
         questionType="bunkei"
         lessonAboutContent={lessonDescription}
         currentQuestion={content}
-        correctAnswer={null}
       />
       <div className="flex-1 overflow-hidden flex flex-col">
         {/* shuuryou */}
