@@ -7,8 +7,8 @@ import {
     voice,
 } from '@livekit/agents';
 import * as deepgram from '@livekit/agents-plugin-deepgram';
+import * as google from '@livekit/agents-plugin-google';
 import * as openai from '@livekit/agents-plugin-openai';
-import * as elevenlabs from '@livekit/agents-plugin-elevenlabs';
 import { RoomEvent } from 'livekit-client';
 import 'dotenv/config';
 import { fileURLToPath } from 'node:url';
@@ -17,20 +17,6 @@ export default defineAgent({
     entry: async (ctx: JobContext) => {
         await ctx.connect();
         console.log(`[AGENT] Connected to room: ${ctx.room.name}`);
-
-        const langVoiceMap: Record<string, string> = {
-            hi: 'cgSgspJ2msm6clMCkdW9', // Hindi - Aria
-            mr: 'cgSgspJ2msm6clMCkdW9', // Marathi - Liam
-            bn: 'cgSgspJ2msm6clMCkdW9', // Bengali - Aria
-            ja: 'cgSgspJ2msm6clMCkdW9', // Japanese - Nicole
-            en: 'cgSgspJ2msm6clMCkdW9', // English - Rachel
-            ta: 'cgSgspJ2msm6clMCkdW9', // Tamil - Aria
-            te: 'cgSgspJ2msm6clMCkdW9', // Telugu - Aria
-            gu: 'cgSgspJ2msm6clMCkdW9', // Gujarati - Aria
-            kn: 'cgSgspJ2msm6clMCkdW9', // Kannada - Aria
-            ml: 'cgSgspJ2msm6clMCkdW9', // Malayalam - Aria
-            pa: 'cgSgspJ2msm6clMCkdW9', // Punjabi - Aria
-        };
 
         const languageNames: Record<string, string> = {
             en: "English",
@@ -107,7 +93,8 @@ Focus on the current lesson and question provided in the conversation history.`;
             instructions: baseInstructions,
             stt: new deepgram.STT(),
             llm: new openai.LLM({ model: 'gpt-4o-mini' }),
-            tts: new elevenlabs.TTS({ voiceId: langVoiceMap[lang] || langVoiceMap['en'] }),
+            // Keep a single multilingual TTS instance for the entire session.
+            tts: new google.beta.TTS(),
             chatCtx: chatCtx,
         });
 
@@ -120,7 +107,7 @@ Focus on the current lesson and question provided in the conversation history.`;
         await session.start({ agent, room: ctx.room });
         await session.say(greeting);
 
-        // Handle dynamic metadata updates (Instant Voice Swap)
+        // Handle metadata updates by changing explanation context only.
         ctx.room.on(RoomEvent.ParticipantMetadataChanged, (_prevMetadata, participant) => {
             if (participant?.identity === ctx.room.localParticipant.identity) return;
             if (!participant.identity.startsWith('user-') || !participant.metadata) return;
@@ -128,9 +115,8 @@ Focus on the current lesson and question provided in the conversation history.`;
             try {
                 const data = JSON.parse(participant.metadata);
                 const lang = data.lang || data.language;
-                if (lang && langVoiceMap[lang]) {
+                if (lang) {
                     console.log(`[AGENT] Instant language update: ${lang}`);
-                    session.tts = new elevenlabs.TTS({ voiceId: langVoiceMap[lang] });
                     session.history.addMessage({
                         role: 'system',
                         content: `[CONTEXT UPDATE] The student's preferred language for explanations is now ${languageNames[lang] || lang}.`
@@ -138,8 +124,11 @@ Focus on the current lesson and question provided in the conversation history.`;
                 }
             } catch (e) {
                 const lang = participant.metadata;
-                if (langVoiceMap[lang]) {
-                    session.tts = new elevenlabs.TTS({ voiceId: langVoiceMap[lang] });
+                if (lang) {
+                    session.history.addMessage({
+                        role: 'system',
+                        content: `[CONTEXT UPDATE] The student's preferred language for explanations is now ${languageNames[lang] || lang}.`
+                    });
                 }
             }
         });
@@ -152,12 +141,11 @@ Focus on the current lesson and question provided in the conversation history.`;
             const dataStr = decoder.decode(payload);
             try {
                 const data = JSON.parse(dataStr);
-                if (data.type === 'session.update' || data.type === 'context_update') {
+                if (data.type === 'session.update' || data.type === 'context_update' || data.type === 'language_update') {
                     const context = data.context;
-                    const lang = data.preferred_language || data.language || data.lang;
+                    const lang = data.language || data.lang;
 
-                    if (lang && langVoiceMap[lang]) {
-                        session.tts = new elevenlabs.TTS({ voiceId: langVoiceMap[lang] });
+                    if (lang) {
                         session.history.addMessage({
                             role: 'system',
                             content: `[CONTEXT UPDATE] The student's preferred language for explanations is now ${languageNames[lang] || lang}.`

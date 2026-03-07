@@ -37,7 +37,6 @@
       "devDependencies": {
         "@livekit/agents": "^1.0.48",
         "@livekit/agents-plugin-deepgram": "^1.0.48",
-        "@livekit/agents-plugin-elevenlabs": "^1.0.48",
         "@livekit/agents-plugin-google": "^1.0.48",
         "@livekit/agents-plugin-openai": "^1.0.48",
         "@tailwindcss/postcss": "^4.1.18",
@@ -229,8 +228,6 @@
     "@livekit/agents": ["@livekit/agents@1.0.48", "", { "dependencies": { "@ffmpeg-installer/ffmpeg": "^1.1.0", "@livekit/mutex": "^1.1.1", "@livekit/protocol": "^1.43.0", "@livekit/typed-emitter": "^3.0.0", "@opentelemetry/api": "^1.9.0", "@opentelemetry/api-logs": "^0.54.0", "@opentelemetry/core": "^2.2.0", "@opentelemetry/exporter-logs-otlp-proto": "^0.54.0", "@opentelemetry/exporter-trace-otlp-proto": "^0.54.0", "@opentelemetry/instrumentation-pino": "^0.43.0", "@opentelemetry/otlp-exporter-base": "^0.208.0", "@opentelemetry/resources": "^1.28.0", "@opentelemetry/sdk-logs": "^0.54.0", "@opentelemetry/sdk-trace-base": "^1.28.0", "@opentelemetry/sdk-trace-node": "^1.28.0", "@opentelemetry/semantic-conventions": "^1.28.0", "@types/pidusage": "^2.0.5", "commander": "^12.0.0", "fluent-ffmpeg": "^2.1.3", "form-data": "^4.0.5", "heap-js": "^2.6.0", "json-schema": "^0.4.0", "livekit-server-sdk": "^2.14.1", "openai": "^6.8.1", "pidusage": "^4.0.1", "pino": "^8.19.0", "pino-pretty": "^11.0.0", "sharp": "0.34.5", "uuid": "^11.1.0", "ws": "^8.18.0", "zod-to-json-schema": "^3.24.6" }, "peerDependencies": { "@livekit/rtc-node": "^0.13.24", "zod": "^3.25.76 || ^4.1.8" } }, "sha512-mfTppBj1GAFZfLLaQdACqmKevViydfgo4O7+CuxsGrxKDz+yq9HlgITFK8F4TTLeXkkyzYbTnx6jFjZD9BL+BA=="],
 
     "@livekit/agents-plugin-deepgram": ["@livekit/agents-plugin-deepgram@1.0.48", "", { "dependencies": { "ws": "^8.16.0" }, "peerDependencies": { "@livekit/agents": "1.0.48", "@livekit/rtc-node": "^0.13.24" } }, "sha512-RRMkqGPqVMCwckn90tMHZifK8ElekysNC6/7iX10GghZq4nzqIUke1ebHpnekR63SLEaXdSUK9h4hCl8YEtG7Q=="],
-
-    "@livekit/agents-plugin-elevenlabs": ["@livekit/agents-plugin-elevenlabs@1.0.48", "", { "dependencies": { "@livekit/mutex": "^1.1.1", "ws": "^8.16.0" }, "peerDependencies": { "@livekit/agents": "1.0.48", "@livekit/rtc-node": "^0.13.24" } }, "sha512-FRuUH6WZ2OF0F6Xqj4OvPgKdfI1biB8UqdZduiav7VVBGN4fBp6/AiT1I0a70BGuwqdyYeZM+ey3DdOib5Nmjw=="],
 
     "@livekit/agents-plugin-google": ["@livekit/agents-plugin-google@1.0.48", "", { "dependencies": { "@google/genai": "^1.34.0", "@livekit/mutex": "^1.1.1", "@types/json-schema": "^7.0.15", "json-schema": "^0.4.0" }, "peerDependencies": { "@livekit/agents": "1.0.48", "@livekit/rtc-node": "^0.13.24" } }, "sha512-pdA/SV1kZI6CCpkdsg3cV27IblJJCENVujSlWtTC5mzG2XkEfc7Kgw2gft8JESDTxGQaqBHq4bfhl/DmRxyqKw=="],
 

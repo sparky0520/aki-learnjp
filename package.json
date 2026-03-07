@@ -42,7 +42,6 @@
   "devDependencies": {
     "@livekit/agents": "^1.0.48",
     "@livekit/agents-plugin-deepgram": "^1.0.48",
-    "@livekit/agents-plugin-elevenlabs": "^1.0.48",
     "@livekit/agents-plugin-google": "^1.0.48",
     "@livekit/agents-plugin-openai": "^1.0.48",
     "@tailwindcss/postcss": "^4.1.18",

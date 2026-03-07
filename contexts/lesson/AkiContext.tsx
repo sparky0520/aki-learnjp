@@ -48,6 +48,7 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
   const isResponseActiveRef = useRef(false);
   const currentContextRef = useRef<any>(null);
   const lastSentContextRef = useRef<string>("");
+  const lastSentLanguageRef = useRef<string>("");
 
   // Map of language codes to full names for consistent prompting
   const languageNames: Record<string, string> = {
@@ -76,6 +77,20 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
       });
       console.log("[FRONTEND] Updating participant metadata:", metadata);
       roomRef.current.localParticipant.setMetadata(metadata);
+
+      const langName = languageNames[lang] || "English";
+      if (lastSentLanguageRef.current !== langName) {
+        const languageUpdate = {
+          type: "language_update",
+          language: langName,
+        };
+        console.log("[FRONTEND] Sending language update to LiveKit agent:", languageUpdate);
+        roomRef.current.localParticipant.publishData(
+          new TextEncoder().encode(JSON.stringify(languageUpdate)),
+          { reliable: true }
+        );
+        lastSentLanguageRef.current = langName;
+      }
     }
   };
 
@@ -259,7 +274,7 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
       const sessionUpdate = {
         type: "context_update",
         context: context,
-        preferred_language: langName
+        language: langName
       };
       console.log("[FRONTEND] Sending context update to LiveKit agent:", sessionUpdate);
       roomRef.current.localParticipant.publishData(
@@ -268,14 +283,6 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
       );
     }
   }, [languagePreference]);
-
-  // Ensure language updates are sent to the agent immediately
-  useEffect(() => {
-    if (languagePreference && currentContextRef.current) {
-      console.log("[FRONTEND] Language preference changed, re-syncing context...");
-      sendContextUpdate(currentContextRef.current);
-    }
-  }, [languagePreference, sendContextUpdate]);
 
   const sendUserEvent = useCallback((type: string, data: any) => {
     if (roomRef.current?.localParticipant) {
