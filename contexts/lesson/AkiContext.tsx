@@ -48,7 +48,6 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
   const isResponseActiveRef = useRef(false);
   const currentContextRef = useRef<any>(null);
   const lastSentContextRef = useRef<string>("");
-  const lastSentLanguageRef = useRef<string>("");
 
   // Map of language codes to full names for consistent prompting
   const languageNames: Record<string, string> = {
@@ -77,20 +76,6 @@ export function AskAkiProvider({ children }: { children: React.ReactNode }) {
       });
       console.log("[FRONTEND] Updating participant metadata:", metadata);
       roomRef.current.localParticipant.setMetadata(metadata);
-
-      const langName = languageNames[lang] || "English";
-      if (lastSentLanguageRef.current !== langName) {
-        const languageUpdate = {
-          type: "language_update",
-          language: langName,
-        };
-        console.log("[FRONTEND] Sending language update to LiveKit agent:", languageUpdate);
-        roomRef.current.localParticipant.publishData(
-          new TextEncoder().encode(JSON.stringify(languageUpdate)),
-          { reliable: true }
-        );
-        lastSentLanguageRef.current = langName;
-      }
     }
   };
 

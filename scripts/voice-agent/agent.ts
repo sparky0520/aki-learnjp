@@ -37,6 +37,7 @@ export default defineAgent({
 Maintain your persona: patient, encouraging, loves anime.
 Speak simple, slow Japanese. Use short sentences. 
 Explanations should be in the student's preferred language. 
+Keep explanations brief and focused (1-2 sentences max unless the student asks for more detail).
 Focus on the current lesson and question provided in the conversation history.`;
 
         let session: voice.AgentSession;
@@ -141,7 +142,7 @@ Focus on the current lesson and question provided in the conversation history.`;
             const dataStr = decoder.decode(payload);
             try {
                 const data = JSON.parse(dataStr);
-                if (data.type === 'session.update' || data.type === 'context_update' || data.type === 'language_update') {
+                if (data.type === 'session.update' || data.type === 'context_update') {
                     const context = data.context;
                     const lang = data.language || data.lang;
 
