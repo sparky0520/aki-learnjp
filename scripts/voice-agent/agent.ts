@@ -100,7 +100,6 @@ Focus on the current lesson and question provided in the conversation history.`;
       instructions: baseInstructions,
       stt: new deepgram.STT(),
       llm: new openai.LLM({ model: "gpt-5-nano" }),
-      // Keep a single multilingual TTS instance for the entire session.
       tts: new google.beta.TTS(),
       chatCtx: chatCtx,
     });
