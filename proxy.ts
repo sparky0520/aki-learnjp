@@ -6,15 +6,13 @@ const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_REQUESTS = 100; // 100 requests per window
 const ipRequestMap = new Map<string, { count: number; startTime: number }>();
 
-// Clean up map periodically to prevent memory leaks
-setInterval(() => {
-  const now = Date.now();
+function cleanupExpiredRequests(now: number) {
   for (const [ip, data] of ipRequestMap.entries()) {
     if (now - data.startTime > RATE_LIMIT_WINDOW) {
       ipRequestMap.delete(ip);
     }
   }
-}, RATE_LIMIT_WINDOW);
+}
 
 const isPublicRoute = createRouteMatcher([
   "/(.*)",
@@ -24,6 +22,8 @@ const isPublicRoute = createRouteMatcher([
 
 export default clerkMiddleware(async (auth, req) => {
   // Rate Limiting Logic
+  cleanupExpiredRequests(Date.now());
+
   const ip = req.headers.get("x-forwarded-for") || "unknown";
 
   const now = Date.now();
