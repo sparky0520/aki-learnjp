@@ -33,10 +33,10 @@ const Footer = () => {
               by AI.
             </p>
             <div className="flex gap-4 justify-center md:justify-start pt-2">
-              <Link href="#" className="hover:text-ink transition-colors">
+              <Link href="https://x.com/realdarshjain" className="hover:text-ink transition-colors">
                 <Twitter size={20} strokeWidth={1.5} />
               </Link>
-              <Link href="#" className="hover:text-ink transition-colors">
+              <Link href="https://github.com/sparky0520" className="hover:text-ink transition-colors">
                 <Github size={20} strokeWidth={1.5} />
               </Link>
             </div>
